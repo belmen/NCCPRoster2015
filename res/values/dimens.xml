@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="default_round_btn_width">280dp</dimen>
+    <dimen name="default_round_btn_height">44dp</dimen>
+    <dimen name="top_banner_height">60dp</dimen>
+</resources>

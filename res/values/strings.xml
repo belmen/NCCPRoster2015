@@ -1,0 +1,45 @@
+<resources>
+
+    <string name="app_name">NCCP Roster</string>
+    <string name="login_database_hint">Choose your database</string>
+	<string name="login_btn">Login</string>
+	<string name="username_hint">Username</string>
+	<string name="password_hint">Password</string>
+	<string name="login_create_account">Create account</string>
+	
+	<string name="title_choose_db">Choose database</string>
+	
+	<!-- Actions -->
+	<string name="action_logout">Logout</string>
+	
+	<!-- Dialog -->
+	<string name="dialog_title_logout">Logout</string>
+	<string name="dialog_msg_logout">Are you sure to logout?</string>
+	
+	<!-- Login -->
+	<string name="login_username_empty">Username is empty</string>
+	<string name="login_password_empty">Password is empty</string>
+	
+	<!-- Create account -->
+	<string name="title_register_account">Create new account</string>
+	<string name="register_username">Username</string>
+	<string name="register_password">Password</string>
+	<string name="register_password_confirm">Confirm password</string>
+	<string name="register_creation_code">Creation code</string>
+	<string name="register_create_btn">Create account</string>
+	<string name="register_error_username">Username is empty</string>
+	<string name="register_error_password">Password is empty</string>
+	<string name="register_error_password_cfm">Passwords don\'t match</string>
+	<string name="register_error_creation_code">Creation code is required</string>
+	<string name="register_incorrect_creation_code">Incorrect creation code</string>
+	
+	<!-- Main -->
+	<string name="tab_title_roster">Roster</string>
+	<string name="tab_title_students">Students</string>
+	<string name="tab_title_activities">Activities</string>
+	
+	<!-- Students -->
+	<string name="action_search_students">Search students</string>
+	<string name="students_search_hint">Search first name or last name</string>
+	<string name="students_empty_text">No students</string>
+</resources>

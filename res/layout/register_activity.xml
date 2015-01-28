@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/orange_bg" >
+    
+	<EditText
+	    android:id="@+id/register_username_et"
+	    android:layout_width="320dp"
+	    android:layout_height="wrap_content"
+	    android:layout_gravity="center_horizontal"
+	    android:layout_marginTop="60dp"
+	    android:gravity="center_horizontal"
+	    android:textSize="18sp"
+	    android:inputType="text"
+	    android:digits="abcdefghijklmnopqrstuvwxyz1234567890 "
+	    android:background="@drawable/edit_text_holo_light"
+	    android:hint="@string/register_username" />
+	
+	<EditText
+	    android:id="@+id/register_password_et"
+	    android:layout_width="320dp"
+	    android:layout_height="wrap_content"
+	    android:layout_gravity="center_horizontal"
+	    android:layout_marginTop="30dp"
+	    android:gravity="center_horizontal"
+	    android:textSize="18sp"
+	    android:inputType="textPassword"
+	    android:background="@drawable/edit_text_holo_light"
+	    android:hint="@string/register_password" />
+	
+	<EditText
+	    android:id="@+id/register_passwordcfm_et"
+	    android:layout_width="320dp"
+	    android:layout_height="wrap_content"
+	    android:layout_gravity="center_horizontal"
+	    android:layout_marginTop="30dp"
+	    android:gravity="center_horizontal"
+	    android:textSize="18sp"
+	    android:inputType="textPassword"
+	    android:background="@drawable/edit_text_holo_light"
+	    android:hint="@string/register_password_confirm" />
+	
+	<EditText
+	    android:id="@+id/register_creationcode_et"
+	    android:layout_width="320dp"
+	    android:layout_height="wrap_content"
+	    android:layout_gravity="center_horizontal"
+	    android:layout_marginTop="30dp"
+	    android:maxLength="4"
+	    android:inputType="textCapCharacters"
+	    android:gravity="center_horizontal"
+	    android:textSize="18sp"
+	    android:background="@drawable/edit_text_holo_light"
+	    android:hint="@string/register_creation_code" />
+	
+	<Button
+	    android:id="@+id/register_create_btn"
+	    style="@style/RoundButtonStyle"
+	    android:layout_gravity="center_horizontal"
+	    android:layout_marginTop="60dp"
+	    android:text="@string/register_create_btn"
+	    android:onClick="onCreateClick" />
+	
+	<ProgressBar
+	    android:id="@+id/register_progress"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_marginTop="20dp"
+	    android:visibility="gone" />
+	
+	<TextView
+	    android:id="@+id/register_error_text"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_gravity="center_horizontal"
+	    android:gravity="center_horizontal"
+	    android:layout_marginTop="20dp"
+	    android:layout_marginLeft="80dp"
+	    android:layout_marginRight="80dp"
+	    android:textSize="18sp"
+	    android:textColor="#ff0000" />
+</LinearLayout>

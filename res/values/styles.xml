@@ -1,0 +1,59 @@
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!--
+        Base application theme, dependent on API level. This theme is replaced
+        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
+    -->
+    <style name="AppBaseTheme" parent="@style/Theme.AppCompat.Light">
+        <!--
+            Theme customizations available in newer API levels can go in
+            res/values-vXX/styles.xml, while customizations related to
+            backward-compatibility can go here.
+        -->
+        <!-- Text Color -->
+        <!-- <item name="android:textColor">@android:color/black</item> -->
+        <!-- EditText Error -->
+        <!-- <item name="android:textColorPrimaryInverse">@android:color/primary_text_light</item> -->
+    </style>
+
+    <!-- Application theme. -->
+    <style name="AppTheme" parent="AppBaseTheme">
+        <!-- All customizations that are NOT specific to a particular API-level can go here. -->
+    </style>
+    
+    <style name="ActionBarTheme" parent="@style/Theme.AppCompat.Light">
+        <item name="actionBarStyle">@style/NCCPActionBarStyle</item>
+    </style>
+    
+    <style name="NCCPActionBarStyle" parent="@style/Widget.AppCompat.ActionBar">
+        <item name="titleTextStyle">@style/NCCPActionBarTitleStyle</item>
+        <item name="background">@color/orange_bg</item>
+    </style>
+    
+    <style name="NCCPActionBarTitleStyle"  parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
+        <!-- <item name="android:textColor">@android:color/white</item> -->
+    </style>
+    
+    <style name="ActionBarThemeDark" parent="@style/Theme.AppCompat.Light">
+        <item name="actionBarStyle">@style/NCCPActionBarStyleDark</item>
+        <item name="homeAsUpIndicator">@drawable/button_back</item>
+    </style>
+    
+    <style name="NCCPActionBarStyleDark" parent="@style/Widget.AppCompat.ActionBar">
+        <item name="titleTextStyle">@style/NCCPActionBarTitleDarkStyle</item>
+        <item name="background">@color/dark_brown</item>
+    </style>
+    
+    <style name="NCCPActionBarTitleDarkStyle"  parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+    <style name="RoundButtonStyle" parent="android:style/Widget.Button">
+        <item name="android:layout_width">@dimen/default_round_btn_width</item>
+        <item name="android:layout_height">@dimen/default_round_btn_height</item>
+        <item name="android:background">@drawable/button_round</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/button_round_textcolor</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+</resources>
