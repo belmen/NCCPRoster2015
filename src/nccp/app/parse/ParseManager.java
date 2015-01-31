@@ -1,12 +1,12 @@
 package nccp.app.parse;
 
-import com.parse.Parse;
-import com.parse.ParseException;
-import com.parse.ParseUser;
-
 import nccp.app.parse.ParseAppManager.AppKey;
 import nccp.app.utils.Logger;
 import android.content.Context;
+
+import com.parse.Parse;
+import com.parse.ParseException;
+import com.parse.ParseUser;
 
 public class ParseManager {
 	
@@ -17,6 +17,8 @@ public class ParseManager {
 	
 	public static void initialize(Context context) {
 		mContext = context;
+		// Initialize parse objects
+//		ParseObject.registerSubclass(Student.class);
 	}
 	
 	public static void setDatabase(String database) {

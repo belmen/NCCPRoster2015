@@ -4,14 +4,16 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
+import nccp.app.bean.ParseBean;
+
 import com.parse.ParseObject;
 
-public class BeanUtil {
+public class ParseBeanUtil {
 	
-	public static final String TAG = BeanUtil.class.getSimpleName();
+	public static final String TAG = ParseBeanUtil.class.getSimpleName();
 
 	@SuppressWarnings("unchecked")
-	public static <T> List<T> fromParseObjects(List<ParseObject> objs, Class<T> beanType) {
+	public static <T extends ParseBean> List<T> fromParseObjects(List<ParseObject> objs, Class<T> beanType) {
 		if(objs == null) {
 			return null;
 		}

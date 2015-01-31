@@ -34,12 +34,38 @@
 	<string name="register_incorrect_creation_code">Incorrect creation code</string>
 	
 	<!-- Main -->
-	<string name="tab_title_roster">Roster</string>
+	<string name="tab_title_program">Program</string>
 	<string name="tab_title_students">Students</string>
-	<string name="tab_title_activities">Activities</string>
+	<string name="tab_title_attendence">Attendence</string>
 	
 	<!-- Students -->
 	<string name="action_search_students">Search students</string>
+	<string name="action_add_student">Add Student</string>
+	<string name="action_edit_student">Edit</string>
 	<string name="students_search_hint">Search first name or last name</string>
 	<string name="students_empty_text">No students</string>
+	
+	<!-- Student detail -->
+	<string name="student_detail_firstname">FIRST NAME</string>
+	<string name="student_detail_lastname">LAST NAME</string>
+	<string name="student_detail_id">STUDENT ID</string>
+	<string name="student_detail_gradelevel">GRADE LEVEL</string>
+	
+	<!-- Add student -->
+	<string name="title_add_student">New student</string>
+	<string name="student_editor_personal_info">PERSONAL INFORMATION</string>
+	<string name="student_editor_school_info">SCHOOL INFORMATION</string>
+	<string name="student_editor_emergency_contact">EMERGENCY CONTACT</string>
+	<string name="student_editor_id">Student ID</string>
+	<string name="student_editor_last_name">Last name</string>
+	<string name="student_editor_first_name">First name</string>
+	<string name="student_editor_grade_level">Grade level</string>
+	<string name="student_editor_site">Site</string>
+	<string name="student_editor_program">Program</string>
+	<string name="student_editor_school">School</string>
+	<string name="student_editor_address">Address</string>
+	<string name="student_editor_emergency_contact_name">Contact name</string>
+	<string name="student_editor_emergency_contact_phone">Contact phone</string>
+	<string name="student_editor_emergency_contact_relationship">Contact relationship</string>
+	<string name="menu_student_editor_done">Done</string>
 </resources>

@@ -3,4 +3,6 @@
     <dimen name="default_round_btn_width">280dp</dimen>
     <dimen name="default_round_btn_height">44dp</dimen>
     <dimen name="top_banner_height">60dp</dimen>
+    <dimen name="student_editor_left_text_width">100dp</dimen>
+    <dimen name="student_editor_left_text_width_wide">160dp</dimen>
 </resources>

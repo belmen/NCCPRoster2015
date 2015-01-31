@@ -20,9 +20,9 @@ public class MainActivity extends ActionBarActivity {
 
 	public static final String TAG = MainActivity.class.getSimpleName();
 
-	private static final String TAB_ROSTER = Const.PACKAGE_NAME + ".tab_roster";
+	private static final String TAB_PROGRAM = Const.PACKAGE_NAME + ".tab_program";
 	private static final String TAB_STUDENT = Const.PACKAGE_NAME + ".tab_students";
-	private static final String TAB_ACTIVITIES = Const.PACKAGE_NAME + ".tab_activities";
+	private static final String TAB_ATTENDENCE = Const.PACKAGE_NAME + ".tab_attendence";
 	
 	private FragmentHelper mFmHelper;
 	private FragmentTabHost mTabHost;
@@ -39,11 +39,11 @@ public class MainActivity extends ActionBarActivity {
 		mTabHost.setup(this, getSupportFragmentManager(), android.R.id.tabcontent);
 
 		mTabHost.addTab(
-				mTabHost.newTabSpec(TAB_ROSTER).setIndicator(getString(R.string.tab_title_roster)),
+				mTabHost.newTabSpec(TAB_PROGRAM).setIndicator(getString(R.string.tab_title_program)),
 				DummyTabFragment.class, null);
 		mTabHost.addTab(mTabHost.newTabSpec(TAB_STUDENT).setIndicator(getString(R.string.tab_title_students)),
 				StudentsFragment.class, null);
-		mTabHost.addTab(mTabHost.newTabSpec(TAB_ACTIVITIES).setIndicator(getString(R.string.tab_title_activities)),
+		mTabHost.addTab(mTabHost.newTabSpec(TAB_ATTENDENCE).setIndicator(getString(R.string.tab_title_attendence)),
 				DummyTabFragment.class, null);
 	}
 

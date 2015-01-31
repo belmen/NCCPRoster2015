@@ -25,4 +25,10 @@
         android:textSize="16sp"
         android:text="@string/students_empty_text"
         android:visibility="invisible" />
+    
+    <FrameLayout
+        android:id="@+id/student_detail_fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="260dp" />
 </RelativeLayout>
