@@ -36,7 +36,7 @@
 	<!-- Main -->
 	<string name="tab_title_program">Program</string>
 	<string name="tab_title_students">Students</string>
-	<string name="tab_title_attendence">Attendence</string>
+	<string name="tab_title_attendence">Attendance</string>
 	
 	<!-- Students -->
 	<string name="action_search_students">Search students</string>

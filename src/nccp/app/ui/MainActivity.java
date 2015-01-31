@@ -22,7 +22,7 @@ public class MainActivity extends ActionBarActivity {
 
 	private static final String TAB_PROGRAM = Const.PACKAGE_NAME + ".tab_program";
 	private static final String TAB_STUDENT = Const.PACKAGE_NAME + ".tab_students";
-	private static final String TAB_ATTENDENCE = Const.PACKAGE_NAME + ".tab_attendence";
+	private static final String TAB_ATTENDANCE = Const.PACKAGE_NAME + ".tab_attendance";
 	
 	private FragmentHelper mFmHelper;
 	private FragmentTabHost mTabHost;
@@ -43,7 +43,7 @@ public class MainActivity extends ActionBarActivity {
 				DummyTabFragment.class, null);
 		mTabHost.addTab(mTabHost.newTabSpec(TAB_STUDENT).setIndicator(getString(R.string.tab_title_students)),
 				StudentsFragment.class, null);
-		mTabHost.addTab(mTabHost.newTabSpec(TAB_ATTENDENCE).setIndicator(getString(R.string.tab_title_attendence)),
+		mTabHost.addTab(mTabHost.newTabSpec(TAB_ATTENDANCE).setIndicator(getString(R.string.tab_title_attendence)),
 				DummyTabFragment.class, null);
 	}
 
