@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v4.app.FragmentTabHost xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:nccp="http://schemas.android.com/apk/res-auto"
     android:id="@android:id/tabhost"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
@@ -8,6 +9,15 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical" >
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/main_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/orange_bg"
+            android:minHeight="?attr/actionBarSize"
+            nccp:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+            nccp:title="@string/app_name" />
 
         <TabWidget
             android:id="@android:id/tabs"

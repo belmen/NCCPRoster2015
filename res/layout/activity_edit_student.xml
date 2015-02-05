@@ -1,95 +1,109 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/gray_bg" >
+    android:orientation="vertical" >
 
-    <LinearLayout
+    <android.support.v7.widget.Toolbar xmlns:nccp="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/edit_student_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="40dp" >
+        android:background="@color/orange_bg"
+        android:minHeight="?attr/actionBarSize"
+        nccp:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        nccp:title="@string/title_add_student" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/list_section_divider"
-            android:gravity="center_vertical"
-            android:paddingLeft="10dp"
-            android:text="@string/student_editor_personal_info"
-            android:textColor="@android:color/black"
-            android:textSize="16sp"
-            android:textStyle="bold" />
-
-        <EditText
-            android:id="@+id/student_editor_first_name_edit"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginTop="20dp"
-            android:hint="@string/student_editor_first_name"
-            android:inputType="text"
-            android:singleLine="true" />
-
-        <EditText
-            android:id="@+id/student_editor_last_name_edit"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginTop="20dp"
-            android:hint="@string/student_editor_last_name"
-            android:inputType="text"
-            android:singleLine="true" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="40dp"
-            android:background="@drawable/list_section_divider"
-            android:gravity="center_vertical"
-            android:paddingLeft="10dp"
-            android:text="@string/student_editor_school_info"
-            android:textColor="@android:color/black"
-            android:textSize="16sp"
-            android:textStyle="bold" />
-
-        <EditText
-            android:id="@+id/student_editor_id_edit"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginTop="20dp"
-            android:hint="@string/student_editor_id"
-            android:inputType="text"
-            android:singleLine="true" />
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/gray_bg" >
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_marginTop="20dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal" >
+            android:orientation="vertical"
+            android:padding="40dp" >
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="2dp"
-                android:layout_marginRight="10dp"
-                android:text="@string/student_editor_grade_level"
-                android:textSize="18sp" />
+                android:background="@drawable/list_section_divider"
+                android:gravity="center_vertical"
+                android:paddingLeft="10dp"
+                android:text="@string/student_editor_personal_info"
+                android:textColor="@android:color/black"
+                android:textSize="16sp"
+                android:textStyle="bold" />
 
-            <Spinner
-                android:id="@+id/student_editor_gradelevel_spinner"
-                android:layout_width="wrap_content"
+            <EditText
+                android:id="@+id/student_editor_first_name_edit"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="right"
-                android:minWidth="80dp" />
-        </LinearLayout>
-<!-- 
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="20dp"
+                android:hint="@string/student_editor_first_name"
+                android:inputType="text"
+                android:singleLine="true" />
+
+            <EditText
+                android:id="@+id/student_editor_last_name_edit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="20dp"
+                android:hint="@string/student_editor_last_name"
+                android:inputType="text"
+                android:singleLine="true" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="40dp"
+                android:background="@drawable/list_section_divider"
+                android:gravity="center_vertical"
+                android:paddingLeft="10dp"
+                android:text="@string/student_editor_school_info"
+                android:textColor="@android:color/black"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/student_editor_id_edit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="20dp"
+                android:hint="@string/student_editor_id"
+                android:inputType="text"
+                android:singleLine="true" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="20dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginRight="10dp"
+                    android:text="@string/student_editor_grade_level"
+                    android:textSize="18sp" />
+
+                <Spinner
+                    android:id="@+id/student_editor_gradelevel_spinner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="right"
+                    android:minWidth="80dp" />
+            </LinearLayout>
+            <!--
         <EditText
             android:id="@+id/student_editor_site_edit"
             android:layout_width="match_parent"
@@ -177,8 +191,8 @@
             android:layout_marginTop="20dp"
             android:hint="@string/student_editor_emergency_contact_relationship"
             android:inputType="text"
-            android:singleLine="true" />
-             -->
-    </LinearLayout>
+            android:singleLine="true" />            -->
+        </LinearLayout>
+    </ScrollView>
 
-</ScrollView>
+</LinearLayout>

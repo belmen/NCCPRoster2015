@@ -18,22 +18,21 @@
             android:screenOrientation="portrait">
             
         </activity>
-        <activity android:name="nccp.app.ui.ChooseDBActivity" android:screenOrientation="portrait"
-            android:theme="@style/ActionBarThemeDark" />
+        <activity android:name="nccp.app.ui.ChooseDBActivity" android:screenOrientation="portrait" />
         <activity android:name="nccp.app.ui.RegisterActivity" android:screenOrientation="portrait"
-            android:theme="@style/ActionBarThemeDark" android:parentActivityName="nccp.app.ui.LoginActivity">
+            android:parentActivityName="nccp.app.ui.LoginActivity">
             <meta-data
 	            android:name="android.support.PARENT_ACTIVITY"
 	            android:value="nccp.app.ui.LoginActivity" />
         </activity>
-        <activity android:name="nccp.app.ui.MainActivity" android:theme="@style/ActionBarTheme"/>
+        <activity android:name="nccp.app.ui.MainActivity"/>
         <activity android:name="nccp.app.ui.SkipLoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name="nccp.app.ui.EditStudentActivity" android:theme="@style/ActionBarTheme"/>
+        <activity android:name="nccp.app.ui.EditStudentActivity"/>
     </application>
 
 </manifest>

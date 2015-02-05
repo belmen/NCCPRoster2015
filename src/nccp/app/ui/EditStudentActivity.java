@@ -5,8 +5,8 @@ import nccp.app.bean.Student;
 import nccp.app.utils.Const;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
@@ -37,7 +37,7 @@ public class EditStudentActivity extends ActionBarActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_edit_student);
 		initViews();
-		initActionBar();
+		initToolbar();
 		initData();
 	}
 	
@@ -70,10 +70,11 @@ public class EditStudentActivity extends ActionBarActivity {
 		mSpGradeLevel.setAdapter(adapter);
 	}
 
-	private void initActionBar() {
-		final ActionBar ab = getSupportActionBar();
-		ab.setTitle(R.string.title_add_student);
-		ab.setDisplayHomeAsUpEnabled(true);
+	private void initToolbar() {
+		Toolbar tb = (Toolbar) findViewById(R.id.edit_student_toolbar);
+		setSupportActionBar(tb);
+		
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 	}
 
 	private void initData() {

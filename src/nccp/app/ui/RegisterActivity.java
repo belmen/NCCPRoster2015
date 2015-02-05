@@ -9,9 +9,9 @@ import nccp.app.utils.Logger;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.View.OnFocusChangeListener;
-import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -39,8 +39,8 @@ public class RegisterActivity extends ActionBarActivity {
 		super.onCreate(savedInstanceState);
 //		supportRequestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		setContentView(R.layout.register_activity);
-		getSupportActionBar().setTitle(R.string.title_register_account);
-		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		initToolbar();
+//		getSupportActionBar().setTitle(R.string.title_register_account);
 //		setBannerTitle(R.string.title_register_account);
 		initViews();
 	}
@@ -72,6 +72,13 @@ public class RegisterActivity extends ActionBarActivity {
 		String password = mEtPassword.getText().toString();
 		
 		doRegister(database, username, password);
+	}
+
+	private void initToolbar() {
+		Toolbar tb = (Toolbar) findViewById(R.id.register_toolbar);
+		setSupportActionBar(tb);
+		
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 	}
 
 	private void initViews() {

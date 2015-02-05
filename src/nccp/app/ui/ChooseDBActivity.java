@@ -9,6 +9,7 @@ import nccp.app.utils.Const;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -26,11 +27,18 @@ public class ChooseDBActivity extends ActionBarActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.choose_db_activity);
-		getSupportActionBar().setTitle(R.string.title_choose_db);
-		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		
+		initToolbar();
 		initViews();
 		
 		showDatabase();
+	}
+
+	private void initToolbar() {
+		Toolbar tb = (Toolbar) findViewById(R.id.choose_db_toolbar);
+		setSupportActionBar(tb);
+		
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 	}
 
 	private void initViews() {
