@@ -12,6 +12,7 @@ import android.text.Html;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.CheckedTextView;
 import android.widget.TextView;
 
 public class StudentAdapter extends BaseExpandableListAdapter {

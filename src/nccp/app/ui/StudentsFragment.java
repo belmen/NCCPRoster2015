@@ -32,7 +32,6 @@ import android.view.ViewGroup;
 import android.widget.ExpandableListView;
 import android.widget.ExpandableListView.OnChildClickListener;
 import android.widget.ExpandableListView.OnGroupClickListener;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 
 import com.parse.FindCallback;
@@ -48,7 +47,7 @@ public class StudentsFragment extends Fragment implements OnQueryTextListener, O
 	private static final String STATE_STUDENTS_DATA = Const.PACKAGE_NAME + ".state.students.data";
 	
 	private static final int REQUEST_ADD_STUDENT = 0;
-	private static final int REQUEST_EDIT_STUDENT = 0;
+	private static final int REQUEST_EDIT_STUDENT = 1;
 
 	// Views
 	private ExpandableListView mLvStudents;
@@ -59,7 +58,8 @@ public class StudentsFragment extends Fragment implements OnQueryTextListener, O
 	// Data
 	private boolean mFirst = true;
 	private List<Student> mStudents = null;
-	private long mSelectedPosition = -1;
+//	private long mSelectedPosition = -1;
+	private Student mSelectedStudent = null;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -73,9 +73,9 @@ public class StudentsFragment extends Fragment implements OnQueryTextListener, O
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 //		Logger.i(TAG, TAG + " onCreateView");
-		View v = inflater.inflate(R.layout.fragment_roster, container, false);
+		View v = inflater.inflate(R.layout.fragment_students, container, false);
 		mLvStudents = (ExpandableListView) v.findViewById(R.id.students_listview);
-		mLvStudents.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+//		mLvStudents.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 		mLvStudents.setOnGroupClickListener(mOnGroupClickListener);
 		mLvStudents.setOnChildClickListener(mOnChildClickListener);
 		View emptyView = v.findViewById(R.id.students_empty_text);
@@ -248,6 +248,9 @@ public class StudentsFragment extends Fragment implements OnQueryTextListener, O
 //		});
 	}
 
+	private boolean isDrawerOpen() {
+		return mSelectedStudent != null;
+	}
 	
 	private OnGroupClickListener mOnGroupClickListener = new OnGroupClickListener() {
 		@Override
@@ -262,20 +265,42 @@ public class StudentsFragment extends Fragment implements OnQueryTextListener, O
 		@Override
 		public boolean onChildClick(ExpandableListView parent, View v,
 				int groupPosition, int childPosition, long id) {
-			long position = ExpandableListView.getPackedPositionForChild(groupPosition, childPosition);
-			if(mSelectedPosition != position) {
-				mSelectedPosition = position;
-				Student item = (Student) mAdapter.getChild(groupPosition, childPosition);
-				FragmentTransaction trans = getChildFragmentManager().beginTransaction();
-				trans.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right)
-				.show(mStudentDetailFragment).commit();
-				mStudentDetailFragment.setStudent(item);
+			int position = parent.getFlatListPosition(
+					ExpandableListView.getPackedPositionForChild(groupPosition, childPosition));
+			Student item = (Student) mAdapter.getChild(groupPosition, childPosition);
+			if(mSelectedStudent == null
+			|| !mSelectedStudent.getParseObjectId().equals(item.getParseObjectId())) {
+				if(mSelectedStudent == null) {
+					FragmentTransaction trans = getChildFragmentManager().beginTransaction();
+					trans.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right)
+					.show(mStudentDetailFragment).commit();
+				}
+				mSelectedStudent = item;
+				mStudentDetailFragment.setStudent(mSelectedStudent);
+//				v.setSelected(true);
+				parent.setItemChecked((int) position, true);
 			} else {
-				mSelectedPosition = -1;
+				mSelectedStudent = null;
 				FragmentTransaction trans = getChildFragmentManager().beginTransaction();
 				trans.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right)
 				.hide(mStudentDetailFragment).commit();
+//				v.setSelected(false);
+				parent.setItemChecked((int) position, false);
 			}
+			
+//			if(mSelectedPosition != position) {
+//				mSelectedPosition = position;
+//				Student item = (Student) mAdapter.getChild(groupPosition, childPosition);
+//				FragmentTransaction trans = getChildFragmentManager().beginTransaction();
+//				trans.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right)
+//				.show(mStudentDetailFragment).commit();
+//				mStudentDetailFragment.setStudent(item);
+//			} else {
+//				mSelectedPosition = -1;
+//				FragmentTransaction trans = getChildFragmentManager().beginTransaction();
+//				trans.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right)
+//				.hide(mStudentDetailFragment).commit();
+//			}
 			return true;
 		}
 	};

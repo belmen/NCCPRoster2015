@@ -39,6 +39,7 @@
 	<string name="tab_title_attendence">Attendance</string>
 	
 	<!-- Students -->
+	<string name="title_students">Students</string>
 	<string name="action_search_students">Search students</string>
 	<string name="action_add_student">Add Student</string>
 	<string name="action_edit_student">Edit</string>

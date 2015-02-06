@@ -11,4 +11,5 @@
     <color name="blue_text">#00aeed</color>
     <color name="gray_bg">#eeeeee</color>
     <color name="blue_text_highlight">#33b5e5</color>
+    <color name="item_checked_bg">#7f00aeed</color>
 </resources>
