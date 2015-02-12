@@ -15,8 +15,10 @@ import nccp.app.bean.Student;
 import nccp.app.utils.Const;
 import nccp.app.utils.Logger;
 import nccp.app.utils.ParseBeanUtil;
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.MenuItemCompat;
@@ -60,6 +62,7 @@ public class StudentsFragment extends Fragment implements OnQueryTextListener, O
 	private List<Student> mStudents = null;
 //	private long mSelectedPosition = -1;
 	private Student mSelectedStudent = null;
+	private int mHighlightPosition = -1;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -75,7 +78,6 @@ public class StudentsFragment extends Fragment implements OnQueryTextListener, O
 //		Logger.i(TAG, TAG + " onCreateView");
 		View v = inflater.inflate(R.layout.fragment_students, container, false);
 		mLvStudents = (ExpandableListView) v.findViewById(R.id.students_listview);
-//		mLvStudents.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 		mLvStudents.setOnGroupClickListener(mOnGroupClickListener);
 		mLvStudents.setOnChildClickListener(mOnChildClickListener);
 		View emptyView = v.findViewById(R.id.students_empty_text);
@@ -114,6 +116,9 @@ public class StudentsFragment extends Fragment implements OnQueryTextListener, O
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		inflater.inflate(R.menu.student_fragment_menu, menu);
+		if(isDetailOpen()) {
+			inflater.inflate(R.menu.student_fragment_menu_edit, menu);
+		}
 		// Add search action
 		MenuItem item = menu.findItem(R.id.action_search_student);
 		SearchView sv = (SearchView) MenuItemCompat.getActionView(item);
@@ -142,6 +147,32 @@ public class StudentsFragment extends Fragment implements OnQueryTextListener, O
 		if(mStudents != null) {
 			outState.putBoolean(STATE_STUDENTS_FIRST, mFirst);
 			outState.putSerializable(STATE_STUDENTS_DATA, (Serializable) mStudents);
+		}
+	}
+
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		if(requestCode == REQUEST_ADD_STUDENT) { // Handle add student
+			if(resultCode == Activity.RESULT_OK) {
+				Student student = null;
+				if(data != null) {
+					student = (Student) data.getSerializableExtra(Const.EXTRA_STUDENT);
+				}
+				if(student != null) {
+					handleStudentAdded(student);
+				}
+			}
+		} else if(requestCode == REQUEST_EDIT_STUDENT) { // Handle edit student
+			if(resultCode == Activity.RESULT_OK) {
+				Student student = null;
+				if(data != null) {
+					student = (Student) data.getSerializableExtra(Const.EXTRA_STUDENT);
+				}
+				if(student != null) {
+					handleStudentUpdated(student);
+				}
+			}
 		}
 	}
 
@@ -224,8 +255,12 @@ public class StudentsFragment extends Fragment implements OnQueryTextListener, O
 	}
 
 	private void handleEditStudent() {
-		// TODO Auto-generated method stub
-		
+		if(mSelectedStudent == null) {
+			return;
+		}
+		Intent intent = new Intent(getActivity(), EditStudentActivity.class);
+		intent.putExtra(Const.EXTRA_STUDENT, mSelectedStudent);
+		startActivityForResult(intent, REQUEST_EDIT_STUDENT);
 	}
 
 	private void handleAddStudent() {
@@ -248,10 +283,75 @@ public class StudentsFragment extends Fragment implements OnQueryTextListener, O
 //		});
 	}
 
-	private boolean isDrawerOpen() {
+	private boolean isDetailOpen() {
 		return mSelectedStudent != null;
 	}
 	
+	private void closeDetail() {
+		mSelectedStudent = null;
+		FragmentTransaction trans = getChildFragmentManager().beginTransaction();
+		trans.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right)
+		.hide(mStudentDetailFragment).commit();
+		
+		// Update menu
+		ActivityCompat.invalidateOptionsMenu(getActivity());
+	}
+	
+	private void handleStudentAdded(Student student) {
+		if(mStudents == null) {
+			mStudents = new ArrayList<Student>();
+		}
+		mStudents.add(student);
+		// Update student list
+		showList(mStudents);
+		// Close detail and cancle highlight
+		if(isDetailOpen()) {
+			closeDetail();
+			mLvStudents.setItemChecked(mHighlightPosition, false);
+			mHighlightPosition = -1;
+		}
+	}
+
+	private void handleStudentUpdated(Student updatedStudent) {
+		if(mStudents == null) {
+			handleStudentAdded(updatedStudent);
+		}
+		int i;
+		for(i = 0; i < mStudents.size(); ++i) {
+			Student s = mStudents.get(i);
+			if(s.getParseObjectId().equals(updatedStudent.getParseObjectId())) {
+				break;
+			}
+		}
+		if(i < mStudents.size()) {
+			mStudents.remove(i);
+			mStudents.add(updatedStudent);
+			// Update student list
+			showList(mStudents);
+			// Update detail panel
+			mSelectedStudent = updatedStudent;
+			mStudentDetailFragment.setStudent(mSelectedStudent);
+			// Update highlight position
+			updateHighlightPosition();
+		}
+	}
+	
+	private void updateHighlightPosition() {
+		if(mSelectedStudent == null) {
+			return;
+		}
+		long position = mAdapter.getStudentPosition(mSelectedStudent);
+		if(position != -1) {
+			int highlightPosition = mLvStudents.getFlatListPosition(position);
+			if(mHighlightPosition != -1 && mHighlightPosition != highlightPosition) {
+				mLvStudents.setItemChecked(mHighlightPosition, false);
+			}
+			mLvStudents.setItemChecked(highlightPosition, true);
+			mHighlightPosition = highlightPosition;
+			mLvStudents.setSelection(highlightPosition); // Scroll to new highlight position
+		}
+	}
+
 	private OnGroupClickListener mOnGroupClickListener = new OnGroupClickListener() {
 		@Override
 		public boolean onGroupClick(ExpandableListView parent, View v,
@@ -265,27 +365,28 @@ public class StudentsFragment extends Fragment implements OnQueryTextListener, O
 		@Override
 		public boolean onChildClick(ExpandableListView parent, View v,
 				int groupPosition, int childPosition, long id) {
-			int position = parent.getFlatListPosition(
+			int flatPosition = parent.getFlatListPosition(
 					ExpandableListView.getPackedPositionForChild(groupPosition, childPosition));
 			Student item = (Student) mAdapter.getChild(groupPosition, childPosition);
-			if(mSelectedStudent == null
+			if(!isDetailOpen()
 			|| !mSelectedStudent.getParseObjectId().equals(item.getParseObjectId())) {
-				if(mSelectedStudent == null) {
+				if(!isDetailOpen()) {
 					FragmentTransaction trans = getChildFragmentManager().beginTransaction();
 					trans.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right)
 					.show(mStudentDetailFragment).commit();
+					// Update menu
+					ActivityCompat.invalidateOptionsMenu(getActivity());
 				}
 				mSelectedStudent = item;
 				mStudentDetailFragment.setStudent(mSelectedStudent);
-//				v.setSelected(true);
-				parent.setItemChecked((int) position, true);
+				// Highlight list item
+				parent.setItemChecked(flatPosition, true);
+				mHighlightPosition = flatPosition;
 			} else {
-				mSelectedStudent = null;
-				FragmentTransaction trans = getChildFragmentManager().beginTransaction();
-				trans.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right)
-				.hide(mStudentDetailFragment).commit();
-//				v.setSelected(false);
-				parent.setItemChecked((int) position, false);
+				// Cancel list item highlight
+				parent.setItemChecked(flatPosition, false);
+				mHighlightPosition = -1;
+				closeDetail();
 			}
 			
 //			if(mSelectedPosition != position) {

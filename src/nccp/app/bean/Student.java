@@ -25,16 +25,16 @@ public class Student extends ParseBean {
 	public static final String TAG_EMERGENCY_CONTACT_PHONE = "emergencyContactPhone";
 	public static final String TAG_EMERGENCY_CONTACT_RELATIONSHIP = "emergencyContactRelationship";
 	
-	private String firstName;
-	private String lastName;
-	private String studentId;
-	private int gradeLevel;
-	private String site;
-	private String program;
-	private String address;
-	private String emergencyContactName;
-	private String emergencyContactPhone;
-	private String emergencyContactRelationship;
+	private String firstName = "";
+	private String lastName = "";
+	private String studentId = "";
+	private int gradeLevel = 1;
+//	private String site = "";
+//	private String program = "";
+//	private String address = "";
+//	private String emergencyContactName = "";
+//	private String emergencyContactPhone = "";
+//	private String emergencyContactRelationship = "";
 	
 	public String getFirstName() {
 		return firstName;
@@ -67,7 +67,7 @@ public class Student extends ParseBean {
 	public void setGradeLevel(int gradeLevel) {
 		this.gradeLevel = gradeLevel;
 	}
-
+/*
 	public String getSite() {
 		return site;
 	}
@@ -115,7 +115,7 @@ public class Student extends ParseBean {
 	public void setEmergencyContactRelationship(String emergencyContactRelationship) {
 		this.emergencyContactRelationship = emergencyContactRelationship;
 	}
-
+*/
 	public String getFirstNameInitial() {
 		if(firstName != null && firstName.length() > 0) {
 			return firstName.substring(0, 1).toUpperCase(Locale.US);
@@ -142,12 +142,12 @@ public class Student extends ParseBean {
 		student.setLastName(obj.getString(Student.TAG_LAST_NAME));
 		student.setStudentId(obj.getString(Student.TAG_STUDENT_ID));
 		student.setGradeLevel(obj.getInt(Student.TAG_GRADE_LEVEL));
-		student.setSite(obj.getString(Student.TAG_SITE));
-		student.setProgram(obj.getString(Student.TAG_PROGRAM));
-		student.setAddress(obj.getString(Student.TAG_ADDRESS));
-		student.setEmergencyContactName(obj.getString(Student.TAG_EMERGENCY_CONTACT_NAME));
-		student.setEmergencyContactPhone(obj.getString(Student.TAG_EMERGENCY_CONTACT_PHONE));
-		student.setEmergencyContactRelationship(obj.getString(Student.TAG_EMERGENCY_CONTACT_RELATIONSHIP));
+//		student.setSite(obj.getString(Student.TAG_SITE));
+//		student.setProgram(obj.getString(Student.TAG_PROGRAM));
+//		student.setAddress(obj.getString(Student.TAG_ADDRESS));
+//		student.setEmergencyContactName(obj.getString(Student.TAG_EMERGENCY_CONTACT_NAME));
+//		student.setEmergencyContactPhone(obj.getString(Student.TAG_EMERGENCY_CONTACT_PHONE));
+//		student.setEmergencyContactRelationship(obj.getString(Student.TAG_EMERGENCY_CONTACT_RELATIONSHIP));
 		return student;
 	}
 	
@@ -163,12 +163,12 @@ public class Student extends ParseBean {
 		parse.put(Student.TAG_LAST_NAME, bean.getLastName());
 		parse.put(Student.TAG_STUDENT_ID, bean.getStudentId());
 		parse.put(Student.TAG_GRADE_LEVEL, bean.getGradeLevel());
-		parse.put(Student.TAG_SITE, bean.getSite());
-		parse.put(Student.TAG_PROGRAM, bean.getProgram());
-		parse.put(Student.TAG_ADDRESS, bean.getAddress());
-		parse.put(Student.TAG_EMERGENCY_CONTACT_NAME, bean.getEmergencyContactName());
-		parse.put(Student.TAG_EMERGENCY_CONTACT_PHONE, bean.getEmergencyContactPhone());
-		parse.put(Student.TAG_EMERGENCY_CONTACT_RELATIONSHIP, bean.getEmergencyContactRelationship());
+//		parse.put(Student.TAG_SITE, bean.getSite());
+//		parse.put(Student.TAG_PROGRAM, bean.getProgram());
+//		parse.put(Student.TAG_ADDRESS, bean.getAddress());
+//		parse.put(Student.TAG_EMERGENCY_CONTACT_NAME, bean.getEmergencyContactName());
+//		parse.put(Student.TAG_EMERGENCY_CONTACT_PHONE, bean.getEmergencyContactPhone());
+//		parse.put(Student.TAG_EMERGENCY_CONTACT_RELATIONSHIP, bean.getEmergencyContactRelationship());
 		return parse;
 	}
 }

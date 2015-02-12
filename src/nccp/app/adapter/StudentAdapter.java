@@ -6,13 +6,12 @@ import java.util.Map;
 
 import nccp.app.R;
 import nccp.app.bean.Student;
-import nccp.app.utils.Logger;
 import android.content.Context;
 import android.text.Html;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
-import android.widget.CheckedTextView;
+import android.widget.ExpandableListView;
 import android.widget.TextView;
 
 public class StudentAdapter extends BaseExpandableListAdapter {
@@ -152,5 +151,20 @@ public class StudentAdapter extends BaseExpandableListAdapter {
 		} else {
 			return text;
 		}
+	}
+	
+	public long getStudentPosition(Student student) {
+		String initial = student.getFirstNameInitial();
+		int groupPosition = mInitials.indexOf(initial);
+		if(groupPosition != -1) {
+			List<Student> students = mData.get(initial);
+			if(students != null) {
+				int childPosition = students.indexOf(student);
+				if(childPosition != -1) {
+					return ExpandableListView.getPackedPositionForChild(groupPosition, childPosition);
+				}
+			}
+		}
+		return -1;
 	}
 }

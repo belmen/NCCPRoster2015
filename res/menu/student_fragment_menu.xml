@@ -13,10 +13,6 @@
         android:icon="@drawable/ic_menu_add_student"
         android:title="@string/action_add_student"
         nccp:showAsAction="ifRoom|collapseActionView"/>
-    <item android:id="@+id/action_edit_student"
-        android:icon="@drawable/ic_menu_edit"
-        android:title="@string/action_edit_student"
-        nccp:showAsAction="ifRoom|collapseActionView"/>
     <item
         android:id="@+id/action_convert"
         android:title="Convert"/>

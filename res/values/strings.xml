@@ -54,6 +54,7 @@
 	
 	<!-- Add student -->
 	<string name="title_add_student">New student</string>
+	<string name="title_edit_student">Edit student</string>
 	<string name="student_editor_personal_info">PERSONAL INFORMATION</string>
 	<string name="student_editor_school_info">SCHOOL INFORMATION</string>
 	<string name="student_editor_emergency_contact">EMERGENCY CONTACT</string>
@@ -69,4 +70,6 @@
 	<string name="student_editor_emergency_contact_phone">Contact phone</string>
 	<string name="student_editor_emergency_contact_relationship">Contact relationship</string>
 	<string name="menu_student_editor_done">Done</string>
+	<string name="student_editor_error_id_empty">Student ID is empty</string>
+	<string name="student_editor_error_firstname_empty">Must have a first name</string>
 </resources>
