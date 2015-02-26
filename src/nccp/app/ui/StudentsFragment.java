@@ -16,12 +16,16 @@ import nccp.app.utils.Const;
 import nccp.app.utils.Logger;
 import nccp.app.utils.ParseBeanUtil;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v4.view.MenuItemCompat.OnActionExpandListener;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.SearchView.OnCloseListener;
 import android.support.v7.widget.SearchView.OnQueryTextListener;
@@ -34,9 +38,8 @@ import android.view.ViewGroup;
 import android.widget.ExpandableListView;
 import android.widget.ExpandableListView.OnChildClickListener;
 import android.widget.ExpandableListView.OnGroupClickListener;
-import android.widget.ProgressBar;
+import android.widget.Toast;
 
-import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
@@ -47,29 +50,52 @@ public class StudentsFragment extends Fragment implements OnQueryTextListener, O
 	
 	private static final String STATE_STUDENTS_FIRST = Const.PACKAGE_NAME + ".state.students.first";
 	private static final String STATE_STUDENTS_DATA = Const.PACKAGE_NAME + ".state.students.data";
+	private static final String STATE_SELECTED_STUDENT = Const.PACKAGE_NAME + ".state.students.selected_student";
+	private static final String STATE_HIGHLIGHT_POSITION = Const.PACKAGE_NAME + ".state.students.highlight_position";
 	
 	private static final int REQUEST_ADD_STUDENT = 0;
 	private static final int REQUEST_EDIT_STUDENT = 1;
 
+	private FragmentCallback mCallback = null;
+	
 	// Views
 	private ExpandableListView mLvStudents;
-	private ProgressBar mProgressBar;
+//	private ProgressBar mProgressBar;
 	private StudentDetailFragment mStudentDetailFragment;
 	// Adapter
 	private StudentAdapter mAdapter = null;
 	// Data
 	private boolean mFirst = true;
 	private List<Student> mStudents = null;
-//	private long mSelectedPosition = -1;
 	private Student mSelectedStudent = null;
 	private int mHighlightPosition = -1;
 	
 	@Override
+	public void onAttach(Activity activity) {
+		super.onAttach(activity);
+		try {
+			mCallback = (FragmentCallback) activity;
+		} catch(ClassCastException e) {
+		}
+	}
+
+	@Override
 	public void onCreate(Bundle savedInstanceState) {
-//		Logger.i(TAG, TAG + " onCreate");
+		Logger.i(TAG, TAG + " onCreate");
 		super.onCreate(savedInstanceState);
 		mAdapter = new StudentAdapter(getActivity());
+		
 		mStudentDetailFragment = new StudentDetailFragment();
+		getChildFragmentManager().beginTransaction()
+				.replace(R.id.student_detail_fragment_container, mStudentDetailFragment).commit();
+		
+		if(savedInstanceState != null) {
+			Logger.i(TAG, TAG + " savedInstanceState not null");
+			mFirst = savedInstanceState.getBoolean(STATE_STUDENTS_FIRST);
+			mStudents = (List<Student>) savedInstanceState.getSerializable(STATE_STUDENTS_DATA);
+			mSelectedStudent = (Student) savedInstanceState.getSerializable(STATE_SELECTED_STUDENT);
+			mHighlightPosition = savedInstanceState.getInt(STATE_HIGHLIGHT_POSITION, -1);
+		}
 	}
 
 	@Override
@@ -83,14 +109,7 @@ public class StudentsFragment extends Fragment implements OnQueryTextListener, O
 		View emptyView = v.findViewById(R.id.students_empty_text);
 		mLvStudents.setEmptyView(emptyView);
 		mLvStudents.setAdapter(mAdapter);
-		mProgressBar = (ProgressBar) v.findViewById(R.id.students_progress);
-
-		// Init and hide detail fragment
-		if(!mStudentDetailFragment.isAdded()) {
-			FragmentTransaction trans = getChildFragmentManager().beginTransaction();
-			trans.add(R.id.student_detail_fragment_container, mStudentDetailFragment)
-			.hide(mStudentDetailFragment).commit();
-		}
+//		mProgressBar = (ProgressBar) v.findViewById(R.id.students_progress);
 		return v;
 	}
 
@@ -99,20 +118,20 @@ public class StudentsFragment extends Fragment implements OnQueryTextListener, O
 //		Logger.i(TAG, TAG + " onActivityCreated");
 		super.onActivityCreated(savedInstanceState);
 		setHasOptionsMenu(true);
-		if(savedInstanceState != null) {
-//			Logger.i(TAG, TAG + " savedInstanceState not null");
-			mFirst = savedInstanceState.getBoolean(STATE_STUDENTS_FIRST);
-			mStudents = (List<Student>) savedInstanceState.getSerializable(STATE_STUDENTS_DATA);
-			showList(mStudents);
+		
+		showList(mStudents);
+		if(mSelectedStudent != null) {
+			mStudentDetailFragment.setStudent(mSelectedStudent);
 		} else {
-//			Logger.i(TAG, TAG + " savedInstanceState is null");
-			if(mFirst) {
-				mFirst = false;
-				refreshList();
-			}
+			getChildFragmentManager().beginTransaction().hide(mStudentDetailFragment)
+			.commit();
+		}
+		if(mFirst) {
+			mFirst = false;
+			refreshList();
 		}
 	}
-	
+
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		inflater.inflate(R.menu.student_fragment_menu, menu);
@@ -123,8 +142,23 @@ public class StudentsFragment extends Fragment implements OnQueryTextListener, O
 		MenuItem item = menu.findItem(R.id.action_search_student);
 		SearchView sv = (SearchView) MenuItemCompat.getActionView(item);
 		sv.setOnQueryTextListener(this);
+//		sv.setOnCloseListener(this);
 		sv.setQueryHint(getString(R.string.students_search_hint));
 		MenuItemCompat.setActionView(item, sv);
+//		MenuItemCompat.setOnActionExpandListener(item, new OnActionExpandListener() {
+//			@Override
+//			public boolean onMenuItemActionExpand(MenuItem arg0) {
+//				return true;
+//			}
+//			
+//			@Override
+//			public boolean onMenuItemActionCollapse(MenuItem arg0) {
+//				if(mCallback != null) {
+//					mCallback.showProgress(false);
+//				}
+//				return true;
+//			}
+//		});
 	}
 
 	@Override
@@ -134,7 +168,9 @@ public class StudentsFragment extends Fragment implements OnQueryTextListener, O
 			handleAddStudent();
 		} else if(id == R.id.action_edit_student) {
 			handleEditStudent();
-		} else if(id == R.id.action_convert) {
+		} else if(id == R.id.action_remove_student) {
+			handleRemoveStudent();
+		}else if(id == R.id.action_convert) {
 //			convertStudents();
 			return true;
 		}
@@ -144,10 +180,16 @@ public class StudentsFragment extends Fragment implements OnQueryTextListener, O
 	@Override
 	public void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
+		outState.putBoolean(STATE_STUDENTS_FIRST, mFirst);
 		if(mStudents != null) {
-			outState.putBoolean(STATE_STUDENTS_FIRST, mFirst);
 			outState.putSerializable(STATE_STUDENTS_DATA, (Serializable) mStudents);
 		}
+		if(mSelectedStudent != null) {
+			outState.putSerializable(STATE_SELECTED_STUDENT, mSelectedStudent);
+		}
+		outState.putInt(STATE_HIGHLIGHT_POSITION, mHighlightPosition);
+		// Save detail fragment
+//		getChildFragmentManager().putFragment(outState, STATE_DETAIL_FRAGMENT, mStudentDetailFragment);
 	}
 
 	@Override
@@ -177,20 +219,7 @@ public class StudentsFragment extends Fragment implements OnQueryTextListener, O
 	}
 
 	private void refreshList() {
-		mProgressBar.setVisibility(View.VISIBLE);
-		ParseQuery<ParseObject> query = ParseQuery.getQuery(Student.TAG_OBJECT);
-		query.findInBackground(new FindCallback<ParseObject>() {
-			@Override
-			public void done(List<ParseObject> data, ParseException e) {
-				mProgressBar.setVisibility(View.INVISIBLE);
-				if(e == null) {
-					mStudents = ParseBeanUtil.fromParseObjects(data, Student.class);
-					showList(mStudents);
-				} else {
-					Logger.e(TAG, e.getMessage());
-				}
-			}
-		});
+		new GetStudentsTask().execute();
 //		ParseQuery<ParseObject> query = ParseQuery.getQuery("Student");
 //		query.findInBackground(new FindCallback<ParseObject>() {
 //			@Override
@@ -268,6 +297,26 @@ public class StudentsFragment extends Fragment implements OnQueryTextListener, O
 		startActivityForResult(intent, REQUEST_ADD_STUDENT);
 	}
 	
+	private void handleRemoveStudent() {
+		if(mSelectedStudent == null) {
+			return;
+		}
+		new AlertDialog.Builder(getActivity())
+		.setTitle(R.string.dialog_title_remove_student)
+		.setMessage(getString(R.string.dialog_msg_remove_student, mSelectedStudent.getFullName()))
+		.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				doRemoveStudent(mSelectedStudent);
+			}
+		}).setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				return;
+			}
+		}).show();
+	}
+
 	// Convert student 
 	private void convertStudents() {
 //		if(mStudents == null) {
@@ -283,6 +332,10 @@ public class StudentsFragment extends Fragment implements OnQueryTextListener, O
 //		});
 	}
 
+	private void doRemoveStudent(Student student) {
+		new RemoveStudentTask(student).execute();
+	}
+	
 	private boolean isDetailOpen() {
 		return mSelectedStudent != null;
 	}
@@ -291,17 +344,17 @@ public class StudentsFragment extends Fragment implements OnQueryTextListener, O
 		mSelectedStudent = null;
 		FragmentTransaction trans = getChildFragmentManager().beginTransaction();
 		trans.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right)
-		.hide(mStudentDetailFragment).commit();
+		.hide(mStudentDetailFragment).commitAllowingStateLoss();
 		
 		// Update menu
 		ActivityCompat.invalidateOptionsMenu(getActivity());
 	}
 	
-	private void handleStudentAdded(Student student) {
+	private void handleStudentAdded(Student newStudent) {
 		if(mStudents == null) {
 			mStudents = new ArrayList<Student>();
 		}
-		mStudents.add(student);
+		mStudents.add(newStudent);
 		// Update student list
 		showList(mStudents);
 		// Close detail and cancle highlight
@@ -309,6 +362,12 @@ public class StudentsFragment extends Fragment implements OnQueryTextListener, O
 			closeDetail();
 			mLvStudents.setItemChecked(mHighlightPosition, false);
 			mHighlightPosition = -1;
+		}
+		// Scroll to new student's position
+		long position = mAdapter.getStudentPosition(newStudent);
+		if(position != -1) {
+			int highlightPosition = mLvStudents.getFlatListPosition(position);
+			mLvStudents.setSelection(highlightPosition);
 		}
 	}
 
@@ -334,6 +393,17 @@ public class StudentsFragment extends Fragment implements OnQueryTextListener, O
 			// Update highlight position
 			updateHighlightPosition();
 		}
+	}
+	
+	private void handleStudentRemoved(Student removedStudent) {
+		if(mHighlightPosition != -1) { // Cancel highlight
+			mLvStudents.setItemChecked(mHighlightPosition, false);
+			mHighlightPosition = -1;
+		}
+		closeDetail();
+		// Refresh student list
+		mStudents.remove(removedStudent);
+		showList(mStudents);
 	}
 	
 	private void updateHighlightPosition() {
@@ -368,8 +438,9 @@ public class StudentsFragment extends Fragment implements OnQueryTextListener, O
 			int flatPosition = parent.getFlatListPosition(
 					ExpandableListView.getPackedPositionForChild(groupPosition, childPosition));
 			Student item = (Student) mAdapter.getChild(groupPosition, childPosition);
-			if(!isDetailOpen()
-			|| !mSelectedStudent.getParseObjectId().equals(item.getParseObjectId())) {
+			if(mSelectedStudent == null
+			|| (mSelectedStudent.getParseObjectId() != null
+				&& !mSelectedStudent.getParseObjectId().equals(item.getParseObjectId()))) {
 				if(!isDetailOpen()) {
 					FragmentTransaction trans = getChildFragmentManager().beginTransaction();
 					trans.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right)
@@ -440,8 +511,88 @@ public class StudentsFragment extends Fragment implements OnQueryTextListener, O
 
 	@Override
 	public boolean onClose() {
+		Logger.i(TAG, "StudentsFragment onClose");
 		mAdapter.setHighlight("");
 		showList(mStudents);
 		return true;
+	}
+	
+	public class GetStudentsTask extends AsyncTask<Void, Void, List<ParseObject>> {
+
+		private ParseException e;
+		
+		@Override
+		protected void onPreExecute() {
+			if(mCallback != null) {
+				mCallback.showProgress(true);
+			}
+		}
+
+		@Override
+		protected List<ParseObject> doInBackground(Void... params) {
+			ParseQuery<ParseObject> query = ParseQuery.getQuery(Student.TAG_OBJECT);
+			List<ParseObject> result = null;
+			try {
+				result = query.find();
+			} catch (ParseException e) {
+				this.e = e;
+			}
+			return result;
+		}
+
+		@Override
+		protected void onPostExecute(List<ParseObject> result) {
+			if(mCallback != null) {
+				mCallback.showProgress(false);
+			}
+			if(e == null) {
+				mStudents = ParseBeanUtil.fromParseObjects(result, Student.class);
+				showList(mStudents);
+			} else {
+				Logger.e(TAG, e.getMessage());
+				Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
+			}
+		}
+	}
+	
+	public class RemoveStudentTask extends AsyncTask<Void, Void, Void> {
+
+		private Student student;
+		private ParseException e = null;
+		
+		public RemoveStudentTask(Student student) {
+			this.student = student;
+		}
+
+		@Override
+		protected Void doInBackground(Void... params) {
+			ParseObject obj = Student.toParseObject(student);
+			try {
+				obj.delete();
+			} catch (ParseException e) {
+				this.e = e;
+			}
+			return null;
+		}
+
+		@Override
+		protected void onPreExecute() {
+			if(mCallback != null) {
+				mCallback.showProgress(true);
+			}
+		}
+
+		@Override
+		protected void onPostExecute(Void result) {
+			if(mCallback != null) {
+				mCallback.showProgress(false);
+			}
+			if(e == null) {
+				handleStudentRemoved(student);
+			} else {
+				Logger.e(TAG, e.getMessage(), e);
+				Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+			}
+		}
 	}
 }

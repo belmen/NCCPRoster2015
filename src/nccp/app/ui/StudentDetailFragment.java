@@ -2,6 +2,7 @@ package nccp.app.ui;
 
 import nccp.app.R;
 import nccp.app.bean.Student;
+import nccp.app.utils.Logger;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -21,8 +22,14 @@ public class StudentDetailFragment extends Fragment {
 	private Student mStudent = null;
 
 	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+	}
+
+	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
+		Logger.i(TAG, TAG + "Detail fragment onCreateView");
 		View v = inflater.inflate(R.layout.fragment_student_detail, container, false);
 		mTvStudentId = (TextView) v.findViewById(R.id.student_detail_id_text);
 		mTvFirstName = (TextView) v.findViewById(R.id.student_detail_firstname_text);
@@ -31,9 +38,17 @@ public class StudentDetailFragment extends Fragment {
 		return v;
 	}
 	
+	@Override
+	public void onActivityCreated(Bundle savedInstanceState) {
+		super.onActivityCreated(savedInstanceState);
+		showStudentDetail();
+	}
+
 	public void setStudent(Student student) {
 		mStudent = student;
-		showStudentDetail();
+		if(getView() != null) {
+			showStudentDetail();
+		}
 	}
 
 	private void showStudentDetail() {

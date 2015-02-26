@@ -5,4 +5,8 @@
         android:icon="@drawable/ic_menu_edit"
         android:title="@string/action_edit_student"
         nccp:showAsAction="ifRoom|collapseActionView"/>
+    <item android:id="@+id/action_remove_student"
+        android:icon="@drawable/ic_menu_remove"
+        android:title="@string/action_remove_student"
+        nccp:showAsAction="ifRoom|collapseActionView"/>
 </menu>

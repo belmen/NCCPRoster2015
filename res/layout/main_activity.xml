@@ -19,18 +19,34 @@
             nccp:theme="@style/ThemeOverlay.AppCompat.ActionBar"
             nccp:title="@string/app_name" />
 
-        <TabWidget
-            android:id="@android:id/tabs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="0"
-            android:orientation="horizontal" />
-
-        <FrameLayout
-            android:id="@android:id/tabcontent"
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1" />
+            android:layout_weight="1" >
+
+            <ProgressBar
+                android:id="@+id/main_progress"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="-7dp"
+                android:layout_alignParentTop="true"
+                android:indeterminate="true"
+                android:visibility="invisible" />
+
+            <TabWidget
+                android:id="@android:id/tabs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:orientation="horizontal" />
+
+            <FrameLayout
+                android:id="@android:id/tabcontent"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@android:id/tabs" />
+        </RelativeLayout>
     </LinearLayout>
 
 </android.support.v4.app.FragmentTabHost>

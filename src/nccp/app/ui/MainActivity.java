@@ -2,6 +2,7 @@ package nccp.app.ui;
 
 import nccp.app.R;
 import nccp.app.utils.Const;
+import nccp.app.utils.Logger;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -15,17 +16,20 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends ActionBarActivity implements FragmentCallback {
 
 	public static final String TAG = MainActivity.class.getSimpleName();
 
 	private static final String TAB_PROGRAM = Const.PACKAGE_NAME + ".tab_program";
 	private static final String TAB_STUDENT = Const.PACKAGE_NAME + ".tab_students";
 	private static final String TAB_ATTENDANCE = Const.PACKAGE_NAME + ".tab_attendance";
+
+	private ProgressBar mProgress;
 	
-	private FragmentHelper mFmHelper;
+//	private FragmentHelper mFmHelper;
 	private FragmentTabHost mTabHost;
 	
 	@Override
@@ -42,6 +46,7 @@ public class MainActivity extends ActionBarActivity {
 	}
 	
 	private void initViews() {
+		mProgress = (ProgressBar) findViewById(R.id.main_progress);
 		mTabHost = (FragmentTabHost) findViewById(android.R.id.tabhost);
 		mTabHost.setup(this, getSupportFragmentManager(), android.R.id.tabcontent);
 
@@ -74,6 +79,20 @@ public class MainActivity extends ActionBarActivity {
 	@Override
 	public void onBackPressed() {
 		handleLogout();
+	}
+	
+	/**
+	 * Show the progress bar on top banner
+	 * @param show
+	 */
+	@Override
+	public void showProgress(boolean show) {
+		Logger.i(TAG, "Show progress bar: " + String.valueOf(show));
+		if(show) {
+			mProgress.setVisibility(View.VISIBLE);
+		} else {
+			mProgress.setVisibility(View.INVISIBLE);
+		}
 	}
 
 	private void handleLogout() {

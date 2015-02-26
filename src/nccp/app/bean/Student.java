@@ -52,6 +52,10 @@ public class Student extends ParseBean {
 		this.lastName = lastName;
 	}
 
+	public String getFullName() {
+		return (this.firstName + " " + this.lastName).trim();
+	}
+	
 	public String getStudentId() {
 		return studentId;
 	}

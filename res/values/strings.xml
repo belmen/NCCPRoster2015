@@ -15,6 +15,9 @@
 	<!-- Dialog -->
 	<string name="dialog_title_logout">Logout</string>
 	<string name="dialog_msg_logout">Are you sure to logout?</string>
+	<string name="dialog_title_remove_student">Remove student</string>
+	<string name="dialog_msg_remove_student">Remove %s from database?</string>
+	<string name="dialog_deleting_student">Please wait...</string>
 	
 	<!-- Login -->
 	<string name="login_username_empty">Username is empty</string>
@@ -43,6 +46,7 @@
 	<string name="action_search_students">Search students</string>
 	<string name="action_add_student">Add Student</string>
 	<string name="action_edit_student">Edit</string>
+	<string name="action_remove_student">Remove student</string>
 	<string name="students_search_hint">Search first name or last name</string>
 	<string name="students_empty_text">No students</string>
 	

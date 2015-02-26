@@ -21,7 +21,7 @@
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
     </style>
     
-    <style name="ActionBarTheme" parent="@style/Theme.AppCompat.Light">
+    <!-- <style name="ActionBarTheme" parent="@style/Theme.AppCompat.Light">
         <item name="actionBarStyle">@style/NCCPActionBarStyle</item>
     </style>
     
@@ -31,7 +31,7 @@
     </style>
     
     <style name="NCCPActionBarTitleStyle"  parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
-        <!-- <item name="android:textColor">@android:color/white</item> -->
+        <item name="android:textColor">@android:color/white</item>
     </style>
     
     <style name="ActionBarThemeDark" parent="@style/Theme.AppCompat.Light">
@@ -46,7 +46,7 @@
     
     <style name="NCCPActionBarTitleDarkStyle"  parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
         <item name="android:textColor">@android:color/white</item>
-    </style>
+    </style> -->
 
     <style name="RoundButtonStyle" parent="android:style/Widget.Button">
         <item name="android:layout_width">@dimen/default_round_btn_width</item>

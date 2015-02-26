@@ -161,7 +161,7 @@ public class EditStudentActivity extends ActionBarActivity {
 		finish();
 	}
 	
-	private class SaveStudentTask extends AsyncTask<Void, Void, Void> {
+	private class SaveStudentTask extends AsyncTask<Void, Void, ParseObject> {
 
 		private Student student;
 		private ParseException e = null;
@@ -171,14 +171,14 @@ public class EditStudentActivity extends ActionBarActivity {
 		}
 
 		@Override
-		protected Void doInBackground(Void... params) {
+		protected ParseObject doInBackground(Void... params) {
 			ParseObject obj = Student.toParseObject(student);
 			try {
 				obj.save();
 			} catch (ParseException e) {
 				this.e = e;
 			}
-			return null;
+			return obj;
 		}
 
 		@Override
@@ -189,12 +189,13 @@ public class EditStudentActivity extends ActionBarActivity {
 		}
 
 		@Override
-		protected void onPostExecute(Void result) {
+		protected void onPostExecute(ParseObject result) {
 			mInProgress = false;
 			mProgressBar.setVisibility(View.GONE);
 			supportInvalidateOptionsMenu();
 			
 			if(e == null) {
+				mStudent = Student.fromParseObject(result);
 				handleSaveSuccess();
 			} else {
 				// Show fail toast
