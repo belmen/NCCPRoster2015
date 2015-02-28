@@ -1,11 +1,16 @@
 package nccp.app.parse;
 
 import nccp.app.parse.ParseAppManager.AppKey;
+import nccp.app.parse.object.Course;
+import nccp.app.parse.object.Program;
+import nccp.app.parse.object.ProgramClass;
+import nccp.app.parse.object.Student;
 import nccp.app.utils.Logger;
 import android.content.Context;
 
 import com.parse.Parse;
 import com.parse.ParseException;
+import com.parse.ParseObject;
 import com.parse.ParseUser;
 
 public class ParseManager {
@@ -18,7 +23,10 @@ public class ParseManager {
 	public static void initialize(Context context) {
 		mContext = context;
 		// Initialize parse objects
-//		ParseObject.registerSubclass(Student.class);
+		ParseObject.registerSubclass(Student.class);
+		ParseObject.registerSubclass(Course.class);
+		ParseObject.registerSubclass(ProgramClass.class);
+		ParseObject.registerSubclass(Program.class);
 	}
 	
 	public static void setDatabase(String database) {

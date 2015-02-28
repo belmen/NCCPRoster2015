@@ -1,6 +1,7 @@
 package nccp.app.ui;
 
 import nccp.app.R;
+import nccp.app.ui.MyToolbar.OnActionCollapsedListener;
 import nccp.app.utils.Const;
 import nccp.app.utils.Logger;
 import android.app.AlertDialog;
@@ -9,14 +10,16 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTabHost;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
+import android.widget.TabHost.OnTabChangeListener;
 import android.widget.TextView;
 
 public class MainActivity extends ActionBarActivity implements FragmentCallback {
@@ -27,10 +30,14 @@ public class MainActivity extends ActionBarActivity implements FragmentCallback 
 	private static final String TAB_STUDENT = Const.PACKAGE_NAME + ".tab_students";
 	private static final String TAB_ATTENDANCE = Const.PACKAGE_NAME + ".tab_attendance";
 
+	// Views
 	private ProgressBar mProgress;
+	private Spinner mSpProgram;
 	
 //	private FragmentHelper mFmHelper;
 	private FragmentTabHost mTabHost;
+	
+	private String mCurrentTab = null;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -38,10 +45,14 @@ public class MainActivity extends ActionBarActivity implements FragmentCallback 
 		setContentView(R.layout.main_activity);
 		initToolbar();
 		initViews();
+		
+		prepareToolbarForTab(mCurrentTab);
 	}
 
 	private void initToolbar() {
-		Toolbar tb = (Toolbar) findViewById(R.id.main_toolbar);
+		MyToolbar tb = (MyToolbar) findViewById(R.id.main_toolbar);
+		tb.setOnActionCollapsedListener(mOnActionCollapsedListener);
+		mSpProgram = (Spinner) tb.findViewById(R.id.main_program_spinner);
 		setSupportActionBar(tb);
 	}
 	
@@ -49,14 +60,14 @@ public class MainActivity extends ActionBarActivity implements FragmentCallback 
 		mProgress = (ProgressBar) findViewById(R.id.main_progress);
 		mTabHost = (FragmentTabHost) findViewById(android.R.id.tabhost);
 		mTabHost.setup(this, getSupportFragmentManager(), android.R.id.tabcontent);
-
-		mTabHost.addTab(
-				mTabHost.newTabSpec(TAB_PROGRAM).setIndicator(getString(R.string.tab_title_program)),
-				DummyTabFragment.class, null);
+		mTabHost.addTab(mTabHost.newTabSpec(TAB_PROGRAM).setIndicator(getString(R.string.tab_title_program)),
+				ProgramFragment.class, null);
 		mTabHost.addTab(mTabHost.newTabSpec(TAB_STUDENT).setIndicator(getString(R.string.tab_title_students)),
 				StudentsFragment.class, null);
 		mTabHost.addTab(mTabHost.newTabSpec(TAB_ATTENDANCE).setIndicator(getString(R.string.tab_title_attendence)),
 				DummyTabFragment.class, null);
+		mTabHost.setOnTabChangedListener(mTabChangeListener);
+		mCurrentTab = mTabHost.getCurrentTabTag();
 	}
 
 	@Override
@@ -124,6 +135,21 @@ public class MainActivity extends ActionBarActivity implements FragmentCallback 
 		finish();
 	}
 	
+	private void prepareToolbarForTab(String tabId) {
+		ActionBar ab = getSupportActionBar();
+		if(TAB_PROGRAM.equals(tabId)) { // Program tab
+			ab.setDisplayShowTitleEnabled(false);
+			mSpProgram.setVisibility(View.VISIBLE);
+		} else if(TAB_STUDENT.equals(tabId)) { // Students tab
+			ab.setTitle(getString(R.string.title_students));
+			ab.setDisplayShowTitleEnabled(true);
+			mSpProgram.setVisibility(View.GONE);
+		} else if(TAB_ATTENDANCE.equals(tabId)) { // Attendance tab
+			ab.setDisplayShowTitleEnabled(false);
+			mSpProgram.setVisibility(View.VISIBLE);
+		}
+	}
+	
 	public static class DummyTabFragment extends Fragment {
 		@Override
 	    public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -134,4 +160,21 @@ public class MainActivity extends ActionBarActivity implements FragmentCallback 
 	        return v;
 	    }
 	}
+	
+	private OnActionCollapsedListener mOnActionCollapsedListener =
+			new OnActionCollapsedListener() {
+		@Override
+		public void onCollapsed() {
+			prepareToolbarForTab(mCurrentTab);
+		}
+	};
+	
+	private OnTabChangeListener mTabChangeListener = new OnTabChangeListener() {
+		
+		@Override
+		public void onTabChanged(String tabId) {
+			mCurrentTab = tabId;
+			prepareToolbarForTab(mCurrentTab);
+		}
+	};
 }

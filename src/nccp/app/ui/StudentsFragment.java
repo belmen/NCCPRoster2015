@@ -11,10 +11,11 @@ import java.util.Map;
 
 import nccp.app.R;
 import nccp.app.adapter.StudentAdapter;
-import nccp.app.bean.Student;
+import nccp.app.parse.object.Student;
+import nccp.app.parse.proxy.ParseProxyUtil;
+import nccp.app.parse.proxy.StudentProxy;
 import nccp.app.utils.Const;
 import nccp.app.utils.Logger;
-import nccp.app.utils.ParseBeanUtil;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -27,7 +28,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.MenuItemCompat.OnActionExpandListener;
 import android.support.v7.widget.SearchView;
-import android.support.v7.widget.SearchView.OnCloseListener;
 import android.support.v7.widget.SearchView.OnQueryTextListener;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -41,10 +41,9 @@ import android.widget.ExpandableListView.OnGroupClickListener;
 import android.widget.Toast;
 
 import com.parse.ParseException;
-import com.parse.ParseObject;
 import com.parse.ParseQuery;
 
-public class StudentsFragment extends Fragment implements OnQueryTextListener, OnCloseListener {
+public class StudentsFragment extends Fragment implements OnQueryTextListener {
 	
 	public static final String TAG = StudentsFragment.class.getSimpleName();
 	
@@ -79,6 +78,7 @@ public class StudentsFragment extends Fragment implements OnQueryTextListener, O
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		Logger.i(TAG, TAG + " onCreate");
@@ -92,8 +92,12 @@ public class StudentsFragment extends Fragment implements OnQueryTextListener, O
 		if(savedInstanceState != null) {
 			Logger.i(TAG, TAG + " savedInstanceState not null");
 			mFirst = savedInstanceState.getBoolean(STATE_STUDENTS_FIRST);
-			mStudents = (List<Student>) savedInstanceState.getSerializable(STATE_STUDENTS_DATA);
-			mSelectedStudent = (Student) savedInstanceState.getSerializable(STATE_SELECTED_STUDENT);
+			List<StudentProxy> studentsProxy = (List<StudentProxy>) savedInstanceState
+					.getSerializable(STATE_STUDENTS_DATA);
+			mStudents = ParseProxyUtil.toParseObjects(studentsProxy,
+					Student.class, StudentProxy.class);
+			StudentProxy selectedProxy = (StudentProxy) savedInstanceState.getSerializable(STATE_SELECTED_STUDENT);
+			mSelectedStudent = StudentProxy.toParseObject(selectedProxy);
 			mHighlightPosition = savedInstanceState.getInt(STATE_HIGHLIGHT_POSITION, -1);
 		}
 	}
@@ -142,23 +146,19 @@ public class StudentsFragment extends Fragment implements OnQueryTextListener, O
 		MenuItem item = menu.findItem(R.id.action_search_student);
 		SearchView sv = (SearchView) MenuItemCompat.getActionView(item);
 		sv.setOnQueryTextListener(this);
-//		sv.setOnCloseListener(this);
 		sv.setQueryHint(getString(R.string.students_search_hint));
 		MenuItemCompat.setActionView(item, sv);
-//		MenuItemCompat.setOnActionExpandListener(item, new OnActionExpandListener() {
-//			@Override
-//			public boolean onMenuItemActionExpand(MenuItem arg0) {
-//				return true;
-//			}
-//			
-//			@Override
-//			public boolean onMenuItemActionCollapse(MenuItem arg0) {
-//				if(mCallback != null) {
-//					mCallback.showProgress(false);
-//				}
-//				return true;
-//			}
-//		});
+		MenuItemCompat.setOnActionExpandListener(item, new OnActionExpandListener() {
+			@Override
+			public boolean onMenuItemActionExpand(MenuItem arg0) {
+				return true;
+			}
+			
+			@Override
+			public boolean onMenuItemActionCollapse(MenuItem arg0) {
+				return true;
+			}
+		});
 	}
 
 	@Override
@@ -181,11 +181,15 @@ public class StudentsFragment extends Fragment implements OnQueryTextListener, O
 	public void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
 		outState.putBoolean(STATE_STUDENTS_FIRST, mFirst);
+		// TODO: Fix this
 		if(mStudents != null) {
-			outState.putSerializable(STATE_STUDENTS_DATA, (Serializable) mStudents);
+			List<StudentProxy> proxy = ParseProxyUtil.fromParseObjects(mStudents,
+					Student.class, StudentProxy.class);
+			outState.putSerializable(STATE_STUDENTS_DATA, (Serializable) proxy);
 		}
 		if(mSelectedStudent != null) {
-			outState.putSerializable(STATE_SELECTED_STUDENT, mSelectedStudent);
+			StudentProxy proxy = StudentProxy.fromParseObject(mSelectedStudent);
+			outState.putSerializable(STATE_SELECTED_STUDENT, proxy);
 		}
 		outState.putInt(STATE_HIGHLIGHT_POSITION, mHighlightPosition);
 		// Save detail fragment
@@ -199,7 +203,10 @@ public class StudentsFragment extends Fragment implements OnQueryTextListener, O
 			if(resultCode == Activity.RESULT_OK) {
 				Student student = null;
 				if(data != null) {
-					student = (Student) data.getSerializableExtra(Const.EXTRA_STUDENT);
+					StudentProxy proxy = (StudentProxy) data.getSerializableExtra(Const.EXTRA_STUDENT);
+					if(proxy != null) {
+						student = StudentProxy.toParseObject(proxy);
+					}
 				}
 				if(student != null) {
 					handleStudentAdded(student);
@@ -209,7 +216,10 @@ public class StudentsFragment extends Fragment implements OnQueryTextListener, O
 			if(resultCode == Activity.RESULT_OK) {
 				Student student = null;
 				if(data != null) {
-					student = (Student) data.getSerializableExtra(Const.EXTRA_STUDENT);
+					StudentProxy proxy = (StudentProxy) data.getSerializableExtra(Const.EXTRA_STUDENT);
+					if(proxy != null) {
+						student = StudentProxy.toParseObject(proxy);
+					}
 				}
 				if(student != null) {
 					handleStudentUpdated(student);
@@ -288,7 +298,8 @@ public class StudentsFragment extends Fragment implements OnQueryTextListener, O
 			return;
 		}
 		Intent intent = new Intent(getActivity(), EditStudentActivity.class);
-		intent.putExtra(Const.EXTRA_STUDENT, mSelectedStudent);
+		StudentProxy proxy = StudentProxy.fromParseObject(mSelectedStudent);
+		intent.putExtra(Const.EXTRA_STUDENT, proxy);
 		startActivityForResult(intent, REQUEST_EDIT_STUDENT);
 	}
 
@@ -357,7 +368,7 @@ public class StudentsFragment extends Fragment implements OnQueryTextListener, O
 		mStudents.add(newStudent);
 		// Update student list
 		showList(mStudents);
-		// Close detail and cancle highlight
+		// Close detail and cancel highlight
 		if(isDetailOpen()) {
 			closeDetail();
 			mLvStudents.setItemChecked(mHighlightPosition, false);
@@ -378,7 +389,7 @@ public class StudentsFragment extends Fragment implements OnQueryTextListener, O
 		int i;
 		for(i = 0; i < mStudents.size(); ++i) {
 			Student s = mStudents.get(i);
-			if(s.getParseObjectId().equals(updatedStudent.getParseObjectId())) {
+			if(s.getObjectId().equals(updatedStudent.getObjectId())) {
 				break;
 			}
 		}
@@ -439,8 +450,8 @@ public class StudentsFragment extends Fragment implements OnQueryTextListener, O
 					ExpandableListView.getPackedPositionForChild(groupPosition, childPosition));
 			Student item = (Student) mAdapter.getChild(groupPosition, childPosition);
 			if(mSelectedStudent == null
-			|| (mSelectedStudent.getParseObjectId() != null
-				&& !mSelectedStudent.getParseObjectId().equals(item.getParseObjectId()))) {
+			|| (mSelectedStudent.getObjectId() != null
+				&& !mSelectedStudent.getObjectId().equals(item.getObjectId()))) {
 				if(!isDetailOpen()) {
 					FragmentTransaction trans = getChildFragmentManager().beginTransaction();
 					trans.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right)
@@ -509,15 +520,15 @@ public class StudentsFragment extends Fragment implements OnQueryTextListener, O
 		return false;
 	}
 
-	@Override
-	public boolean onClose() {
-		Logger.i(TAG, "StudentsFragment onClose");
-		mAdapter.setHighlight("");
-		showList(mStudents);
-		return true;
-	}
+//	@Override
+//	public boolean onClose() {
+//		Logger.i(TAG, "StudentsFragment onClose");
+//		mAdapter.setHighlight("");
+//		showList(mStudents);
+//		return true;
+//	}
 	
-	public class GetStudentsTask extends AsyncTask<Void, Void, List<ParseObject>> {
+	public class GetStudentsTask extends AsyncTask<Void, Void, List<Student>> {
 
 		private ParseException e;
 		
@@ -529,11 +540,19 @@ public class StudentsFragment extends Fragment implements OnQueryTextListener, O
 		}
 
 		@Override
-		protected List<ParseObject> doInBackground(Void... params) {
-			ParseQuery<ParseObject> query = ParseQuery.getQuery(Student.TAG_OBJECT);
-			List<ParseObject> result = null;
+		protected List<Student> doInBackground(Void... params) {
+//			ParseQuery<ParseObject> query = ParseQuery.getQuery(Student.TAG_OBJECT);
+//			List<ParseObject> result = null;
+//			try {
+//				result = query.find();
+//			} catch (ParseException e) {
+//				this.e = e;
+//			}
+//			return result;
+			List<Student> result = null;
+			ParseQuery<Student> q = ParseQuery.getQuery(Student.class);
 			try {
-				result = query.find();
+				result = q.find();
 			} catch (ParseException e) {
 				this.e = e;
 			}
@@ -541,12 +560,13 @@ public class StudentsFragment extends Fragment implements OnQueryTextListener, O
 		}
 
 		@Override
-		protected void onPostExecute(List<ParseObject> result) {
+		protected void onPostExecute(List<Student> result) {
 			if(mCallback != null) {
 				mCallback.showProgress(false);
 			}
 			if(e == null) {
-				mStudents = ParseBeanUtil.fromParseObjects(result, Student.class);
+//				mStudents = ParseBeanUtil.fromParseObjects(result, Student.class);
+				mStudents = result;
 				showList(mStudents);
 			} else {
 				Logger.e(TAG, e.getMessage());
@@ -566,9 +586,9 @@ public class StudentsFragment extends Fragment implements OnQueryTextListener, O
 
 		@Override
 		protected Void doInBackground(Void... params) {
-			ParseObject obj = Student.toParseObject(student);
+//			ParseObject obj = Student.toParseObject(student);
 			try {
-				obj.delete();
+				student.delete();
 			} catch (ParseException e) {
 				this.e = e;
 			}

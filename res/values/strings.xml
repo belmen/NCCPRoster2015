@@ -11,13 +11,14 @@
 	
 	<!-- Actions -->
 	<string name="action_logout">Logout</string>
+	<string name="action_add_program">Add program</string>
+	<string name="action_delete_program">Delete program</string>
 	
 	<!-- Dialog -->
 	<string name="dialog_title_logout">Logout</string>
 	<string name="dialog_msg_logout">Are you sure to logout?</string>
 	<string name="dialog_title_remove_student">Remove student</string>
 	<string name="dialog_msg_remove_student">Remove %s from database?</string>
-	<string name="dialog_deleting_student">Please wait...</string>
 	
 	<!-- Login -->
 	<string name="login_username_empty">Username is empty</string>

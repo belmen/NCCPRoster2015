@@ -1,7 +1,8 @@
 package nccp.app.ui;
 
 import nccp.app.R;
-import nccp.app.bean.Student;
+import nccp.app.parse.object.Student;
+import nccp.app.parse.proxy.StudentProxy;
 import nccp.app.utils.Const;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -19,7 +20,6 @@ import android.widget.SpinnerAdapter;
 import android.widget.Toast;
 
 import com.parse.ParseException;
-import com.parse.ParseObject;
 
 public class EditStudentActivity extends ActionBarActivity {
 
@@ -47,7 +47,7 @@ public class EditStudentActivity extends ActionBarActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_edit_student);
+		setContentView(R.layout.edit_student_activity);
 		mGradeLevels = getResources().getStringArray(R.array.grade_levels);
 		initViews();
 		initToolbar();
@@ -100,8 +100,10 @@ public class EditStudentActivity extends ActionBarActivity {
 	private void initData() {
 		Intent intent = getIntent();
 		if(intent != null) {
-			mStudent = (Student) intent.getSerializableExtra(Const.EXTRA_STUDENT);
-			
+			StudentProxy proxy = (StudentProxy) intent.getSerializableExtra(Const.EXTRA_STUDENT);
+			if(proxy != null) {
+				mStudent = StudentProxy.toParseObject(proxy);
+			}
 		}
 		if(mStudent == null) {
 			mStudent = new Student();
@@ -156,12 +158,12 @@ public class EditStudentActivity extends ActionBarActivity {
 	
 	private void handleSaveSuccess() {
 		Intent intent = new Intent();
-		intent.putExtra(Const.EXTRA_STUDENT, mStudent);
+		intent.putExtra(Const.EXTRA_STUDENT, StudentProxy.fromParseObject(mStudent));
 		setResult(RESULT_OK, intent);
 		finish();
 	}
 	
-	private class SaveStudentTask extends AsyncTask<Void, Void, ParseObject> {
+	private class SaveStudentTask extends AsyncTask<Void, Void, Void> {
 
 		private Student student;
 		private ParseException e = null;
@@ -171,14 +173,13 @@ public class EditStudentActivity extends ActionBarActivity {
 		}
 
 		@Override
-		protected ParseObject doInBackground(Void... params) {
-			ParseObject obj = Student.toParseObject(student);
+		protected Void doInBackground(Void... params) {
 			try {
-				obj.save();
+				student.save();
 			} catch (ParseException e) {
 				this.e = e;
 			}
-			return obj;
+			return null;
 		}
 
 		@Override
@@ -189,13 +190,14 @@ public class EditStudentActivity extends ActionBarActivity {
 		}
 
 		@Override
-		protected void onPostExecute(ParseObject result) {
+		protected void onPostExecute(Void result) {
 			mInProgress = false;
 			mProgressBar.setVisibility(View.GONE);
 			supportInvalidateOptionsMenu();
 			
 			if(e == null) {
-				mStudent = Student.fromParseObject(result);
+//				mStudent = Student.fromParseObject(result);
+				mStudent = student;
 				handleSaveSuccess();
 			} else {
 				// Show fail toast

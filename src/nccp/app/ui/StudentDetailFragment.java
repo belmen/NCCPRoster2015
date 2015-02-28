@@ -1,7 +1,7 @@
 package nccp.app.ui;
 
 import nccp.app.R;
-import nccp.app.bean.Student;
+import nccp.app.parse.object.Student;
 import nccp.app.utils.Logger;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;

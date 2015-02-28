@@ -5,7 +5,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import nccp.app.R;
-import nccp.app.bean.Student;
+import nccp.app.parse.object.Student;
 import android.content.Context;
 import android.text.Html;
 import android.view.View;
