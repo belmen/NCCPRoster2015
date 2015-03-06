@@ -6,9 +6,12 @@ import nccp.app.parse.ParseManager;
 import nccp.app.utils.Const;
 import nccp.app.utils.Logger;
 import nccp.app.utils.PreferenceUtil;
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -19,7 +22,7 @@ import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 
-public class LoginActivity extends BaseActivity {
+public class LoginActivity extends Activity {
 
 	public static final String TAG = LoginActivity.class.getSimpleName();
 	
@@ -152,6 +155,13 @@ public class LoginActivity extends BaseActivity {
 		return valid;
 	}
 
+	protected void hideInputMethod() {
+		InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+		if(imm.isActive()) {
+			imm.hideSoftInputFromWindow(getWindow().getDecorView().getApplicationWindowToken(), 0);
+		}
+	}
+	
 	protected void doLogin(final String username, final String password) {
 		if(!ParseManager.isDatabaseSet()) {
 			return;

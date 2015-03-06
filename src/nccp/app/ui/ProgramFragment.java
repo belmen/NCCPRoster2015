@@ -1,6 +1,10 @@
 package nccp.app.ui;
 
+import java.util.List;
+
 import nccp.app.R;
+import nccp.app.data.DataCenter;
+import nccp.app.parse.object.Program;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -11,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class ProgramFragment extends Fragment {
 
@@ -52,6 +57,18 @@ public class ProgramFragment extends Fragment {
 	}
 
 	@Override
+	public void onPrepareOptionsMenu(Menu menu) {
+		super.onPrepareOptionsMenu(menu);
+		MenuItem deleteMenu = menu.getItem(2);
+		List<Program> programs = DataCenter.getPrograms();
+		if(programs == null || programs.size() == 0) {
+			deleteMenu.setEnabled(false);
+		} else {
+			deleteMenu.setEnabled(true);
+		}
+	}
+
+	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		int id = item.getItemId();
 		if(id == R.id.action_add_program) {
@@ -65,14 +82,10 @@ public class ProgramFragment extends Fragment {
 	}
 	
 	private void handleAddProgram() {
-		
+		Toast.makeText(getActivity(), "Add pressed", Toast.LENGTH_SHORT).show();
 	}
 	
 	private void handleDeleteProgram() {
-		
-	}
-	
-	private void fetchPrograms() {
-		
+		Toast.makeText(getActivity(), "Delete pressed", Toast.LENGTH_SHORT).show();
 	}
 }

@@ -7,7 +7,6 @@ import nccp.app.utils.Const;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -21,7 +20,7 @@ import android.widget.Toast;
 
 import com.parse.ParseException;
 
-public class EditStudentActivity extends ActionBarActivity {
+public class EditStudentActivity extends BaseActivity {
 
 	public static final String TAG = EditStudentActivity.class.getSimpleName();
 	

@@ -26,7 +26,7 @@
             android:layout_height="wrap_content"
             android:background="@null"
             android:padding="10dp"
-            android:src="@drawable/ic_menu_remove" />
+            android:src="@drawable/ic_menu_delete" />
     </LinearLayout>
 
     <ScrollView
