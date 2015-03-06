@@ -1,8 +1,11 @@
 package nccp.app.ui;
 
+import java.util.List;
+
 import nccp.app.R;
 import nccp.app.data.DataCenter;
 import nccp.app.parse.ParseManager;
+import nccp.app.parse.object.Program;
 import nccp.app.ui.MyToolbar.OnActionCollapsedListener;
 import nccp.app.utils.Const;
 import nccp.app.utils.Logger;
@@ -148,16 +151,19 @@ public class MainActivity extends BaseActivity implements FragmentCallback {
 	
 	private void prepareToolbarForTab(String tabId) {
 		ActionBar ab = getSupportActionBar();
-		if(TAB_PROGRAM.equals(tabId)) { // Program tab
-			ab.setDisplayShowTitleEnabled(false);
-			mSpProgram.setVisibility(View.VISIBLE);
+		if(TAB_PROGRAM.equals(tabId) || TAB_ATTENDANCE.equals(tabId)) { // Program or attendance tab
+			List<Program> programs = DataCenter.getPrograms();
+			if(programs != null && programs.size() > 0) {
+				ab.setDisplayShowTitleEnabled(false);
+				mSpProgram.setVisibility(View.VISIBLE);
+			} else { // No programs
+				ab.setTitle(getString(R.string.title_programs));
+				ab.setDisplayShowTitleEnabled(true);
+			}
 		} else if(TAB_STUDENT.equals(tabId)) { // Students tab
 			ab.setTitle(getString(R.string.title_students));
 			ab.setDisplayShowTitleEnabled(true);
 			mSpProgram.setVisibility(View.GONE);
-		} else if(TAB_ATTENDANCE.equals(tabId)) { // Attendance tab
-			ab.setDisplayShowTitleEnabled(false);
-			mSpProgram.setVisibility(View.VISIBLE);
 		}
 	}
 	

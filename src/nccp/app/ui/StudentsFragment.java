@@ -21,19 +21,20 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.MenuItemCompat.OnActionExpandListener;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.SearchView.OnQueryTextListener;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.View.OnClickListener;
 import android.widget.ExpandableListView;
 import android.widget.ExpandableListView.OnChildClickListener;
 import android.widget.ExpandableListView.OnGroupClickListener;
@@ -82,6 +83,7 @@ public class StudentsFragment extends Fragment implements OnQueryTextListener {
 		mAdapter = new StudentAdapter(getActivity());
 		
 		mStudentDetailFragment = new StudentDetailFragment();
+		mStudentDetailFragment.setOnButtonClickListener(onDetailFragButtonClick);
 		getChildFragmentManager().beginTransaction()
 				.replace(R.id.student_detail_fragment_container, mStudentDetailFragment).commit();
 		
@@ -133,9 +135,9 @@ public class StudentsFragment extends Fragment implements OnQueryTextListener {
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		inflater.inflate(R.menu.student_fragment_menu, menu);
-		if(isDetailOpen()) {
-			inflater.inflate(R.menu.student_fragment_menu_edit, menu);
-		}
+//		if(isDetailOpen()) {
+//			inflater.inflate(R.menu.student_fragment_menu_edit, menu);
+//		}
 		// Add search action
 		MenuItem item = menu.findItem(R.id.action_search_student);
 		SearchView sv = (SearchView) MenuItemCompat.getActionView(item);
@@ -160,11 +162,13 @@ public class StudentsFragment extends Fragment implements OnQueryTextListener {
 		int id = item.getItemId();
 		if(id == R.id.action_add_student) {
 			handleAddStudent();
-		} else if(id == R.id.action_edit_student) {
-			handleEditStudent();
-		} else if(id == R.id.action_remove_student) {
-			handleRemoveStudent();
-		}else if(id == R.id.action_convert) {
+		}
+//		else if(id == R.id.action_edit_student) {
+//			handleEditStudent();
+//		} else if(id == R.id.action_remove_student) {
+//			handleRemoveStudent();
+//		}
+		else if(id == R.id.action_convert) {
 //			convertStudents();
 			return true;
 		}
@@ -313,7 +317,7 @@ public class StudentsFragment extends Fragment implements OnQueryTextListener {
 		.hide(mStudentDetailFragment).commitAllowingStateLoss();
 		
 		// Update menu
-		ActivityCompat.invalidateOptionsMenu(getActivity());
+//		ActivityCompat.invalidateOptionsMenu(getActivity());
 	}
 	
 	private void handleStudentAdded(Student newStudent) {
@@ -336,21 +340,22 @@ public class StudentsFragment extends Fragment implements OnQueryTextListener {
 	}
 
 	private void handleStudentUpdated(Student updatedStudent) {
-		if(DataCenter.getStudents() == null) {
+		List<Student> students = DataCenter.getStudents();
+		if(students == null) {
 			handleStudentAdded(updatedStudent);
 		}
 		int i;
-		for(i = 0; i < DataCenter.getStudents().size(); ++i) {
-			Student s = DataCenter.getStudents().get(i);
+		for(i = 0; i < students.size(); ++i) {
+			Student s = students.get(i);
 			if(s.getObjectId().equals(updatedStudent.getObjectId())) {
 				break;
 			}
 		}
-		if(i < DataCenter.getStudents().size()) {
-			DataCenter.getStudents().remove(i);
-			DataCenter.getStudents().add(updatedStudent);
+		if(i < students.size()) {
+			students.remove(i);
+			students.add(updatedStudent);
 			// Update student list
-			showList(DataCenter.getStudents());
+			showList(students);
 			// Update detail panel
 			mSelectedStudent = updatedStudent;
 			mStudentDetailFragment.setStudent(mSelectedStudent);
@@ -360,14 +365,15 @@ public class StudentsFragment extends Fragment implements OnQueryTextListener {
 	}
 	
 	private void handleStudentRemoved(Student removedStudent) {
+		List<Student> students = DataCenter.getStudents();
 		if(mHighlightPosition != -1) { // Cancel highlight
 			mLvStudents.setItemChecked(mHighlightPosition, false);
 			mHighlightPosition = -1;
 		}
 		closeDetail();
 		// Refresh student list
-		DataCenter.getStudents().remove(removedStudent);
-		showList(DataCenter.getStudents());
+		students.remove(removedStudent);
+		showList(students);
 	}
 	
 	private void updateHighlightPosition() {
@@ -410,7 +416,7 @@ public class StudentsFragment extends Fragment implements OnQueryTextListener {
 					trans.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right)
 					.show(mStudentDetailFragment).commit();
 					// Update menu
-					ActivityCompat.invalidateOptionsMenu(getActivity());
+//					ActivityCompat.invalidateOptionsMenu(getActivity());
 				}
 				mSelectedStudent = item;
 				mStudentDetailFragment.setStudent(mSelectedStudent);
@@ -432,6 +438,19 @@ public class StudentsFragment extends Fragment implements OnQueryTextListener {
 		@Override
 		public int compare(Student lhs, Student rhs) {
 			return lhs.getFirstName().compareTo(rhs.getFirstName());
+		}
+	};
+	
+	private OnClickListener onDetailFragButtonClick = new OnClickListener() {
+		
+		@Override
+		public void onClick(View v) {
+			int id = v.getId();
+			if(id == R.id.student_detail_edit_btn) {
+				handleEditStudent();
+			} else if(id == R.id.student_detail_delete_btn) {
+				handleRemoveStudent();
+			}
 		}
 	};
 

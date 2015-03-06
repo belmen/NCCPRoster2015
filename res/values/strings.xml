@@ -42,6 +42,10 @@
 	<string name="tab_title_students">Students</string>
 	<string name="tab_title_attendence">Attendance</string>
 	
+	<!-- Programs -->
+	<string name="title_programs">Programs</string>
+	<string name="programs_empty_text">No programs\nPress + to create one</string>
+	
 	<!-- Students -->
 	<string name="title_students">Students</string>
 	<string name="action_search_students">Search students</string>

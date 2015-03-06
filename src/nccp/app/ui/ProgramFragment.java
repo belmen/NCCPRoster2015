@@ -10,11 +10,14 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 public class ProgramFragment extends Fragment {
 
 	public static final String TAG = ProgramFragment.class.getSimpleName();
 
+	// Views
+	private TextView mEmptyView;
 	// Data
 	private boolean mFirst = true; 
 	private FragmentCallback mCallback = null;
@@ -29,21 +32,18 @@ public class ProgramFragment extends Fragment {
 	}
 
 	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
+		View v = inflater.inflate(R.layout.program_fragment, container, false);
+		mEmptyView = (TextView) v.findViewById(R.id.program_empty_text);
+		return v;
+	}
+
+	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		setHasOptionsMenu(true);
 		
-		if(mFirst) {
-			fetchPrograms();
-			mFirst = false;
-		}
-	}
-
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
-		View v = inflater.inflate(R.layout.program_fragment, container, false);
-		return v;
 	}
 
 	@Override
