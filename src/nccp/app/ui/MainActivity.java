@@ -1,6 +1,8 @@
 package nccp.app.ui;
 
 import nccp.app.R;
+import nccp.app.data.DataCenter;
+import nccp.app.parse.ParseManager;
 import nccp.app.ui.MyToolbar.OnActionCollapsedListener;
 import nccp.app.utils.Const;
 import nccp.app.utils.Logger;
@@ -11,7 +13,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTabHost;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,7 +23,9 @@ import android.widget.Spinner;
 import android.widget.TabHost.OnTabChangeListener;
 import android.widget.TextView;
 
-public class MainActivity extends ActionBarActivity implements FragmentCallback {
+import com.parse.ParseUser;
+
+public class MainActivity extends BaseActivity implements FragmentCallback {
 
 	public static final String TAG = MainActivity.class.getSimpleName();
 
@@ -68,6 +71,11 @@ public class MainActivity extends ActionBarActivity implements FragmentCallback 
 				DummyTabFragment.class, null);
 		mTabHost.setOnTabChangedListener(mTabChangeListener);
 		mCurrentTab = mTabHost.getCurrentTabTag();
+	}
+
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
 	}
 
 	@Override
@@ -129,7 +137,10 @@ public class MainActivity extends ActionBarActivity implements FragmentCallback 
 	}
 
 	private void doLogout() {
-		// ParseUser.logOut();
+		if(ParseManager.isDatabaseSet() && ParseUser.getCurrentUser() != null) {
+			ParseUser.logOut(); // Log out parse user
+		}
+		DataCenter.clearData(); // Clear fetched data
 		Intent intent = new Intent(MainActivity.this, LoginActivity.class);
 		startActivity(intent);
 		finish();

@@ -12,9 +12,9 @@ public class Program extends BaseParseObject {
 	public static final String TAG_DESCRIPTION = "description";
 	public static final String TAG_CLASS_LIST = "classList";
 	
-	private String programName;
-	private String description;
-	private List<ProgramClass> classes = new ArrayList<ProgramClass>();
+//	private String programName;
+//	private String description;
+//	private List<ProgramClass> classes = new ArrayList<ProgramClass>();
 	
 	
 	public String getProgramName() {

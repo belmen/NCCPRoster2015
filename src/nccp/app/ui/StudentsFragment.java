@@ -1,6 +1,5 @@
 package nccp.app.ui;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -11,8 +10,8 @@ import java.util.Map;
 
 import nccp.app.R;
 import nccp.app.adapter.StudentAdapter;
+import nccp.app.data.DataCenter;
 import nccp.app.parse.object.Student;
-import nccp.app.parse.proxy.ParseProxyUtil;
 import nccp.app.parse.proxy.StudentProxy;
 import nccp.app.utils.Const;
 import nccp.app.utils.Logger;
@@ -41,15 +40,14 @@ import android.widget.ExpandableListView.OnGroupClickListener;
 import android.widget.Toast;
 
 import com.parse.ParseException;
-import com.parse.ParseQuery;
 
 public class StudentsFragment extends Fragment implements OnQueryTextListener {
 	
 	public static final String TAG = StudentsFragment.class.getSimpleName();
 	
 	private static final String STATE_STUDENTS_FIRST = Const.PACKAGE_NAME + ".state.students.first";
-	private static final String STATE_STUDENTS_DATA = Const.PACKAGE_NAME + ".state.students.data";
-	private static final String STATE_SELECTED_STUDENT = Const.PACKAGE_NAME + ".state.students.selected_student";
+	private static final String STATE_SELECTED_STUDENT_INDEX =
+			Const.PACKAGE_NAME + ".state.students.selected_student_index";
 	private static final String STATE_HIGHLIGHT_POSITION = Const.PACKAGE_NAME + ".state.students.highlight_position";
 	
 	private static final int REQUEST_ADD_STUDENT = 0;
@@ -59,13 +57,11 @@ public class StudentsFragment extends Fragment implements OnQueryTextListener {
 	
 	// Views
 	private ExpandableListView mLvStudents;
-//	private ProgressBar mProgressBar;
 	private StudentDetailFragment mStudentDetailFragment;
 	// Adapter
 	private StudentAdapter mAdapter = null;
 	// Data
 	private boolean mFirst = true;
-	private List<Student> mStudents = null;
 	private Student mSelectedStudent = null;
 	private int mHighlightPosition = -1;
 	
@@ -92,13 +88,12 @@ public class StudentsFragment extends Fragment implements OnQueryTextListener {
 		if(savedInstanceState != null) {
 			Logger.i(TAG, TAG + " savedInstanceState not null");
 			mFirst = savedInstanceState.getBoolean(STATE_STUDENTS_FIRST);
-			List<StudentProxy> studentsProxy = (List<StudentProxy>) savedInstanceState
-					.getSerializable(STATE_STUDENTS_DATA);
-			mStudents = ParseProxyUtil.toParseObjects(studentsProxy,
-					Student.class, StudentProxy.class);
-			StudentProxy selectedProxy = (StudentProxy) savedInstanceState.getSerializable(STATE_SELECTED_STUDENT);
-			mSelectedStudent = StudentProxy.toParseObject(selectedProxy);
 			mHighlightPosition = savedInstanceState.getInt(STATE_HIGHLIGHT_POSITION, -1);
+			int selectedIndex = savedInstanceState.getInt(STATE_SELECTED_STUDENT_INDEX);
+			List<Student> students = DataCenter.getStudents();
+			if(selectedIndex >= 0 && selectedIndex < students.size()) {
+				mSelectedStudent = students.get(selectedIndex);
+			}
 		}
 	}
 
@@ -113,7 +108,6 @@ public class StudentsFragment extends Fragment implements OnQueryTextListener {
 		View emptyView = v.findViewById(R.id.students_empty_text);
 		mLvStudents.setEmptyView(emptyView);
 		mLvStudents.setAdapter(mAdapter);
-//		mProgressBar = (ProgressBar) v.findViewById(R.id.students_progress);
 		return v;
 	}
 
@@ -123,7 +117,7 @@ public class StudentsFragment extends Fragment implements OnQueryTextListener {
 		super.onActivityCreated(savedInstanceState);
 		setHasOptionsMenu(true);
 		
-		showList(mStudents);
+		showList(DataCenter.getStudents());
 		if(mSelectedStudent != null) {
 			mStudentDetailFragment.setStudent(mSelectedStudent);
 		} else {
@@ -181,19 +175,12 @@ public class StudentsFragment extends Fragment implements OnQueryTextListener {
 	public void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
 		outState.putBoolean(STATE_STUDENTS_FIRST, mFirst);
-		// TODO: Fix this
-		if(mStudents != null) {
-			List<StudentProxy> proxy = ParseProxyUtil.fromParseObjects(mStudents,
-					Student.class, StudentProxy.class);
-			outState.putSerializable(STATE_STUDENTS_DATA, (Serializable) proxy);
-		}
 		if(mSelectedStudent != null) {
-			StudentProxy proxy = StudentProxy.fromParseObject(mSelectedStudent);
-			outState.putSerializable(STATE_SELECTED_STUDENT, proxy);
+			List<Student> students = DataCenter.getStudents();
+			int index = students.indexOf(mSelectedStudent);
+			outState.putInt(STATE_SELECTED_STUDENT_INDEX, index);
 		}
 		outState.putInt(STATE_HIGHLIGHT_POSITION, mHighlightPosition);
-		// Save detail fragment
-//		getChildFragmentManager().putFragment(outState, STATE_DETAIL_FRAGMENT, mStudentDetailFragment);
 	}
 
 	@Override
@@ -229,38 +216,6 @@ public class StudentsFragment extends Fragment implements OnQueryTextListener {
 	}
 
 	private void refreshList() {
-		new GetStudentsTask().execute();
-//		ParseQuery<ParseObject> query = ParseQuery.getQuery("Student");
-//		query.findInBackground(new FindCallback<ParseObject>() {
-//			@Override
-//			public void done(List<ParseObject> data, ParseException e) {
-//				mProgressBar.setVisibility(View.INVISIBLE);
-//				if(e == null) {
-////					mStudents = BeanUtil.fromParseObjects(data, Student.class);
-//					mStudents = new ArrayList<Student>();
-//					for(ParseObject object : data) {
-//						Student student = new Student();
-//						String name = object.getString("Name");
-////						Logger.d(TAG, "Name: " + name);
-//						String[] names = name.split(",");
-//						if(names.length >= 2) {
-//							student.setFirstName(names[1].trim());
-//							student.setLastName(names[0].trim());
-//						} else {
-//							student.setFirstName(names[0].trim());
-//							student.setLastName("");
-//						}
-//						student.setStudentId(String.valueOf(object.getNumber("ID").intValue()));
-//						student.setGradeLevel(object.getNumber("Parse_1112GradeLevel").intValue());
-//						
-//						mStudents.add(student);
-//					}
-//					showList(mStudents);
-//				} else {
-//					Logger.e(TAG, e.getMessage());
-//				}
-//			}
-//		});
 	}
 
 	private void showList(List<Student> studentList) {
@@ -330,10 +285,10 @@ public class StudentsFragment extends Fragment implements OnQueryTextListener {
 
 	// Convert student 
 	private void convertStudents() {
-//		if(mStudents == null) {
+//		if(DataCenter.getStudents() == null) {
 //			return;
 //		}
-//		ParseObject.saveAllInBackground(mStudents, new SaveCallback() {
+//		ParseObject.saveAllInBackground(DataCenter.getStudents(), new SaveCallback() {
 //			@Override
 //			public void done(ParseException e) {
 //				if(e == null) {
@@ -362,12 +317,10 @@ public class StudentsFragment extends Fragment implements OnQueryTextListener {
 	}
 	
 	private void handleStudentAdded(Student newStudent) {
-		if(mStudents == null) {
-			mStudents = new ArrayList<Student>();
-		}
-		mStudents.add(newStudent);
+		List<Student> students = DataCenter.getStudents();
+		students.add(newStudent);
 		// Update student list
-		showList(mStudents);
+		showList(students);
 		// Close detail and cancel highlight
 		if(isDetailOpen()) {
 			closeDetail();
@@ -383,21 +336,21 @@ public class StudentsFragment extends Fragment implements OnQueryTextListener {
 	}
 
 	private void handleStudentUpdated(Student updatedStudent) {
-		if(mStudents == null) {
+		if(DataCenter.getStudents() == null) {
 			handleStudentAdded(updatedStudent);
 		}
 		int i;
-		for(i = 0; i < mStudents.size(); ++i) {
-			Student s = mStudents.get(i);
+		for(i = 0; i < DataCenter.getStudents().size(); ++i) {
+			Student s = DataCenter.getStudents().get(i);
 			if(s.getObjectId().equals(updatedStudent.getObjectId())) {
 				break;
 			}
 		}
-		if(i < mStudents.size()) {
-			mStudents.remove(i);
-			mStudents.add(updatedStudent);
+		if(i < DataCenter.getStudents().size()) {
+			DataCenter.getStudents().remove(i);
+			DataCenter.getStudents().add(updatedStudent);
 			// Update student list
-			showList(mStudents);
+			showList(DataCenter.getStudents());
 			// Update detail panel
 			mSelectedStudent = updatedStudent;
 			mStudentDetailFragment.setStudent(mSelectedStudent);
@@ -413,8 +366,8 @@ public class StudentsFragment extends Fragment implements OnQueryTextListener {
 		}
 		closeDetail();
 		// Refresh student list
-		mStudents.remove(removedStudent);
-		showList(mStudents);
+		DataCenter.getStudents().remove(removedStudent);
+		showList(DataCenter.getStudents());
 	}
 	
 	private void updateHighlightPosition() {
@@ -470,20 +423,6 @@ public class StudentsFragment extends Fragment implements OnQueryTextListener {
 				mHighlightPosition = -1;
 				closeDetail();
 			}
-			
-//			if(mSelectedPosition != position) {
-//				mSelectedPosition = position;
-//				Student item = (Student) mAdapter.getChild(groupPosition, childPosition);
-//				FragmentTransaction trans = getChildFragmentManager().beginTransaction();
-//				trans.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right)
-//				.show(mStudentDetailFragment).commit();
-//				mStudentDetailFragment.setStudent(item);
-//			} else {
-//				mSelectedPosition = -1;
-//				FragmentTransaction trans = getChildFragmentManager().beginTransaction();
-//				trans.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right)
-//				.hide(mStudentDetailFragment).commit();
-//			}
 			return true;
 		}
 	};
@@ -498,12 +437,12 @@ public class StudentsFragment extends Fragment implements OnQueryTextListener {
 
 	@Override
 	public boolean onQueryTextChange(String newText) {
-		if(mStudents == null) {
+		if(DataCenter.getStudents() == null) {
 			return true;
 		}
 		newText = newText.toLowerCase(Locale.US);
 		List<Student> result = new ArrayList<Student>();
-		for(Student student: mStudents) {
+		for(Student student: DataCenter.getStudents()) {
 			String firstName = student.getFirstName().toLowerCase(Locale.US);
 			String lastName = student.getLastName().toLowerCase(Locale.US);
 			if(firstName.startsWith(newText) || lastName.startsWith(newText)) {
@@ -520,61 +459,6 @@ public class StudentsFragment extends Fragment implements OnQueryTextListener {
 		return false;
 	}
 
-//	@Override
-//	public boolean onClose() {
-//		Logger.i(TAG, "StudentsFragment onClose");
-//		mAdapter.setHighlight("");
-//		showList(mStudents);
-//		return true;
-//	}
-	
-	public class GetStudentsTask extends AsyncTask<Void, Void, List<Student>> {
-
-		private ParseException e;
-		
-		@Override
-		protected void onPreExecute() {
-			if(mCallback != null) {
-				mCallback.showProgress(true);
-			}
-		}
-
-		@Override
-		protected List<Student> doInBackground(Void... params) {
-//			ParseQuery<ParseObject> query = ParseQuery.getQuery(Student.TAG_OBJECT);
-//			List<ParseObject> result = null;
-//			try {
-//				result = query.find();
-//			} catch (ParseException e) {
-//				this.e = e;
-//			}
-//			return result;
-			List<Student> result = null;
-			ParseQuery<Student> q = ParseQuery.getQuery(Student.class);
-			try {
-				result = q.find();
-			} catch (ParseException e) {
-				this.e = e;
-			}
-			return result;
-		}
-
-		@Override
-		protected void onPostExecute(List<Student> result) {
-			if(mCallback != null) {
-				mCallback.showProgress(false);
-			}
-			if(e == null) {
-//				mStudents = ParseBeanUtil.fromParseObjects(result, Student.class);
-				mStudents = result;
-				showList(mStudents);
-			} else {
-				Logger.e(TAG, e.getMessage());
-				Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
-			}
-		}
-	}
-	
 	public class RemoveStudentTask extends AsyncTask<Void, Void, Void> {
 
 		private Student student;
@@ -586,7 +470,6 @@ public class StudentsFragment extends Fragment implements OnQueryTextListener {
 
 		@Override
 		protected Void doInBackground(Void... params) {
-//			ParseObject obj = Student.toParseObject(student);
 			try {
 				student.delete();
 			} catch (ParseException e) {

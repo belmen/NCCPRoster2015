@@ -1,6 +1,7 @@
 package nccp.app.ui;
 
 import nccp.app.R;
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -14,10 +15,28 @@ public class ProgramFragment extends Fragment {
 
 	public static final String TAG = ProgramFragment.class.getSimpleName();
 
+	// Data
+	private boolean mFirst = true; 
+	private FragmentCallback mCallback = null;
+	
+	@Override
+	public void onAttach(Activity activity) {
+		super.onAttach(activity);
+		try {
+			mCallback = (FragmentCallback) activity;
+		} catch (ClassCastException e) {
+		}
+	}
+
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		setHasOptionsMenu(true);
+		
+		if(mFirst) {
+			fetchPrograms();
+			mFirst = false;
+		}
 	}
 
 	@Override
@@ -36,10 +55,24 @@ public class ProgramFragment extends Fragment {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		int id = item.getItemId();
 		if(id == R.id.action_add_program) {
+			handleAddProgram();
 			return true;
 		} else if(id == R.id.action_delete_program) {
+			handleDeleteProgram();
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
+	}
+	
+	private void handleAddProgram() {
+		
+	}
+	
+	private void handleDeleteProgram() {
+		
+	}
+	
+	private void fetchPrograms() {
+		
 	}
 }

@@ -1,10 +1,7 @@
 package nccp.app.ui;
 
-import com.parse.LogInCallback;
-import com.parse.ParseException;
-import com.parse.ParseUser;
-
 import nccp.app.R;
+import nccp.app.data.DataCenter;
 import nccp.app.parse.ParseManager;
 import nccp.app.utils.Const;
 import nccp.app.utils.Logger;
@@ -16,6 +13,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.parse.LogInCallback;
+import com.parse.ParseException;
+import com.parse.ParseUser;
 
 public class LoginActivity extends BaseActivity {
 
@@ -164,9 +166,9 @@ public class LoginActivity extends BaseActivity {
 		ParseUser.logInInBackground(username, password, new LogInCallback() {
 			@Override
 			public void done(ParseUser user, ParseException e) {
-				mBtnDatabase.setEnabled(true);
-				mBtnLogin.setEnabled(true);
-				mProgressBar.setVisibility(View.GONE);
+//				mBtnDatabase.setEnabled(true);
+//				mBtnLogin.setEnabled(true);
+//				mProgressBar.setVisibility(View.GONE);
 				
 				if(e == null) { // Ok
 					storeLoginInputs(mDatabase, username);
@@ -190,8 +192,22 @@ public class LoginActivity extends BaseActivity {
 	}
 	
 	private void loginSuccess() {
-		Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-		startActivity(intent);
-		finish();
+		DataCenter.fetchData(new DataCenter.Callback() {
+			@Override
+			public void onFetched(ParseException e) {
+				mBtnDatabase.setEnabled(true);
+				mBtnLogin.setEnabled(true);
+				mProgressBar.setVisibility(View.GONE);
+				
+				if(e == null) {
+					// Jump into main activity
+					Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+					startActivity(intent);
+					finish();
+				} else {
+					Toast.makeText(LoginActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+				}
+			}
+		});
 	}
 }

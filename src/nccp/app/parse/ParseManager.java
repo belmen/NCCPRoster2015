@@ -19,6 +19,7 @@ public class ParseManager {
 
 	private static Context mContext;
 	private static String mDatabase = null;
+	private static boolean mInitialized = false;
 	
 	public static void initialize(Context context) {
 		mContext = context;
@@ -29,6 +30,10 @@ public class ParseManager {
 		ParseObject.registerSubclass(Program.class);
 	}
 	
+	public static boolean isInitialized() {
+		return mInitialized;
+	}
+
 	public static void setDatabase(String database) {
 		AppKey key = ParseAppManager.getAppKey(database);
 		if(mContext != null && key != null) {
