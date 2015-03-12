@@ -19,6 +19,11 @@
 	<string name="dialog_msg_logout">Are you sure to logout?</string>
 	<string name="dialog_title_remove_student">Remove student</string>
 	<string name="dialog_msg_remove_student">Remove %s from database?</string>
+	<string name="dialog_title_add_program">Add program</string>
+	<string name="dialog_msg_add_program">Enter new program\'s name</string>
+	<string name="dialog_error_program_name_empty">Program name is empty</string>
+	<string name="dialog_title_delete_program">Delete program</string>
+	<string name="dialog_msg_delete_program">Delete program %s?</string>
 	
 	<!-- Login -->
 	<string name="login_username_empty">Username is empty</string>

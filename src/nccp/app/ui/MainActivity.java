@@ -21,6 +21,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.ArrayAdapter;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TabHost.OnTabChangeListener;
@@ -43,7 +46,9 @@ public class MainActivity extends BaseActivity implements FragmentCallback {
 //	private FragmentHelper mFmHelper;
 	private FragmentTabHost mTabHost;
 	
+	// Data
 	private String mCurrentTab = null;
+	private ArrayAdapter<String> mProgramAdapter;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -53,12 +58,18 @@ public class MainActivity extends BaseActivity implements FragmentCallback {
 		initViews();
 		
 		prepareToolbarForTab(mCurrentTab);
+		updateProgramSpinner(null);
 	}
 
 	private void initToolbar() {
 		MyToolbar tb = (MyToolbar) findViewById(R.id.main_toolbar);
 		tb.setOnActionCollapsedListener(mOnActionCollapsedListener);
 		mSpProgram = (Spinner) tb.findViewById(R.id.main_program_spinner);
+		mProgramAdapter = new ArrayAdapter<String>(MainActivity.this,
+				R.layout.program_spinner_item);
+		mProgramAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		mSpProgram.setAdapter(mProgramAdapter);
+		mSpProgram.setOnItemSelectedListener(onProgramSelectedListener);
 		setSupportActionBar(tb);
 	}
 	
@@ -117,6 +128,49 @@ public class MainActivity extends BaseActivity implements FragmentCallback {
 		}
 	}
 
+	@Override
+	public void updateProgramSpinner(String selectedProgramName) {
+		List<Program> programs = DataCenter.getPrograms();
+		// Update tab
+		prepareToolbarForTab(mCurrentTab);
+		
+		// Update spinner
+		mProgramAdapter.clear();
+		for(Program program : programs) {
+			mProgramAdapter.add(program.getProgramName());
+		}
+		mProgramAdapter.notifyDataSetChanged();
+		
+		// If spinner's current selected index == newindex,
+		// OnItemSelectedListener would not be fired, then we need force update for program
+		boolean forceUpdate = false; 
+		// Select program
+		if(selectedProgramName != null) {
+			int index = -1;
+			for(int i = 0; i < programs.size(); ++i) {
+				if(selectedProgramName.equals(programs.get(i).getProgramName())) {
+					index = i;
+					break;
+				}
+			}
+			if(index != -1) {
+				forceUpdate = mSpProgram.getSelectedItemPosition() == index;
+				mSpProgram.setSelection(index);
+				if(forceUpdate) {
+					onProgramChanged(programs.get(index));
+				}
+			}
+		} else if(!programs.isEmpty()) { // Select first program
+			forceUpdate = mSpProgram.getSelectedItemPosition() == 0;
+			mSpProgram.setSelection(0);
+			if(forceUpdate) {
+				onProgramChanged(programs.get(0));
+			}
+		} else { // No programs
+			onProgramChanged(null);
+		}
+	}
+
 	private void handleLogout() {
 		new AlertDialog.Builder(MainActivity.this)
 				.setTitle(R.string.dialog_title_logout)
@@ -159,11 +213,22 @@ public class MainActivity extends BaseActivity implements FragmentCallback {
 			} else { // No programs
 				ab.setTitle(getString(R.string.title_programs));
 				ab.setDisplayShowTitleEnabled(true);
+				mSpProgram.setVisibility(View.GONE);
 			}
 		} else if(TAB_STUDENT.equals(tabId)) { // Students tab
 			ab.setTitle(getString(R.string.title_students));
 			ab.setDisplayShowTitleEnabled(true);
 			mSpProgram.setVisibility(View.GONE);
+		}
+	}
+	
+	private void onProgramChanged(Program program) {
+		if(TAB_PROGRAM.equals(mCurrentTab)) {
+			ProgramFragment f = (ProgramFragment) getSupportFragmentManager()
+					.findFragmentByTag(TAB_PROGRAM);
+			if(f != null) {
+				f.setProgram(program);
+			}
 		}
 	}
 	
@@ -192,6 +257,22 @@ public class MainActivity extends BaseActivity implements FragmentCallback {
 		public void onTabChanged(String tabId) {
 			mCurrentTab = tabId;
 			prepareToolbarForTab(mCurrentTab);
+		}
+	};
+	
+	private OnItemSelectedListener onProgramSelectedListener = new OnItemSelectedListener() {
+
+		@Override
+		public void onItemSelected(AdapterView<?> parent, View view,
+				int position, long id) {
+			List<Program> programs = DataCenter.getPrograms();
+			Program program = programs.get(position);
+			onProgramChanged(program);
+		}
+
+		@Override
+		public void onNothingSelected(AdapterView<?> parent) {
+			
 		}
 	};
 }

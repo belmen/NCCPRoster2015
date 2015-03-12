@@ -7,6 +7,6 @@
         nccp:showAsAction="ifRoom|collapseActionView"/>
 	<item android:id="@+id/action_delete_program"
         android:title="@string/action_delete_program"
-        android:icon="@drawable/ic_menu_delete"
+        android:icon="@drawable/ic_menu_trash"
         nccp:showAsAction="ifRoom|collapseActionView"/>
 </menu>
