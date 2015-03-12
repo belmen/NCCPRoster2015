@@ -78,7 +78,7 @@ public class DataCenter {
 
 		@Override
 		protected ParseException doInBackground(Void... params) {
-			if((flags & FETCH_PROGRAMS) == 1) {
+			if((flags & FETCH_PROGRAMS) != 0) {
 				ParseQuery<Program> programQuery = ParseQuery.getQuery(Program.class);
 				try {
 					mPrograms = programQuery.find();
@@ -86,7 +86,7 @@ public class DataCenter {
 					return e;
 				}
 			}
-			if((flags & FETCH_STUDENTS) == 1) {
+			if((flags & FETCH_STUDENTS) != 0) {
 				ParseQuery<Student> studentQuery = ParseQuery.getQuery(Student.class);
 				try {
 					mStudents = studentQuery.find();

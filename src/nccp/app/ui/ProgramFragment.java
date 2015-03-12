@@ -62,17 +62,20 @@ public class ProgramFragment extends Fragment {
 
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-		inflater.inflate(R.menu.program_fragment, menu);
+		inflater.inflate(R.menu.program_fragment_menu, menu);
 	}
 
 	@Override
 	public void onPrepareOptionsMenu(Menu menu) {
 		super.onPrepareOptionsMenu(menu);
-		MenuItem deleteMenu = menu.getItem(2);
+		MenuItem renameMenu = menu.getItem(2);
+		MenuItem deleteMenu = menu.getItem(3);
 		List<Program> programs = DataCenter.getPrograms();
 		if(programs == null || programs.size() == 0) {
+			renameMenu.setEnabled(false);
 			deleteMenu.setEnabled(false);
 		} else {
+			renameMenu.setEnabled(true);
 			deleteMenu.setEnabled(true);
 		}
 	}
@@ -82,6 +85,9 @@ public class ProgramFragment extends Fragment {
 		int id = item.getItemId();
 		if(id == R.id.action_add_program) {
 			handleAddProgram();
+			return true;
+		} else if(id == R.id.action_rename_program) {
+			handleRenameProgram();
 			return true;
 		} else if(id == R.id.action_delete_program) {
 			handleDeleteProgram();
@@ -129,6 +135,32 @@ public class ProgramFragment extends Fragment {
 		}).show();
 	}
 	
+	private void handleRenameProgram() {
+		if(mCurrentProgram == null) {
+			return;
+		}
+		View view = View.inflate(getActivity(), R.layout.dialog_add_program, null);
+		final EditText etProgramName = (EditText) view.findViewById(R.id.dialog_add_program_et);
+		String oldName = mCurrentProgram.getProgramName();
+		etProgramName.setText(oldName);
+		etProgramName.setSelection(0, oldName.length());
+		new AlertDialog.Builder(getActivity())
+		.setTitle(R.string.dialog_title_rename_program)
+		.setView(view)
+		.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				String programName = etProgramName.getText().toString();
+				doRenameProgram(programName);
+			}
+		}).setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				return;
+			}
+		}).show();
+	}
+	
 	private void handleDeleteProgram() {
 		if(mCurrentProgram == null) {
 			return;
@@ -160,22 +192,47 @@ public class ProgramFragment extends Fragment {
 		new SaveProgramTask(program).execute();
 	}
 	
-	private void handleProgramChanged(final Program newProgram) {
-		DataCenter.fetchPrograms(new DataCenter.Callback() {
-			@Override
-			public void onFetched(ParseException e) {
-				// Update menu
-				ActivityCompat.invalidateOptionsMenu(getActivity());
-				// Update tab and spinner
-				if(mCallback != null) {
-					String pname = null;
-					if(newProgram != null) {
-						pname = newProgram.getProgramName();
-					}
-					mCallback.updateProgramSpinner(pname);
-				}
+	private void doRenameProgram(String programName) {
+		if(mCurrentProgram == null) {
+			return;
+		}
+		if(programName == null || programName.length() == 0) {
+			Toast.makeText(getActivity(), R.string.dialog_error_program_name_empty, Toast.LENGTH_SHORT)
+			.show();
+			return;
+		}
+		if(programName.equals(mCurrentProgram.getProgramName())) {
+			Toast.makeText(getActivity(), R.string.dialog_error_program_name_same, Toast.LENGTH_SHORT)
+			.show();
+			return;
+		}
+		mCurrentProgram.setProgramName(programName);
+		new SaveProgramTask(mCurrentProgram).execute();
+	}
+	
+	private void handleProgramChanged(final Program changedProgram) {
+		if(mCurrentProgram != null && changedProgram != null
+		&& changedProgram.equals(mCurrentProgram)) { // Rename program
+			if(mCallback != null) {
+				mCallback.updateProgramSpinner(mCurrentProgram.getProgramName());
 			}
-		});
+		} else { // Add or delete program
+			DataCenter.fetchPrograms(new DataCenter.Callback() {
+				@Override
+				public void onFetched(ParseException e) {
+					// Update menu
+					ActivityCompat.invalidateOptionsMenu(getActivity());
+					// Update tab and spinner
+					if(mCallback != null) {
+						String pname = null;
+						if(changedProgram != null) {
+							pname = changedProgram.getProgramName();
+						}
+						mCallback.updateProgramSpinner(pname);
+					}
+				}
+			});
+		}
 	}
 	
 	private void doDeleteProgram(Program program) {

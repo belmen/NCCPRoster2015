@@ -12,7 +12,8 @@
 	<!-- Actions -->
 	<string name="action_logout">Logout</string>
 	<string name="action_add_program">Add program</string>
-	<string name="action_delete_program">Delete program</string>
+	<string name="action_delete_program">Delete</string>
+	<string name="action_rename_program">Rename</string>
 	
 	<!-- Dialog -->
 	<string name="dialog_title_logout">Logout</string>
@@ -20,10 +21,12 @@
 	<string name="dialog_title_remove_student">Remove student</string>
 	<string name="dialog_msg_remove_student">Remove %s from database?</string>
 	<string name="dialog_title_add_program">Add program</string>
+	<string name="dialog_title_rename_program">Rename program</string>
 	<string name="dialog_msg_add_program">Enter new program\'s name</string>
 	<string name="dialog_error_program_name_empty">Program name is empty</string>
 	<string name="dialog_title_delete_program">Delete program</string>
 	<string name="dialog_msg_delete_program">Delete program %s?</string>
+	<string name="dialog_error_program_name_same">Program name does not change</string>
 	
 	<!-- Login -->
 	<string name="login_username_empty">Username is empty</string>
