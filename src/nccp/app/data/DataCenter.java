@@ -58,13 +58,13 @@ public class DataCenter {
 		new FetchDataTask(FETCH_ALL, callback).execute();
 	}
 	
-	public static void fetchPrograms(Callback callback) {
-		new FetchDataTask(FETCH_PROGRAMS, callback).execute();
-	}
+//	public static void fetchPrograms(Callback callback) {
+//		new FetchDataTask(FETCH_PROGRAMS, callback).execute();
+//	}
 	
-	public static void fetchStudents(Callback callback) {
-		new FetchDataTask(FETCH_STUDENTS, callback).execute();
-	}
+//	public static void fetchStudents(Callback callback) {
+//		new FetchDataTask(FETCH_STUDENTS, callback).execute();
+//	}
 	
 	private static class FetchDataTask extends AsyncTask<Void, Void, ParseException> {
 

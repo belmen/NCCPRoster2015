@@ -20,13 +20,22 @@
 	<string name="dialog_msg_logout">Are you sure to logout?</string>
 	<string name="dialog_title_remove_student">Remove student</string>
 	<string name="dialog_msg_remove_student">Remove %s from database?</string>
-	<string name="dialog_title_add_program">Add program</string>
+	<string name="dialog_title_add_program">New program</string>
 	<string name="dialog_title_rename_program">Rename program</string>
 	<string name="dialog_msg_add_program">Enter new program\'s name</string>
 	<string name="dialog_error_program_name_empty">Program name is empty</string>
 	<string name="dialog_title_delete_program">Delete program</string>
 	<string name="dialog_msg_delete_program">Delete program %s?</string>
 	<string name="dialog_error_program_name_same">Program name does not change</string>
+	<string name="dialog_title_add_class">New class</string>
+	<string name="dialog_title_rename_class">Rename class</string>
+	<string name="dialog_hint_class_name">Class name</string>
+	<string name="dialog_title_delete_class">Delete class</string>
+	<string name="dialog_msg_delete_class">Delete class %s?</string>
+	
+	<!-- Error -->
+	<string name="error_program_class_name_empty">Class name is empty</string>
+	<string name="error_program_class_not_changing">Class name does not change</string>
 	
 	<!-- Login -->
 	<string name="login_username_empty">Username is empty</string>
@@ -89,4 +98,9 @@
 	<string name="menu_student_editor_done">Done</string>
 	<string name="student_editor_error_id_empty">Student ID is empty</string>
 	<string name="student_editor_error_firstname_empty">Must have a first name</string>
+	
+	<!-- Class -->
+	<string name="program_class_empty">No classes. Press + to add one</string>
+	<string name="program_class_section_courses">COURSES</string>
+	<string name="program_class_section_students">STUDENTS</string>
 </resources>

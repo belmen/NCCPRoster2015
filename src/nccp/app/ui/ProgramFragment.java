@@ -5,6 +5,7 @@ import java.util.List;
 import nccp.app.R;
 import nccp.app.data.DataCenter;
 import nccp.app.parse.object.Program;
+import nccp.app.parse.object.ProgramClass;
 import nccp.app.utils.Logger;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -18,12 +19,24 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.parse.DeleteCallback;
+import com.parse.FindCallback;
 import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.SaveCallback;
 
 public class ProgramFragment extends Fragment {
 
@@ -31,10 +44,17 @@ public class ProgramFragment extends Fragment {
 
 	// Views
 	private TextView mEmptyView;
+	private TextView mTvClassEmpty;
+	private ImageButton mIbRenameClass;
+	private ImageButton mIbDeleteClass;
+	private Spinner mSpClass;
+	private LinearLayout mClassBannerView;
+	private ScrollView mClassScrollView;
 	// Data
 	private boolean mFirst = true; 
 	private FragmentCallback mCallback = null;
 	private Program mCurrentProgram = null;
+	private ArrayAdapter<String> mClassAdapter = null;
 	
 	@Override
 	public void onAttach(Activity activity) {
@@ -46,10 +66,34 @@ public class ProgramFragment extends Fragment {
 	}
 
 	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		mClassAdapter = new ArrayAdapter<String>(getActivity(),
+				android.R.layout.simple_spinner_item);
+		mClassAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+	}
+
+	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		View v = inflater.inflate(R.layout.program_fragment, container, false);
 		mEmptyView = (TextView) v.findViewById(R.id.program_empty_text);
+		mTvClassEmpty = (TextView) v.findViewById(R.id.program_class_empty_text);
+		ImageButton ibAddClass = (ImageButton) v.findViewById(R.id.program_class_add_btn);
+		ibAddClass.setOnClickListener(onButtonsClickListener);
+		mIbRenameClass = (ImageButton) v.findViewById(R.id.program_class_rename_btn);
+		mIbRenameClass.setOnClickListener(onButtonsClickListener);
+		mIbDeleteClass = (ImageButton) v.findViewById(R.id.program_class_delete_btn);
+		mIbDeleteClass.setOnClickListener(onButtonsClickListener);
+		mSpClass = (Spinner) v.findViewById(R.id.program_class_spinner);
+		mSpClass.setOnItemSelectedListener(onClassSelectedListener);
+		mSpClass.setAdapter(mClassAdapter);
+		mClassBannerView = (LinearLayout) v.findViewById(R.id.program_class_banner);
+		mClassScrollView = (ScrollView) v.findViewById(R.id.program_class_scroller);
+		ImageButton ibEditCourse = (ImageButton) v.findViewById(R.id.program_courses_edit_btn);
+		ibEditCourse.setOnClickListener(onButtonsClickListener);
+		ImageButton ibEditStudents = (ImageButton) v.findViewById(R.id.program_students_edit_btn);
+		ibEditStudents.setOnClickListener(onButtonsClickListener);
 		return v;
 	}
 
@@ -108,13 +152,100 @@ public class ProgramFragment extends Fragment {
 	}
 	
 	private void updateViews() {
-		if(mCurrentProgram == null) {
+		if(mCurrentProgram == null) { // No programs
 			mEmptyView.setVisibility(View.VISIBLE);
+			mClassBannerView.setVisibility(View.INVISIBLE);
+			mClassScrollView.setVisibility(View.INVISIBLE);
 			return;
 		}
 		mEmptyView.setVisibility(View.INVISIBLE);
+		mClassBannerView.setVisibility(View.VISIBLE);
+		
+		updateClassBanner(null);
 	}
 	
+	private void fetchClasses(final String selectedClassName) {
+		if(mCurrentProgram == null) {
+			return;
+		}
+		if(mCallback != null) {
+			mCallback.showProgress(true);
+		}
+		ParseObject.fetchAllIfNeededInBackground(mCurrentProgram.getClasses(),
+				new FindCallback<ProgramClass>() {
+			@Override
+			public void done(List<ProgramClass> data, ParseException e) {
+				if(mCallback != null) {
+					mCallback.showProgress(false);
+				}
+				updateClassSpinner(selectedClassName);
+			}
+		});
+	}
+	
+	private void updateClassBanner(String selectedClassName) {
+		List<ProgramClass> classes = mCurrentProgram.getClasses();
+		if(classes == null || classes.size() == 0) { // No classes
+			mTvClassEmpty.setVisibility(View.VISIBLE);
+			mSpClass.setVisibility(View.GONE);
+			mIbRenameClass.setEnabled(false);
+			mIbDeleteClass.setEnabled(false);
+			mClassScrollView.setVisibility(View.INVISIBLE);
+			return;
+		}
+		mTvClassEmpty.setVisibility(View.GONE);
+		mSpClass.setVisibility(View.VISIBLE);
+		mIbRenameClass.setEnabled(true);
+		mIbDeleteClass.setEnabled(true);
+		mClassScrollView.setVisibility(View.VISIBLE);
+		
+		fetchClasses(selectedClassName);
+	}
+	
+	private void updateClassSpinner(String selectedClassName) {
+		if(mCurrentProgram == null) {
+			return;
+		}
+		List<ProgramClass> classes = mCurrentProgram.getClasses();
+		// Update class spinner
+		mClassAdapter.clear();
+		for(ProgramClass c : classes) {
+			mClassAdapter.add(c.getTitle());
+		}
+		mClassAdapter.notifyDataSetChanged();
+		
+		// If spinner's current selected index == newindex,
+		// OnItemSelectedListener would not be fired, then we need force update for program
+		boolean forceUpdate = false;
+		// Select class
+		if(selectedClassName != null) {
+			int index = -1;
+			for(int i = 0; i < classes.size(); ++i) {
+				if(selectedClassName.equals(classes.get(i).getTitle())) {
+					index = i;
+					break;
+				}
+			}
+			if(index != -1) {
+				forceUpdate = mSpClass.getSelectedItemPosition() == index;
+				mSpClass.setSelection(index);
+				if(forceUpdate) {
+					onClassChanged(classes.get(index));
+				}
+			}
+		} else if(!classes.isEmpty()) {
+			forceUpdate = mSpClass.getSelectedItemPosition() == 0;
+			mSpClass.setSelection(0);
+			if(forceUpdate) {
+				onClassChanged(classes.get(0));
+			}
+		}
+	}
+	
+	private void onClassChanged(ProgramClass programClass) {
+		
+	}
+
 	private void handleAddProgram() {
 		View view = View.inflate(getActivity(), R.layout.dialog_add_program, null);
 		final EditText etProgramName = (EditText) view.findViewById(R.id.dialog_add_program_et);
@@ -189,6 +320,7 @@ public class ProgramFragment extends Fragment {
 		}
 		Program program = new Program();
 		program.setProgramName(programName);
+		DataCenter.getPrograms().add(program); // Add new program to datacenter
 		new SaveProgramTask(program).execute();
 	}
 	
@@ -217,29 +349,241 @@ public class ProgramFragment extends Fragment {
 				mCallback.updateProgramSpinner(mCurrentProgram.getProgramName());
 			}
 		} else { // Add or delete program
-			DataCenter.fetchPrograms(new DataCenter.Callback() {
-				@Override
-				public void onFetched(ParseException e) {
-					// Update menu
-					ActivityCompat.invalidateOptionsMenu(getActivity());
-					// Update tab and spinner
-					if(mCallback != null) {
-						String pname = null;
-						if(changedProgram != null) {
-							pname = changedProgram.getProgramName();
-						}
-						mCallback.updateProgramSpinner(pname);
-					}
+			// Update menu
+			ActivityCompat.invalidateOptionsMenu(getActivity());
+			// Update tab and spinner
+			if(mCallback != null) {
+				String pname = null;
+				if(changedProgram != null) {
+					pname = changedProgram.getProgramName();
 				}
-			});
+				mCallback.updateProgramSpinner(pname);
+			}
 		}
 	}
 	
 	private void doDeleteProgram(Program program) {
 		if(program != null) {
+			DataCenter.getPrograms().remove(program); // Delete from datacenter
 			new DeleteProgramTask(program).execute();
 		}
 	}
+	
+	private void handleAddClass() {
+		View v = View.inflate(getActivity(), R.layout.dialog_add_program, null);
+		final EditText et = (EditText) v.findViewById(R.id.dialog_add_program_et);
+		et.setHint(R.string.dialog_hint_class_name);
+		new AlertDialog.Builder(getActivity())
+		.setTitle(R.string.dialog_title_add_class)
+		.setView(v)
+		.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				String newClassName = et.getText().toString();
+				doAddClass(newClassName);
+			}
+		}).setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				return;
+			}
+		}).show();
+	}
+	
+	private void doAddClass(final String newClassName) {
+		if(mCurrentProgram == null) {
+			return;
+		}
+		if(newClassName.length() == 0) {
+			Toast.makeText(getActivity(), R.string.error_program_class_name_empty, Toast.LENGTH_SHORT).show();
+			return;
+		}
+		ProgramClass newClass = new ProgramClass();
+		newClass.setTitle(newClassName);
+		mCurrentProgram.addClass(newClass);
+		
+		if(mCallback != null) {
+			mCallback.showProgress(true);
+		}
+		mCurrentProgram.saveInBackground(new SaveCallback() {
+			@Override
+			public void done(ParseException e) {
+				if(mCallback != null) {
+					mCallback.showProgress(false);
+				}
+				if(e == null) { // Success
+					updateClassBanner(newClassName);
+				} else { // Fail
+					Logger.e(TAG, e.getMessage(), e);
+					Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+				}
+			}
+		});
+	}
+	
+	private void handleRenameClass() {
+		if(mCurrentProgram == null) {
+			return;
+		}
+		List<ProgramClass> classes = mCurrentProgram.getClasses();
+		if(classes == null || classes.size() == 0) {
+			return;
+		}
+		final ProgramClass currentClass = classes.get(mSpClass.getSelectedItemPosition());
+		
+		View v = View.inflate(getActivity(), R.layout.dialog_add_program, null);
+		final EditText et = (EditText) v.findViewById(R.id.dialog_add_program_et);
+		et.setHint(R.string.dialog_hint_class_name);
+		String oldName = currentClass.getTitle();
+		et.setText(oldName);
+		et.setSelection(0, oldName.length());
+		new AlertDialog.Builder(getActivity())
+		.setTitle(R.string.dialog_title_rename_class)
+		.setView(v)
+		.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				String newClassName = et.getText().toString();
+				doRenameClass(currentClass, newClassName);
+			}
+		}).setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				return;
+			}
+		}).show();
+	}
+	
+	private void doRenameClass(ProgramClass renameClass, final String newName) {
+		if(renameClass == null) {
+			return;
+		}
+		if(newName.length() == 0) {
+			Toast.makeText(getActivity(), R.string.error_program_class_name_empty,
+					Toast.LENGTH_SHORT).show();
+			return;
+		}
+		if(newName.equals(renameClass.getTitle())) {
+			Toast.makeText(getActivity(), R.string.error_program_class_not_changing,
+					Toast.LENGTH_SHORT).show();
+			return;
+		}
+		
+		renameClass.setTitle(newName);
+		if(mCallback != null) {
+			mCallback.showProgress(true);
+		}
+		renameClass.saveInBackground(new SaveCallback() {
+			@Override
+			public void done(ParseException e) {
+				if(mCallback != null) {
+					mCallback.showProgress(false);
+				}
+				if(e == null) { // Success
+					updateClassSpinner(newName);
+				} else {
+					Logger.e(TAG, e.getMessage(), e);
+					Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+				}
+			}
+		});
+	}
+	
+	private void handleDeleteClass() {
+		if(mCurrentProgram == null) {
+			return;
+		}
+		List<ProgramClass> classes = mCurrentProgram.getClasses();
+		if(classes == null || classes.size() == 0) {
+			return;
+		}
+		final ProgramClass currentClass = classes.get(mSpClass.getSelectedItemPosition());
+		
+		new AlertDialog.Builder(getActivity())
+		.setTitle(R.string.dialog_title_delete_class)
+		.setMessage(R.string.dialog_msg_delete_class)
+		.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				doDeleteClass(currentClass);
+			}
+		}).setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				return;
+			}
+		}).show();
+	}
+	
+	private void doDeleteClass(ProgramClass currentClass) {
+		if(mCurrentProgram == null) {
+			return;
+		}
+		mCurrentProgram.getClasses().remove(currentClass);
+		if(mCallback != null) {
+			mCallback.showProgress(true);
+		}
+		currentClass.deleteInBackground(new DeleteCallback() {
+			@Override
+			public void done(ParseException e) {
+				if(mCallback != null) {
+					mCallback.showProgress(false);
+				}
+				if(e == null) { // Success
+					updateClassBanner(null);
+				} else {
+					Logger.e(TAG, e.getMessage(), e);
+					Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+				}
+			}
+		});
+	}
+	
+	private void handleEditCourses() {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	private void handleEditStudents() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private OnClickListener onButtonsClickListener = new OnClickListener() {
+		@Override
+		public void onClick(View v) {
+			int id = v.getId();
+			if(id == R.id.program_class_add_btn) {
+				handleAddClass();
+			} else if(id == R.id.program_class_rename_btn) {
+				handleRenameClass();
+			} else if(id == R.id.program_class_delete_btn) {
+				handleDeleteClass();
+			} else if(id == R.id.program_courses_edit_btn) {
+				handleEditCourses();
+			} else if(id == R.id.program_students_edit_btn) {
+				handleEditStudents();
+			}
+		}
+	};
+	
+	private OnItemSelectedListener onClassSelectedListener = new OnItemSelectedListener() {
+
+		@Override
+		public void onItemSelected(AdapterView<?> parent, View view,
+				int position, long id) {
+			if(mCurrentProgram != null) {
+				List<ProgramClass> classes = mCurrentProgram.getClasses();
+				ProgramClass programClass = classes.get(position);
+				onClassChanged(programClass);
+			}
+		}
+
+		@Override
+		public void onNothingSelected(AdapterView<?> parent) {
+			
+		}
+	};
 	
 	class SaveProgramTask extends AsyncTask<Void, Void, Void> {
 

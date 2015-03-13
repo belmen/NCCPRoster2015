@@ -120,7 +120,7 @@ public class MainActivity extends BaseActivity implements FragmentCallback {
 	 */
 	@Override
 	public void showProgress(boolean show) {
-		Logger.i(TAG, "Show progress bar: " + String.valueOf(show));
+//		Logger.i(TAG, "Show progress bar: " + String.valueOf(show));
 		if(show) {
 			mProgress.setVisibility(View.VISIBLE);
 		} else {

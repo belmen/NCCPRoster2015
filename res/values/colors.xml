@@ -12,4 +12,6 @@
     <color name="gray_bg">#eeeeee</color>
     <color name="blue_text_highlight">#33b5e5</color>
     <color name="item_checked_bg">#7f00aeed</color>
+    <color name="blue_500">#2196F3</color>
+    <color name="blue_grey_200">#B0BEC5</color>
 </resources>

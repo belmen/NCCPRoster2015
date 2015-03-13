@@ -16,7 +16,6 @@
             android:id="@+id/student_detail_edit_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@null"
             android:padding="10dp"
             android:src="@drawable/ic_menu_edit" />
 
@@ -24,7 +23,6 @@
             android:id="@+id/student_detail_delete_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@null"
             android:padding="10dp"
             android:src="@drawable/ic_menu_delete" />
     </LinearLayout>
