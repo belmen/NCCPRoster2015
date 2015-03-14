@@ -1,5 +1,7 @@
 package nccp.app.ui;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import nccp.app.R;
@@ -24,6 +26,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -32,7 +35,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.parse.DeleteCallback;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
@@ -90,9 +92,9 @@ public class ProgramFragment extends Fragment {
 		mSpClass.setAdapter(mClassAdapter);
 		mClassBannerView = (LinearLayout) v.findViewById(R.id.program_class_banner);
 		mClassScrollView = (ScrollView) v.findViewById(R.id.program_class_scroller);
-		ImageButton ibEditCourse = (ImageButton) v.findViewById(R.id.program_courses_edit_btn);
+		Button ibEditCourse = (Button) v.findViewById(R.id.program_courses_edit_btn);
 		ibEditCourse.setOnClickListener(onButtonsClickListener);
-		ImageButton ibEditStudents = (ImageButton) v.findViewById(R.id.program_students_edit_btn);
+		Button ibEditStudents = (Button) v.findViewById(R.id.program_students_edit_btn);
 		ibEditStudents.setOnClickListener(onButtonsClickListener);
 		return v;
 	}
@@ -178,7 +180,12 @@ public class ProgramFragment extends Fragment {
 				if(mCallback != null) {
 					mCallback.showProgress(false);
 				}
-				updateClassSpinner(selectedClassName);
+				if(e == null) {
+					updateClassSpinner(selectedClassName);
+				} else {
+					Logger.e(TAG, e.getMessage(), e);
+					Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
+				}
 			}
 		});
 	}
@@ -313,14 +320,26 @@ public class ProgramFragment extends Fragment {
 	}
 	
 	private void doAddProgram(String programName) {
+		// Check empty
 		if(programName == null || programName.length() == 0) {
 			Toast.makeText(getActivity(), R.string.dialog_error_program_name_empty, Toast.LENGTH_SHORT)
 			.show();
 			return;
 		}
+		List<Program> programs = DataCenter.getPrograms();
+		// Check duplicate
+		for(Program program : programs) {
+			if(programName.equals(program.getProgramName())) {
+				Toast.makeText(getActivity(),
+						getString(R.string.error_program_name_exists, programName), Toast.LENGTH_SHORT)
+				.show();
+				return;
+			}
+		}
+		
 		Program program = new Program();
 		program.setProgramName(programName);
-		DataCenter.getPrograms().add(program); // Add new program to datacenter
+		programs.add(program); // Add new program to data center
 		new SaveProgramTask(program).execute();
 	}
 	
@@ -394,13 +413,28 @@ public class ProgramFragment extends Fragment {
 		if(mCurrentProgram == null) {
 			return;
 		}
+		// Check empty
 		if(newClassName.length() == 0) {
-			Toast.makeText(getActivity(), R.string.error_program_class_name_empty, Toast.LENGTH_SHORT).show();
+			Toast.makeText(getActivity(), R.string.error_program_class_name_empty,
+					Toast.LENGTH_SHORT).show();
 			return;
 		}
+		
+		// Check duplicates
+		List<ProgramClass> classes = mCurrentProgram.getClasses();
+		for(ProgramClass c : classes) {
+			if(newClassName.equals(c.getTitle())) {
+				Toast.makeText(getActivity(),
+						getString(R.string.error_class_name_exists, newClassName), Toast.LENGTH_SHORT)
+				.show();
+				return;
+			}
+		}
+		
 		ProgramClass newClass = new ProgramClass();
 		newClass.setTitle(newClassName);
-		mCurrentProgram.addClass(newClass);
+		classes.add(newClass);
+		Collections.sort(classes, classComparator);
 		
 		if(mCallback != null) {
 			mCallback.showProgress(true);
@@ -470,10 +504,13 @@ public class ProgramFragment extends Fragment {
 		}
 		
 		renameClass.setTitle(newName);
+		List<ProgramClass> classes = mCurrentProgram.getClasses();
+		Collections.sort(classes, classComparator); // Sort classes
+		
 		if(mCallback != null) {
 			mCallback.showProgress(true);
 		}
-		renameClass.saveInBackground(new SaveCallback() {
+		mCurrentProgram.saveInBackground(new SaveCallback() {
 			@Override
 			public void done(ParseException e) {
 				if(mCallback != null) {
@@ -501,7 +538,7 @@ public class ProgramFragment extends Fragment {
 		
 		new AlertDialog.Builder(getActivity())
 		.setTitle(R.string.dialog_title_delete_class)
-		.setMessage(R.string.dialog_msg_delete_class)
+		.setMessage(getString(R.string.dialog_msg_delete_class, currentClass.getTitle()))
 		.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
@@ -516,27 +553,10 @@ public class ProgramFragment extends Fragment {
 	}
 	
 	private void doDeleteClass(ProgramClass currentClass) {
-		if(mCurrentProgram == null) {
+		if(mCurrentProgram == null || currentClass == null) {
 			return;
 		}
-		mCurrentProgram.getClasses().remove(currentClass);
-		if(mCallback != null) {
-			mCallback.showProgress(true);
-		}
-		currentClass.deleteInBackground(new DeleteCallback() {
-			@Override
-			public void done(ParseException e) {
-				if(mCallback != null) {
-					mCallback.showProgress(false);
-				}
-				if(e == null) { // Success
-					updateClassBanner(null);
-				} else {
-					Logger.e(TAG, e.getMessage(), e);
-					Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
-				}
-			}
-		});
+		new DeleteClassTask(mCurrentProgram, currentClass).execute();
 	}
 	
 	private void handleEditCourses() {
@@ -564,6 +584,13 @@ public class ProgramFragment extends Fragment {
 			} else if(id == R.id.program_students_edit_btn) {
 				handleEditStudents();
 			}
+		}
+	};
+	
+	private Comparator<ProgramClass> classComparator = new Comparator<ProgramClass>() {
+		@Override
+		public int compare(ProgramClass lhs, ProgramClass rhs) {
+			return lhs.getTitle().compareTo(rhs.getTitle());
 		}
 	};
 	
@@ -645,6 +672,11 @@ public class ProgramFragment extends Fragment {
 		@Override
 		protected Void doInBackground(Void... params) {
 			try {
+				// Delete all classes
+				List<ProgramClass> classes = program.getClasses();
+				for(ProgramClass c : classes) {
+					c.delete();
+				}
 				program.delete();
 			} catch (ParseException e) {
 				this.e = e;
@@ -659,6 +691,51 @@ public class ProgramFragment extends Fragment {
 			}
 			if(e == null) { // Success
 				handleProgramChanged(null);
+			} else {
+				Logger.e(TAG, e.getMessage(), e);
+				Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+			}
+		}
+	}
+	
+	class DeleteClassTask extends AsyncTask<Void, Void, Void> {
+
+		private ParseException e;
+		private Program program;
+		private ProgramClass programClass;
+		
+		public DeleteClassTask(Program program, ProgramClass programClass) {
+			this.program = program;
+			this.programClass = programClass;
+		}
+
+		@Override
+		protected void onPreExecute() {
+			if(mCallback != null) {
+				mCallback.showProgress(true);
+			}
+		}
+
+		@Override
+		protected Void doInBackground(Void... params) {
+			try {
+				if(program.getClasses().remove(programClass)) {
+					program.save();
+				}
+				programClass.delete();
+			} catch (ParseException e) {
+				this.e = e;
+			}
+			return null;
+		}
+
+		@Override
+		protected void onPostExecute(Void result) {
+			if(mCallback != null) {
+				mCallback.showProgress(false);
+			}
+			if(e == null) { // Success
+				updateClassBanner(null);
 			} else {
 				Logger.e(TAG, e.getMessage(), e);
 				Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();

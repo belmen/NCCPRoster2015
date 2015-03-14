@@ -33,9 +33,11 @@
 	<string name="dialog_title_delete_class">Delete class</string>
 	<string name="dialog_msg_delete_class">Delete class %s?</string>
 	
-	<!-- Error -->
+	<!-- Error message -->
 	<string name="error_program_class_name_empty">Class name is empty</string>
 	<string name="error_program_class_not_changing">Class name does not change</string>
+	<string name="error_program_name_exists">Program %s already exists</string>
+	<string name="error_class_name_exists">Class %s already exists</string>
 	
 	<!-- Login -->
 	<string name="login_username_empty">Username is empty</string>
