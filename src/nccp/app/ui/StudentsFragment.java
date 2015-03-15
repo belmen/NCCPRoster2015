@@ -256,14 +256,14 @@ public class StudentsFragment extends Fragment implements OnQueryTextListener {
 		if(mSelectedStudent == null) {
 			return;
 		}
-		Intent intent = new Intent(getActivity(), EditStudentActivity.class);
+		Intent intent = new Intent(getActivity(), StudentEditorActivity.class);
 		StudentProxy proxy = StudentProxy.fromParseObject(mSelectedStudent);
 		intent.putExtra(Const.EXTRA_STUDENT, proxy);
 		startActivityForResult(intent, REQUEST_EDIT_STUDENT);
 	}
 
 	private void handleAddStudent() {
-		Intent intent = new Intent(getActivity(), EditStudentActivity.class);
+		Intent intent = new Intent(getActivity(), StudentEditorActivity.class);
 		startActivityForResult(intent, REQUEST_ADD_STUDENT);
 	}
 	

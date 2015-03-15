@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <android.support.v7.widget.Toolbar
+        xmlns:nccp="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/edit_course_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/orange_bg"
+        android:minHeight="?attr/actionBarSize"
+        nccp:theme="@style/ThemeOverlay.AppCompat.ActionBar" >
+    </android.support.v7.widget.Toolbar>
+
+    <ProgressBar
+        android:id="@+id/edit_course_progress"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="-7dp"
+        android:layout_below="@id/edit_course_toolbar"
+        android:indeterminate="true"
+        android:visibility="invisible" />
+
+    <ListView
+        android:id="@+id/edit_course_listview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/edit_course_toolbar" />
+</RelativeLayout>

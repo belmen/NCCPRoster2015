@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -20,9 +19,9 @@ import android.widget.Toast;
 
 import com.parse.ParseException;
 
-public class EditStudentActivity extends BaseActivity {
+public class StudentEditorActivity extends BaseActivity {
 
-	public static final String TAG = EditStudentActivity.class.getSimpleName();
+	public static final String TAG = StudentEditorActivity.class.getSimpleName();
 	
 	// Views
 	private EditText mEtStudentId;
@@ -54,26 +53,11 @@ public class EditStudentActivity extends BaseActivity {
 	}
 	
 	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.menu.student_editor, menu);
-		return super.onCreateOptionsMenu(menu);
-	}
-
-	@Override
-	public boolean onPrepareOptionsMenu(Menu menu) {
-		MenuItem doneMenu = menu.getItem(0);
-		doneMenu.setEnabled(!mInProgress);
-		return super.onPrepareOptionsMenu(menu);
-	}
-
-	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		int id = item.getItemId();
 		if(id == android.R.id.home) {
-			finish();
-			return true;
-		} else if(id == R.id.action_student_editor_ok) {
 			handleEditDone();
+			return true;
 		}
 		return super.onOptionsItemSelected(item);
 	}
@@ -83,7 +67,7 @@ public class EditStudentActivity extends BaseActivity {
 		mEtFirstName = (EditText) findViewById(R.id.student_editor_first_name_edit);
 		mEtLastName = (EditText) findViewById(R.id.student_editor_last_name_edit);
 		mSpGradeLevel = (Spinner) findViewById(R.id.student_editor_gradelevel_spinner);
-		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(EditStudentActivity.this,
+		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(StudentEditorActivity.this,
 				R.array.grade_levels, android.R.layout.simple_spinner_item);
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		mSpGradeLevel.setAdapter(adapter);
@@ -94,6 +78,7 @@ public class EditStudentActivity extends BaseActivity {
 		Toolbar tb = (Toolbar) findViewById(R.id.edit_student_toolbar);
 		setSupportActionBar(tb);
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu_check_24dp);
 	}
 
 	private void initData() {
@@ -131,6 +116,9 @@ public class EditStudentActivity extends BaseActivity {
 	}
 
 	private void handleEditDone() {
+		if(mInProgress) {
+			return;
+		}
 		String firstname = mEtFirstName.getText().toString();
 		if(firstname.length() == 0) {
 			mEtFirstName.setError(getString(R.string.student_editor_error_firstname_empty));
@@ -185,21 +173,21 @@ public class EditStudentActivity extends BaseActivity {
 		protected void onPreExecute() {
 			mInProgress = true;
 			mProgressBar.setVisibility(View.VISIBLE);
-			supportInvalidateOptionsMenu();
+//			supportInvalidateOptionsMenu();
 		}
 
 		@Override
 		protected void onPostExecute(Void result) {
 			mInProgress = false;
-			mProgressBar.setVisibility(View.GONE);
-			supportInvalidateOptionsMenu();
+			mProgressBar.setVisibility(View.INVISIBLE);
+//			supportInvalidateOptionsMenu();
 			
 			if(e == null) {
 				mStudent = student;
 				handleSaveSuccess();
 			} else {
 				// Show fail toast
-				Toast.makeText(EditStudentActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+				Toast.makeText(StudentEditorActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
 			}
 		}
 	}

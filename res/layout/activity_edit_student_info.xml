@@ -1,29 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:layout_height="match_parent" >
 
-    <android.support.v7.widget.Toolbar xmlns:nccp="http://schemas.android.com/apk/res-auto"
+    <android.support.v7.widget.Toolbar
+        xmlns:nccp="http://schemas.android.com/apk/res-auto"
         android:id="@+id/edit_student_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/orange_bg"
         android:minHeight="?attr/actionBarSize"
-        nccp:theme="@style/ThemeOverlay.AppCompat.ActionBar" >
-        
-        <ProgressBar
-            android:id="@+id/student_editor_progress"
-            android:layout_width="wrap_content"
-        	android:layout_height="wrap_content"
-        	android:layout_gravity="right"
-        	android:layout_marginRight="20dp"
-        	android:visibility="gone" />
-    </android.support.v7.widget.Toolbar>
+        nccp:theme="@style/ThemeOverlay.AppCompat.ActionBar" />
+
+    <ProgressBar
+        android:id="@+id/student_editor_progress"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="-7dp"
+        android:layout_below="@id/edit_student_toolbar"
+        android:indeterminate="true"
+        android:visibility="invisible" />
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@id/edit_student_toolbar"
         android:background="@color/gray_bg" >
 
         <LinearLayout
@@ -199,8 +201,9 @@
             android:layout_marginTop="20dp"
             android:hint="@string/student_editor_emergency_contact_relationship"
             android:inputType="text"
-            android:singleLine="true" />            -->
+            android:singleLine="true" />
+            -->
         </LinearLayout>
     </ScrollView>
 
-</LinearLayout>
+</RelativeLayout>

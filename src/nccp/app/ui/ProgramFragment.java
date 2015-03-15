@@ -564,7 +564,7 @@ public class ProgramFragment extends Fragment {
 	}
 	
 	private void handleEditCourses() {
-		Intent intent = new Intent(getActivity(), EditCourseActivity.class);
+		Intent intent = new Intent(getActivity(), CourseEditorActivity.class);
 		startActivityForResult(intent, REQUEST_EDIT_COURSE);
 	}
 	

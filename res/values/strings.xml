@@ -105,4 +105,7 @@
 	<string name="program_class_empty">No classes. Press + to add one</string>
 	<string name="program_class_section_courses">COURSES</string>
 	<string name="program_class_section_students">STUDENTS</string>
+	
+	<!-- Edit course -->
+	<string name="title_edit_course">Course schedule of %1$s, %2$s</string>
 </resources>

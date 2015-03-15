@@ -32,8 +32,8 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name="nccp.app.ui.EditStudentActivity"/>
-        <activity android:name="nccp.app.ui.EditCourseActivity"/>
+        <activity android:name="nccp.app.ui.StudentEditorActivity"/>
+        <activity android:name="nccp.app.ui.CourseEditorActivity"/>
     </application>
 
 </manifest>

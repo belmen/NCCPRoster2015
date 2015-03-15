@@ -2,7 +2,7 @@
 <resources>
     <!-- <color name="orange_bg">#faab50</color> -->
     <color name="orange_bg">#fab360</color>
-    <color name="brown_bg">#d78031</color>
+    <!-- <color name="brown_bg">#d78031</color> -->
     <color name="dark_brown">#b35612</color>
     <color name="orange_button">#b35612</color>
     <color name="orange_button_pressed">#974509</color>
