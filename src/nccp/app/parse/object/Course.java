@@ -38,7 +38,7 @@ public class Course extends BaseParseObject {
 		put(TAG_COURSE_TIME, c.getTime());
 	}
 	
-	private Date getTime() {
+	public Date getTime() {
 		Date time = getDate(TAG_COURSE_TIME);
 		if(time == null) {
 			time = new Date(0);

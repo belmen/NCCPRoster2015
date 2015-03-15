@@ -8,6 +8,7 @@ import nccp.app.R;
 import nccp.app.data.DataCenter;
 import nccp.app.parse.object.Program;
 import nccp.app.parse.object.ProgramClass;
+import nccp.app.utils.Const;
 import nccp.app.utils.Logger;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -565,6 +566,13 @@ public class ProgramFragment extends Fragment {
 	
 	private void handleEditCourses() {
 		Intent intent = new Intent(getActivity(), CourseEditorActivity.class);
+		int programIndex = -1;
+		if(mCallback != null) {
+			programIndex = mCallback.getCurrentProgramIndex();
+		}
+		int classIndex = mSpClass.getSelectedItemPosition();
+		intent.putExtra(Const.EXTRA_PROGRAM_INDEX, programIndex);
+		intent.putExtra(Const.EXTRA_CLASS_INDEX, classIndex);
 		startActivityForResult(intent, REQUEST_EDIT_COURSE);
 	}
 	

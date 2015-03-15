@@ -68,24 +68,18 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal" >
 
-                <TextView
+                <TextView style="@style/SectionHeaderTextStyle"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:layout_marginRight="20dp"
-                    android:paddingLeft="10dp"
-                    android:background="@drawable/list_section_divider"
-                    android:gravity="center_vertical"
-                    android:text="@string/program_class_section_courses"
-                    android:textColor="@android:color/black"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
+                    android:text="@string/program_class_section_courses" />
 
                 <Button
                     android:id="@+id/program_courses_edit_btn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-					android:text="EDIT"
+					android:text="@string/button_edit"
                     android:textStyle="bold" />
             </LinearLayout>
 
@@ -95,24 +89,18 @@
                 android:layout_marginTop="20dp"
                 android:orientation="horizontal" >
 
-                <TextView
+                <TextView style="@style/SectionHeaderTextStyle"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:layout_marginRight="20dp"
-                    android:paddingLeft="10dp"
-                    android:background="@drawable/list_section_divider"
-                    android:gravity="center_vertical"
-                    android:text="@string/program_class_section_students"
-                    android:textColor="@android:color/black"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
+                    android:text="@string/program_class_section_students" />
 
                 <Button
                     android:id="@+id/program_students_edit_btn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="EDIT"
+                    android:text="@string/button_edit"
                     android:textStyle="bold" />
             </LinearLayout>
         </LinearLayout>

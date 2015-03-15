@@ -45,7 +45,7 @@ public class StudentEditorActivity extends BaseActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_edit_student_info);
+		setContentView(R.layout.activity_student_info_editor);
 		mGradeLevels = getResources().getStringArray(R.array.grade_levels);
 		initViews();
 		initToolbar();
@@ -144,6 +144,8 @@ public class StudentEditorActivity extends BaseActivity {
 	}
 	
 	private void handleSaveSuccess() {
+		Toast.makeText(StudentEditorActivity.this,
+				getString(R.string.msg_student_info_saved), Toast.LENGTH_SHORT).show();
 		Intent intent = new Intent();
 		intent.putExtra(Const.EXTRA_STUDENT, StudentProxy.fromParseObject(mStudent));
 		setResult(RESULT_OK, intent);

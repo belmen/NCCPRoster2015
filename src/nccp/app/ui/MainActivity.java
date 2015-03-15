@@ -8,7 +8,6 @@ import nccp.app.parse.ParseManager;
 import nccp.app.parse.object.Program;
 import nccp.app.ui.MyToolbar.OnActionCollapsedListener;
 import nccp.app.utils.Const;
-import nccp.app.utils.Logger;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -171,6 +170,11 @@ public class MainActivity extends BaseActivity implements FragmentCallback {
 		}
 	}
 
+	@Override
+	public int getCurrentProgramIndex() {
+		return mSpProgram.getSelectedItemPosition();
+	}
+	
 	private void handleLogout() {
 		new AlertDialog.Builder(MainActivity.this)
 				.setTitle(R.string.dialog_title_logout)

@@ -14,18 +14,34 @@
     </android.support.v7.widget.Toolbar>
 
     <ProgressBar
-        android:id="@+id/edit_course_progress"
+        android:id="@+id/course_editor_progress"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="-7dp"
         android:layout_below="@id/edit_course_toolbar"
+        android:layout_marginTop="-7dp"
         android:indeterminate="true"
         android:visibility="invisible" />
 
-    <ListView
-        android:id="@+id/edit_course_listview"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/edit_course_toolbar" />
+        android:layout_below="@id/edit_course_toolbar" >
+
+        <ListView
+            android:id="@+id/course_editor_listview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <TextView
+            android:id="@+id/course_empty_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center_horizontal"
+            android:text="@string/course_empty"
+            android:textColor="@android:color/darker_gray"
+            android:textSize="30sp" />
+    </RelativeLayout>
+
 </RelativeLayout>

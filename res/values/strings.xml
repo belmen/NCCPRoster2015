@@ -33,6 +33,15 @@
 	<string name="dialog_title_delete_class">Delete class</string>
 	<string name="dialog_msg_delete_class">Delete class %s?</string>
 	
+	<!-- Menu -->
+	<string name="menu_new_course">New course</string>
+	
+	<!-- Button -->
+	<string name="button_edit">EDIT</string>
+	
+	<!-- Message -->
+	<string name="msg_student_info_saved">Student information saved</string>
+	
 	<!-- Error message -->
 	<string name="error_program_class_name_empty">Class name is empty</string>
 	<string name="error_program_class_not_changing">Class name does not change</string>
@@ -63,7 +72,7 @@
 	
 	<!-- Programs -->
 	<string name="title_programs">Programs</string>
-	<string name="programs_empty_text">No programs\nPress + to create one</string>
+	<string name="programs_empty_text">No programs\nTouch + to create one</string>
 	
 	<!-- Students -->
 	<string name="title_students">Students</string>
@@ -80,7 +89,7 @@
 	<string name="student_detail_id">STUDENT ID</string>
 	<string name="student_detail_gradelevel">GRADE LEVEL</string>
 	
-	<!-- Add student -->
+	<!-- Student editor -->
 	<string name="title_add_student">New student</string>
 	<string name="title_edit_student">Edit student</string>
 	<string name="student_editor_personal_info">PERSONAL INFORMATION</string>
@@ -97,7 +106,6 @@
 	<string name="student_editor_emergency_contact_name">Contact name</string>
 	<string name="student_editor_emergency_contact_phone">Contact phone</string>
 	<string name="student_editor_emergency_contact_relationship">Contact relationship</string>
-	<string name="menu_student_editor_done">Done</string>
 	<string name="student_editor_error_id_empty">Student ID is empty</string>
 	<string name="student_editor_error_firstname_empty">Must have a first name</string>
 	
@@ -107,5 +115,10 @@
 	<string name="program_class_section_students">STUDENTS</string>
 	
 	<!-- Edit course -->
-	<string name="title_edit_course">Course schedule of %1$s, %2$s</string>
+	<string name="title_course_editor">Edit course</string>
+	<string name="list_item_course_time">%1$s, %2$d minutes</string>
+	<string name="course_empty">No courses\nTouch + to add course</string>
+	<string name="course_name_hint">Course name</string>
+	<string name="course_time_section">COURSE TIME</string>
+	<string name="course_duration_section">DURATION</string>
 </resources>
