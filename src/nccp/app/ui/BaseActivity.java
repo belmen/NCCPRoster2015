@@ -23,8 +23,8 @@ public class BaseActivity extends ActionBarActivity {
 		if(!ParseManager.isDatabaseSet() || ParseUser.getCurrentUser() == null) { // Not logged in
 			// Go back to log in screen
 			Intent intent = new Intent(BaseActivity.this, LoginActivity.class);
+			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // Finish all previous activities
 			startActivity(intent);
-			finish();
 		}
 	}
 }

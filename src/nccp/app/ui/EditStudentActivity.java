@@ -46,7 +46,7 @@ public class EditStudentActivity extends BaseActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.edit_student_activity);
+		setContentView(R.layout.activity_edit_student_info);
 		mGradeLevels = getResources().getStringArray(R.array.grade_levels);
 		initViews();
 		initToolbar();
@@ -195,7 +195,6 @@ public class EditStudentActivity extends BaseActivity {
 			supportInvalidateOptionsMenu();
 			
 			if(e == null) {
-//				mStudent = Student.fromParseObject(result);
 				mStudent = student;
 				handleSaveSuccess();
 			} else {

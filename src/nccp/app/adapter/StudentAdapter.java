@@ -86,7 +86,7 @@ public class StudentAdapter extends BaseExpandableListAdapter {
 			View convertView, ViewGroup parent) {
 		GroupViewHolder vh;
 		if(convertView == null) {
-			convertView = View.inflate(mContext, R.layout.student_group_item, null);
+			convertView = View.inflate(mContext, R.layout.item_student_group, null);
 			vh = new GroupViewHolder();
 			vh.initial = (TextView) convertView;
 			convertView.setTag(vh);
@@ -105,7 +105,7 @@ public class StudentAdapter extends BaseExpandableListAdapter {
 			boolean isLastChild, View convertView, ViewGroup parent) {
 		ChildViewHolder vh;
 		if(convertView == null) {
-			convertView = View.inflate(mContext, R.layout.student_child_item, null);
+			convertView = View.inflate(mContext, R.layout.item_student_child, null);
 			vh = new ChildViewHolder();
 			vh.name = (TextView) convertView;
 			convertView.setTag(vh);

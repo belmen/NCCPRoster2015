@@ -53,7 +53,7 @@ public class MainActivity extends BaseActivity implements FragmentCallback {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.main_activity);
+		setContentView(R.layout.activity_main);
 		initToolbar();
 		initViews();
 		
@@ -66,7 +66,7 @@ public class MainActivity extends BaseActivity implements FragmentCallback {
 		tb.setOnActionCollapsedListener(mOnActionCollapsedListener);
 		mSpProgram = (Spinner) tb.findViewById(R.id.main_program_spinner);
 		mProgramAdapter = new ArrayAdapter<String>(MainActivity.this,
-				R.layout.program_spinner_item);
+				R.layout.item_program_spinner);
 		mProgramAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		mSpProgram.setAdapter(mProgramAdapter);
 		mSpProgram.setOnItemSelectedListener(onProgramSelectedListener);

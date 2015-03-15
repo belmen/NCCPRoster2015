@@ -26,7 +26,7 @@ public class ChooseDBActivity extends ActionBarActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.choose_db_activity);
+		setContentView(R.layout.activity_choose_db);
 		
 		initToolbar();
 		initViews();

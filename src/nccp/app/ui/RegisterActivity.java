@@ -38,7 +38,7 @@ public class RegisterActivity extends ActionBarActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 //		supportRequestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
-		setContentView(R.layout.register_activity);
+		setContentView(R.layout.activity_register);
 		initToolbar();
 //		getSupportActionBar().setTitle(R.string.title_register_account);
 //		setBannerTitle(R.string.title_register_account);

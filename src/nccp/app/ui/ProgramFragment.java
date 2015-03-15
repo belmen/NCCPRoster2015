@@ -12,6 +12,7 @@ import nccp.app.utils.Logger;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
@@ -44,6 +45,9 @@ public class ProgramFragment extends Fragment {
 
 	public static final String TAG = ProgramFragment.class.getSimpleName();
 
+	private static final int REQUEST_EDIT_COURSE = 0;
+	private static final int REQUEST_EDIT_STUDENT = 1;
+	
 	// Views
 	private TextView mEmptyView;
 	private TextView mTvClassEmpty;
@@ -78,7 +82,7 @@ public class ProgramFragment extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		View v = inflater.inflate(R.layout.program_fragment, container, false);
+		View v = inflater.inflate(R.layout.fragment_program, container, false);
 		mEmptyView = (TextView) v.findViewById(R.id.program_empty_text);
 		mTvClassEmpty = (TextView) v.findViewById(R.id.program_class_empty_text);
 		ImageButton ibAddClass = (ImageButton) v.findViewById(R.id.program_class_add_btn);
@@ -560,8 +564,8 @@ public class ProgramFragment extends Fragment {
 	}
 	
 	private void handleEditCourses() {
-		// TODO Auto-generated method stub
-		
+		Intent intent = new Intent(getActivity(), EditCourseActivity.class);
+		startActivityForResult(intent, REQUEST_EDIT_COURSE);
 	}
 	
 	private void handleEditStudents() {
