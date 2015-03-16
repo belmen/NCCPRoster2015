@@ -565,7 +565,7 @@ public class ProgramFragment extends Fragment {
 	}
 	
 	private void handleEditCourses() {
-		Intent intent = new Intent(getActivity(), CourseEditorActivity.class);
+		Intent intent = new Intent(getActivity(), CourseListActivity.class);
 		int programIndex = -1;
 		if(mCallback != null) {
 			programIndex = mCallback.getCurrentProgramIndex();

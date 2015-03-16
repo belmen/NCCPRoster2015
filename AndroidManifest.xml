@@ -33,6 +33,7 @@
             </intent-filter>
         </activity>
         <activity android:name="nccp.app.ui.StudentEditorActivity"/>
+        <activity android:name="nccp.app.ui.CourseListActivity"/>
         <activity android:name="nccp.app.ui.CourseEditorActivity"/>
     </application>
 

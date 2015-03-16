@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+    
+	<android.support.v7.widget.Toolbar
+        xmlns:nccp="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/activity_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/orange_bg"
+        android:minHeight="?attr/actionBarSize"
+        nccp:theme="@style/ThemeOverlay.AppCompat.ActionBar" />
+
+    <ProgressBar
+        android:id="@+id/toolbar_activity_progress"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/activity_toolbar"
+        android:layout_marginTop="-7dp"
+        android:indeterminate="true"
+        android:visibility="invisible" />
+</RelativeLayout>

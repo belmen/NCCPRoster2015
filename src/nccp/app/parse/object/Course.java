@@ -29,6 +29,10 @@ public class Course extends BaseParseObject {
 		put(TAG_DURATION, duration);
 	}
 	
+	public void setCourseTime(Date time) {
+		put(TAG_COURSE_TIME, time);
+	}
+	
 	public void setCourseTime(int dayOfWeek, int hourOfDay, int minute) {
 		Calendar c = Calendar.getInstance(Locale.US);
 		c.setTime(new Date(0));

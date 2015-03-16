@@ -7,19 +7,17 @@ import nccp.app.utils.Const;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
+import android.support.v7.app.ActionBar;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 import android.widget.Toast;
 
 import com.parse.ParseException;
 
-public class StudentEditorActivity extends BaseActivity {
+public class StudentEditorActivity extends ToolbarActivity {
 
 	public static final String TAG = StudentEditorActivity.class.getSimpleName();
 	
@@ -28,7 +26,6 @@ public class StudentEditorActivity extends BaseActivity {
 	private EditText mEtFirstName;
 	private EditText mEtLastName;
 	private Spinner mSpGradeLevel;
-	private ProgressBar mProgressBar;
 //	private EditText mEtAddress;
 //	private EditText mEtSite;
 //	private EditText mEtProgram;
@@ -71,14 +68,12 @@ public class StudentEditorActivity extends BaseActivity {
 				R.array.grade_levels, android.R.layout.simple_spinner_item);
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		mSpGradeLevel.setAdapter(adapter);
-		mProgressBar = (ProgressBar) findViewById(R.id.student_editor_progress);
 	}
 
 	private void initToolbar() {
-		Toolbar tb = (Toolbar) findViewById(R.id.edit_student_toolbar);
-		setSupportActionBar(tb);
-		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-		getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu_check_24dp);
+		ActionBar ab = getSupportActionBar();
+		ab.setDisplayHomeAsUpEnabled(true);
+		ab.setHomeAsUpIndicator(R.drawable.ic_menu_check_24dp);
 	}
 
 	private void initData() {
@@ -174,14 +169,14 @@ public class StudentEditorActivity extends BaseActivity {
 		@Override
 		protected void onPreExecute() {
 			mInProgress = true;
-			mProgressBar.setVisibility(View.VISIBLE);
+			showProgressBar(true);
 //			supportInvalidateOptionsMenu();
 		}
 
 		@Override
 		protected void onPostExecute(Void result) {
 			mInProgress = false;
-			mProgressBar.setVisibility(View.INVISIBLE);
+			showProgressBar(false);
 //			supportInvalidateOptionsMenu();
 			
 			if(e == null) {

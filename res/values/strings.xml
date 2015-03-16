@@ -115,7 +115,7 @@
 	<string name="program_class_section_students">STUDENTS</string>
 	
 	<!-- Edit course -->
-	<string name="title_course_editor">Edit course</string>
+	<string name="title_course_list">Course list</string>
 	<string name="list_item_course_time">%1$s, %2$d minutes</string>
 	<string name="course_empty">No courses\nTouch + to add course</string>
 	<string name="course_name_hint">Course name</string>
