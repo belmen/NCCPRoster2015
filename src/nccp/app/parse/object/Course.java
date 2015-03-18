@@ -88,6 +88,6 @@ public class Course extends BaseParseObject implements Comparable<Course> {
 		if(minuteDiff != 0) {
 			return minuteDiff;
 		}
-		return getCreatedAt().compareTo(another.getCreatedAt());
+		return 0;
 	}
 }

@@ -41,6 +41,7 @@ public class CourseEditorActivity extends ToolbarActivity {
 	
 	private static final int DEFAULT_HOURS_OF_DAY = 9;
 	private static final int DEFAULT_MINUTES = 0;
+	private static final int DEFAULT_DURATION = 18;
 	
 	// Views
 	private EditText mEtCourseName;
@@ -126,6 +127,7 @@ public class CourseEditorActivity extends ToolbarActivity {
 			mTime.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
 			mTime.set(Calendar.HOUR_OF_DAY, DEFAULT_HOURS_OF_DAY);
 			mTime.set(Calendar.MINUTE, DEFAULT_MINUTES);
+			mNpDuration.setValue(DEFAULT_DURATION);
 		}
 	}
 	

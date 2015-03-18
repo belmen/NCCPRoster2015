@@ -1,5 +1,6 @@
 package nccp.app.ui;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import nccp.app.R;
@@ -9,7 +10,11 @@ import nccp.app.parse.object.Course;
 import nccp.app.parse.object.Program;
 import nccp.app.parse.object.ProgramClass;
 import nccp.app.utils.Const;
+import nccp.app.utils.Logger;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.view.ActionMode;
@@ -21,6 +26,9 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.parse.ParseException;
 
 public class CourseListActivity extends ToolbarActivity {
 
@@ -82,16 +90,21 @@ public class CourseListActivity extends ToolbarActivity {
 		}
 	}
 	
-	private List<Course> getCourses() {
-		List<Course> course = null;
-		Program program = null;
+	private ProgramClass getProgramClass() {
 		ProgramClass programClass = null;
+		Program program = null;
 		if(mProgramIndex != -1) {
 			program = DataCenter.getPrograms().get(mProgramIndex);
 		}
 		if(program != null && mClassIndex != -1) {
 			programClass = program.getClasses().get(mClassIndex);
 		}
+		return programClass;
+	}
+	
+	private List<Course> getCourses() {
+		List<Course> course = null;
+		ProgramClass programClass = getProgramClass();
 		if(programClass != null) {
 			course = programClass.getCourses();
 		}
@@ -152,6 +165,16 @@ public class CourseListActivity extends ToolbarActivity {
 		startActivityForResult(intent, REQUEST_EDIT_COURSE);
 	}
 	
+
+	private void handleRemoveCourses(List<Integer> indices) {
+		new RemoveCoursesTask(getProgramClass(), indices).execute();
+	}
+	
+
+	private void handleRemoveSuccess() {
+		mAdapter.notifyDataSetChanged();
+	}
+	
 	private OnItemClickListener mOnCourseClickListener = new OnItemClickListener() {
 		@Override
 		public void onItemClick(AdapterView<?> parent, View view, int position,
@@ -169,6 +192,7 @@ public class CourseListActivity extends ToolbarActivity {
 
 		@Override
 		public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+			mode.setTitle(R.string.title_course_remove_mode);
 			getMenuInflater().inflate(R.menu.remove_course, menu);
 			return true;
 		}
@@ -179,10 +203,40 @@ public class CourseListActivity extends ToolbarActivity {
 		}
 
 		@Override
-		public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+		public boolean onActionItemClicked(final ActionMode mode, MenuItem item) {
 			int id = item.getItemId();
-			if(id == R.id.action_remove_course) {
-				
+			if(id == R.id.action_remove_commit) {
+				int count = mLvCourse.getCheckedItemCount();
+				if(count == 0) {
+					Toast.makeText(CourseListActivity.this,
+							R.string.msg_no_course_selected, Toast.LENGTH_SHORT).show();
+				} else {
+					final List<Integer> indices = new ArrayList<Integer>();
+					for(int i = 0; i < mAdapter.getCount(); ++i) {
+						if(mLvCourse.isItemChecked(i)) {
+							indices.add(i);
+						}
+					}
+					// Show dialog
+					Course first = (Course) mAdapter.getItem(indices.get(0));
+					String msg = count > 1 ? getString(R.string.dialog_msg_remove_course, count)
+							: getString(R.string.dialog_msg_remove_course_1, first.getCourseName());
+					new AlertDialog.Builder(CourseListActivity.this)
+					.setTitle(R.string.dialog_title_remove_course)
+					.setMessage(msg)
+					.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							handleRemoveCourses(indices);
+							mode.finish();
+						}
+					}).setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							return;
+						}
+					}).show();
+				}
 				return true;
 			}
 			return false;
@@ -190,16 +244,54 @@ public class CourseListActivity extends ToolbarActivity {
 
 		@Override
 		public void onDestroyActionMode(ActionMode mode) {
-			// TODO Auto-generated method stub
-			
 		}
 
 		@Override
 		public void onItemCheckedStateChanged(ActionMode mode, int position,
 				long id, boolean checked) {
-			// TODO Auto-generated method stub
-			
 		}
-		
 	};
+	
+	private class RemoveCoursesTask extends AsyncTask<Void, Void, Void> {
+
+		private ProgramClass programClass;
+		private List<Integer> indices;
+		private ParseException e;
+		
+		public RemoveCoursesTask(ProgramClass programClass, List<Integer> indices) {
+			this.programClass = programClass;
+			this.indices = indices;
+		}
+
+		@Override
+		protected void onPreExecute() {
+			showProgressBar(true);
+		}
+
+		@Override
+		protected Void doInBackground(Void... params) {
+			List<Course> courses = programClass.getCourses();
+			try {
+				for(int index : indices) {
+					Course course = courses.remove(index);
+					course.delete();
+				}
+				programClass.save();
+			} catch (ParseException e) {
+				this.e = e;
+			}
+			return null;
+		}
+
+		@Override
+		protected void onPostExecute(Void result) {
+			showProgressBar(false);
+			if(e == null) {
+				handleRemoveSuccess();
+			} else {
+				Logger.e(TAG, e.getMessage(), e);
+				Toast.makeText(CourseListActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+			}
+		}
+	}
 }

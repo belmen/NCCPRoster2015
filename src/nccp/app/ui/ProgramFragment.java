@@ -225,6 +225,9 @@ public class ProgramFragment extends Fragment {
 			return;
 		}
 		List<ProgramClass> classes = mCurrentProgram.getClasses();
+		if(classes == null) {
+			return;
+		}
 		// Update class spinner
 		mClassAdapter.clear();
 		for(ProgramClass c : classes) {
@@ -464,19 +467,21 @@ public class ProgramFragment extends Fragment {
 		
 		// Check duplicates
 		List<ProgramClass> classes = mCurrentProgram.getClasses();
-		for(ProgramClass c : classes) {
-			if(newClassName.equals(c.getTitle())) {
-				Toast.makeText(getActivity(),
-						getString(R.string.error_class_name_exists, newClassName), Toast.LENGTH_SHORT)
-				.show();
-				return;
+		if(classes != null) {
+			for(ProgramClass c : classes) {
+				if(newClassName.equals(c.getTitle())) {
+					Toast.makeText(getActivity(),
+							getString(R.string.error_class_name_exists, newClassName), Toast.LENGTH_SHORT)
+					.show();
+					return;
+				}
 			}
 		}
 		
 		ProgramClass newClass = new ProgramClass();
 		newClass.setTitle(newClassName);
-		classes.add(newClass);
-		Collections.sort(classes, classComparator);
+		mCurrentProgram.addClass(newClass);
+		Collections.sort(mCurrentProgram.getClasses(), classComparator);
 		
 		if(mCallback != null) {
 			mCallback.showProgress(true);

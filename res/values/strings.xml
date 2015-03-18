@@ -33,6 +33,9 @@
 	<string name="dialog_hint_class_name">Class name</string>
 	<string name="dialog_title_delete_class">Delete class</string>
 	<string name="dialog_msg_delete_class">Delete class %s?</string>
+	<string name="dialog_title_remove_course">Remove courses</string>
+	<string name="dialog_msg_remove_course_1">Remove %s?</string>
+	<string name="dialog_msg_remove_course">Remove these %d courses?</string>
 	
 	<!-- Menu -->
 	<string name="menu_new_course">New course</string>
@@ -44,12 +47,13 @@
 	<!-- Message -->
 	<string name="msg_student_info_saved">Student information saved</string>
 	<string name="msg_course_saved">Course saved</string>
+	<string name="msg_no_course_selected">No courses are selected</string>
 	
 	<!-- Error message -->
 	<string name="error_program_class_name_empty">Class name is empty</string>
 	<string name="error_program_class_not_changing">Class name does not change</string>
-	<string name="error_program_name_exists">Program %s already exists</string>
-	<string name="error_class_name_exists">Class %s already exists</string>
+	<string name="error_program_name_exists">%s already exists</string>
+	<string name="error_class_name_exists">%s already exists</string>
 	<string name="error_course_name_empty">Course name is empty</string>
 	<string name="error_course_duration_empty">Duration is empty</string>
 	<string name="error_course_duration_invalid">Duration must be a positive integer</string>
@@ -137,4 +141,5 @@
 	<string name="course_time_section">COURSE TIME</string>
 	<string name="course_duration_section">DURATION</string>
 	<string name="duration_minutes">minutes</string>
+	<string name="title_course_remove_mode">Remove courses</string>
 </resources>
