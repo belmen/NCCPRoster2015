@@ -27,14 +27,13 @@ import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.MenuItemCompat.OnActionExpandListener;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.SearchView.OnQueryTextListener;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.ExpandableListView;
 import android.widget.ExpandableListView.OnChildClickListener;
 import android.widget.ExpandableListView.OnGroupClickListener;
@@ -147,6 +146,12 @@ public class StudentsFragment extends Fragment implements OnQueryTextListener {
 		MenuItemCompat.setOnActionExpandListener(item, new OnActionExpandListener() {
 			@Override
 			public boolean onMenuItemActionExpand(MenuItem arg0) {
+				// Close detail and cancel highlight
+				if(isDetailOpen()) {
+					closeDetail();
+					mLvStudents.setItemChecked(mHighlightPosition, false);
+					mHighlightPosition = -1;
+				}
 				return true;
 			}
 			

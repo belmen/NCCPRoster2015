@@ -83,6 +83,8 @@
                     android:textStyle="bold" />
             </LinearLayout>
 
+            <include layout="@layout/view_course_schedule" />
+            
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

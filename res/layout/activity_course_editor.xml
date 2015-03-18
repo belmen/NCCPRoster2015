@@ -1,49 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="20dp" >
-    
-    <android.support.v7.widget.Toolbar
-        xmlns:nccp="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/edit_course_toolbar"
+    android:layout_height="match_parent" >
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/orange_bg"
-        android:minHeight="?attr/actionBarSize"
-        nccp:theme="@style/ThemeOverlay.AppCompat.ActionBar" />
-    
-	<EditText
-	    android:id="@+id/edit_course_edittext"
-	    android:layout_width="match_parent"
-	    android:layout_height="wrap_content"
-	    android:hint="@string/course_name_hint" />
-	
-	<TextView
-	    style="@style/SectionHeaderTextStyle"
-	    android:layout_width="match_parent"
-	    android:layout_height="wrap_content"
-	    android:text="@string/course_time_section" />
-	
-	<Spinner
-	    android:id="@+id/edit_course_dayofweek_spinner"
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content" />
-	
-	<TimePicker
-	    android:id="@+id/edit_course_timepicker"
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content" />
-	
-	<TextView
-	    style="@style/SectionHeaderTextStyle"
-	    android:layout_width="match_parent"
-	    android:layout_height="wrap_content"
-	    android:text="@string/course_duration_section" />
-	
-	<Spinner
-	    android:id="@+id/edit_course_duration_spinner"
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content" />
-</LinearLayout>
+		android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="40dp" >
+
+        <EditText
+            android:id="@+id/edit_course_edittext"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:inputType="text"
+            android:hint="@string/course_name_hint" />
+
+        <TextView
+            style="@style/SectionHeaderTextStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="@string/course_time_section" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal" >
+
+            <Spinner
+                android:id="@+id/edit_course_dayofweek_spinner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:entries="@array/day_of_weeks" />
+
+            <Button
+                android:id="@+id/edit_course_time_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:onClick="onCourseTimeBtnClick" />
+        </LinearLayout>
+
+        <TextView
+            style="@style/SectionHeaderTextStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="@string/course_duration_section" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal" >
+
+            <NumberPicker
+                android:id="@+id/edit_course_duration_numpicker"
+                android:layout_width="160dp"
+                android:layout_height="wrap_content" />
+            
+            <!-- <EditText
+                android:id="@+id/edit_course_duration_edittext"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:gravity="right"
+                android:inputType="number"
+                android:maxLength="4" /> -->
+            
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/duration_minutes"
+                android:layout_marginLeft="10dp" />
+        </LinearLayout>
+    </LinearLayout>
+
+</ScrollView>

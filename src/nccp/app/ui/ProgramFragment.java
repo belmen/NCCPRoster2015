@@ -6,6 +6,7 @@ import java.util.List;
 
 import nccp.app.R;
 import nccp.app.data.DataCenter;
+import nccp.app.parse.object.Course;
 import nccp.app.parse.object.Program;
 import nccp.app.parse.object.ProgramClass;
 import nccp.app.utils.Const;
@@ -175,24 +176,29 @@ public class ProgramFragment extends Fragment {
 		if(mCurrentProgram == null) {
 			return;
 		}
-		if(mCallback != null) {
-			mCallback.showProgress(true);
-		}
-		ParseObject.fetchAllIfNeededInBackground(mCurrentProgram.getClasses(),
-				new FindCallback<ProgramClass>() {
-			@Override
-			public void done(List<ProgramClass> data, ParseException e) {
-				if(mCallback != null) {
-					mCallback.showProgress(false);
-				}
-				if(e == null) {
-					updateClassSpinner(selectedClassName);
-				} else {
-					Logger.e(TAG, e.getMessage(), e);
-					Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
-				}
+		List<ProgramClass> classes = mCurrentProgram.getClasses();
+		if(classes.size() > 0 && !classes.get(0).isDataAvailable()) { // Need to fetch
+			if(mCallback != null) {
+				mCallback.showProgress(true);
 			}
-		});
+			ParseObject.fetchAllIfNeededInBackground(mCurrentProgram.getClasses(),
+					new FindCallback<ProgramClass>() {
+				@Override
+				public void done(List<ProgramClass> data, ParseException e) {
+					if(mCallback != null) {
+						mCallback.showProgress(false);
+					}
+					if(e == null) {
+						updateClassSpinner(selectedClassName);
+					} else {
+						Logger.e(TAG, e.getMessage(), e);
+						Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
+					}
+				}
+			});
+		} else {
+			updateClassSpinner(selectedClassName);
+		}
 	}
 	
 	private void updateClassBanner(String selectedClassName) {
@@ -203,15 +209,15 @@ public class ProgramFragment extends Fragment {
 			mIbRenameClass.setEnabled(false);
 			mIbDeleteClass.setEnabled(false);
 			mClassScrollView.setVisibility(View.INVISIBLE);
-			return;
+		} else {
+			mTvClassEmpty.setVisibility(View.GONE);
+			mSpClass.setVisibility(View.VISIBLE);
+			mIbRenameClass.setEnabled(true);
+			mIbDeleteClass.setEnabled(true);
+			mClassScrollView.setVisibility(View.VISIBLE);
+			
+			fetchClasses(selectedClassName);
 		}
-		mTvClassEmpty.setVisibility(View.GONE);
-		mSpClass.setVisibility(View.VISIBLE);
-		mIbRenameClass.setEnabled(true);
-		mIbDeleteClass.setEnabled(true);
-		mClassScrollView.setVisibility(View.VISIBLE);
-		
-		fetchClasses(selectedClassName);
 	}
 	
 	private void updateClassSpinner(String selectedClassName) {
@@ -242,19 +248,50 @@ public class ProgramFragment extends Fragment {
 				forceUpdate = mSpClass.getSelectedItemPosition() == index;
 				mSpClass.setSelection(index);
 				if(forceUpdate) {
-					onClassChanged(classes.get(index));
+					showClassInfo(classes.get(index));
 				}
 			}
 		} else if(!classes.isEmpty()) {
 			forceUpdate = mSpClass.getSelectedItemPosition() == 0;
 			mSpClass.setSelection(0);
 			if(forceUpdate) {
-				onClassChanged(classes.get(0));
+				showClassInfo(classes.get(0));
 			}
 		}
 	}
 	
-	private void onClassChanged(ProgramClass programClass) {
+	private void showClassInfo(ProgramClass programClass) {
+		showCourses(programClass.getCourses());
+	}
+	
+	private void showCourses(List<Course> courses) {
+		if(courses == null) {
+			return;
+		}
+		if(courses.size() > 0 && !courses.get(0).isDataAvailable()) { // Need to fetch
+			if(mCallback != null) {
+				mCallback.showProgress(true);
+			}
+			ParseObject.fetchAllIfNeededInBackground(courses, new FindCallback<Course>() {
+				@Override
+				public void done(List<Course> data, ParseException e) {
+					if(mCallback != null) {
+						mCallback.showProgress(false);
+					}
+					if(e == null) { // Success
+						updateCourseView(data);
+					} else { // Fail
+						Logger.e(TAG, e.getMessage(), e);
+						Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+					}
+				}
+			});
+		} else {
+			updateCourseView(courses);
+		}
+	}
+	
+	private void updateCourseView(List<Course> course) {
 		
 	}
 
@@ -614,7 +651,7 @@ public class ProgramFragment extends Fragment {
 			if(mCurrentProgram != null) {
 				List<ProgramClass> classes = mCurrentProgram.getClasses();
 				ProgramClass programClass = classes.get(position);
-				onClassChanged(programClass);
+				showClassInfo(programClass);
 			}
 		}
 

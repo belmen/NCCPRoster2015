@@ -2,6 +2,7 @@ package nccp.app.ui;
 
 import nccp.app.parse.ParseManager;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 
 import com.parse.ParseUser;
@@ -16,12 +17,10 @@ public class BaseActivity extends ActionBarActivity {
 	private boolean mCheckLogin = true;
 	
 	@Override
-	protected void onResume() {
-		super.onResume();
-		if(!mCheckLogin) {
-			return;
-		}
-		if(!ParseManager.isDatabaseSet() || ParseUser.getCurrentUser() == null) { // Not logged in
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		if(mCheckLogin &&
+		   (!ParseManager.isDatabaseSet() || ParseUser.getCurrentUser() == null)) { // Not logged in
 			// Go back to log in screen
 			Intent intent = new Intent(BaseActivity.this, LoginActivity.class);
 			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // Finish all previous activities

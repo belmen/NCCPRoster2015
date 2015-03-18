@@ -6,7 +6,8 @@
     <ListView
         android:id="@+id/course_editor_listview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:choiceMode="multipleChoiceModal" />
 
     <TextView
         android:id="@+id/course_empty_text"

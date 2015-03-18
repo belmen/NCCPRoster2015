@@ -14,6 +14,7 @@
 	<string name="action_add_program">Add program</string>
 	<string name="action_delete_program">Delete</string>
 	<string name="action_rename_program">Rename</string>
+	<string name="action_remove">Remove</string>
 	
 	<!-- Dialog -->
 	<string name="dialog_title_logout">Logout</string>
@@ -35,18 +36,23 @@
 	
 	<!-- Menu -->
 	<string name="menu_new_course">New course</string>
+	<string name="menu_remove_course">Remove course</string>
 	
 	<!-- Button -->
 	<string name="button_edit">EDIT</string>
 	
 	<!-- Message -->
 	<string name="msg_student_info_saved">Student information saved</string>
+	<string name="msg_course_saved">Course saved</string>
 	
 	<!-- Error message -->
 	<string name="error_program_class_name_empty">Class name is empty</string>
 	<string name="error_program_class_not_changing">Class name does not change</string>
 	<string name="error_program_name_exists">Program %s already exists</string>
 	<string name="error_class_name_exists">Class %s already exists</string>
+	<string name="error_course_name_empty">Course name is empty</string>
+	<string name="error_course_duration_empty">Duration is empty</string>
+	<string name="error_course_duration_invalid">Duration must be a positive integer</string>
 	
 	<!-- Login -->
 	<string name="login_username_empty">Username is empty</string>
@@ -73,6 +79,13 @@
 	<!-- Programs -->
 	<string name="title_programs">Programs</string>
 	<string name="programs_empty_text">No programs\nTouch + to create one</string>
+	<string name="sunday_short">Sun</string>
+	<string name="monday_short">Mon</string>
+	<string name="tuesday_short">Tue</string>
+	<string name="wednesday_short">Wed</string>
+	<string name="thursday_short">Thu</string>
+	<string name="friday_short">Fri</string>
+	<string name="saturday_short">Sat</string>
 	
 	<!-- Students -->
 	<string name="title_students">Students</string>
@@ -116,9 +129,12 @@
 	
 	<!-- Edit course -->
 	<string name="title_course_list">Course list</string>
+	<string name="title_edit_course">Edit course</string>
+	<string name="title_new_course">New course</string>
 	<string name="list_item_course_time">%1$s, %2$d minutes</string>
 	<string name="course_empty">No courses\nTouch + to add course</string>
 	<string name="course_name_hint">Course name</string>
 	<string name="course_time_section">COURSE TIME</string>
 	<string name="course_duration_section">DURATION</string>
+	<string name="duration_minutes">minutes</string>
 </resources>

@@ -7,7 +7,7 @@ import java.util.Locale;
 import com.parse.ParseClassName;
 
 @ParseClassName("Course")
-public class Course extends BaseParseObject {
+public class Course extends BaseParseObject implements Comparable<Course> {
 
 	public static final String TAG_COURSE_NAME = "courseName";
 	public static final String TAG_COURSE_TIME = "courseTime";
@@ -33,10 +33,16 @@ public class Course extends BaseParseObject {
 		put(TAG_COURSE_TIME, time);
 	}
 	
-	public void setCourseTime(int dayOfWeek, int hourOfDay, int minute) {
+	public void setDayOfWeek(int dayOfWeek) {
 		Calendar c = Calendar.getInstance(Locale.US);
-		c.setTime(new Date(0));
+		c.setTime(getTime());
 		c.set(Calendar.DAY_OF_WEEK, dayOfWeek);
+		put(TAG_COURSE_TIME, c.getTime());
+	}
+	
+	public void setCourseTime(int hourOfDay, int minute) {
+		Calendar c = Calendar.getInstance(Locale.US);
+		c.setTime(getTime());
 		c.set(Calendar.HOUR_OF_DAY, hourOfDay);
 		c.set(Calendar.MINUTE, minute);
 		put(TAG_COURSE_TIME, c.getTime());
@@ -66,5 +72,22 @@ public class Course extends BaseParseObject {
 		Calendar c = Calendar.getInstance(Locale.US);
 		c.setTime(getTime());
 		return c.get(Calendar.MINUTE);
+	}
+
+	@Override
+	public int compareTo(Course another) {
+		int dowDiff = getDayOfWeek() - another.getDayOfWeek();
+		if(dowDiff != 0) {
+			return dowDiff;
+		}
+		int hodDiff = getHourOfDay() - another.getHourOfDay();
+		if(hodDiff != 0) {
+			return hodDiff;
+		}
+		int minuteDiff = getMinute() - another.getMinute();
+		if(minuteDiff != 0) {
+			return minuteDiff;
+		}
+		return getCreatedAt().compareTo(another.getCreatedAt());
 	}
 }

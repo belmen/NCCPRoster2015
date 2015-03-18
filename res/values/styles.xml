@@ -19,6 +19,9 @@
     <!-- Application theme. -->
     <style name="AppTheme" parent="AppBaseTheme">
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
+        
+        <!-- Overlay CAB in action mode -->
+        <item name="windowActionModeOverlay">true</item> 
     </style>
     
     <!-- <style name="ActionBarTheme" parent="@style/Theme.AppCompat.Light">

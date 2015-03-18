@@ -5,5 +5,8 @@
         android:title="@string/menu_new_course"
         android:icon="@drawable/ic_menu_add"
         nccp:showAsAction="ifRoom|collapseActionView"/>
-
+	<item android:id="@+id/action_remove_course"
+        android:title="@string/menu_remove_course"
+        android:icon="@drawable/ic_menu_remove"
+        nccp:showAsAction="ifRoom|collapseActionView"/>
 </menu>

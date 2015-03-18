@@ -15,15 +15,15 @@
         <item>12</item>
     </string-array>
     <string-array name="day_of_weeks">
+        <item>Sunday</item>
         <item>Monday</item>
         <item>Tuesday</item>
         <item>Wednesday</item>
         <item>Thursday</item>
         <item>Friday</item>
         <item>Saturday</item>
-        <item>Sunday</item>
     </string-array>
-    <string-array name="course_durations">
+    <!-- <string-array name="course_durations">
         <item>15</item>
         <item>30</item>
         <item>45</item>
@@ -32,5 +32,5 @@
         <item>90</item>
         <item>105</item>
         <item>120</item>
-    </string-array>
+    </string-array> -->
 </resources>

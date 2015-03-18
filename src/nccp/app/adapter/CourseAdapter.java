@@ -46,10 +46,10 @@ public class CourseAdapter extends BaseAdapter {
 	public View getView(int position, View convertView, ViewGroup parent) {
 		ViewHolder vh;
 		if(convertView == null) {
-			convertView = View.inflate(mContext, android.R.layout.simple_list_item_2, null);
+			convertView = View.inflate(mContext, R.layout.item_course, null);
 			vh = new ViewHolder();
-			vh.name = (TextView) convertView.findViewById(android.R.id.text1);
-			vh.time = (TextView) convertView.findViewById(android.R.id.text2);
+			vh.name = (TextView) convertView.findViewById(R.id.course_name);
+			vh.info = (TextView) convertView.findViewById(R.id.course_info);
 			convertView.setTag(vh);
 		} else {
 			vh = (ViewHolder) convertView.getTag();
@@ -62,7 +62,7 @@ public class CourseAdapter extends BaseAdapter {
 			String time = mContext.getString(R.string.list_item_course_time,
 					courseDateFormat.format(item.getTime()),
 					item.getDuration());
-			vh.time.setText(time);
+			vh.info.setText(time);
 		}
 		
 		return convertView;
@@ -70,6 +70,6 @@ public class CourseAdapter extends BaseAdapter {
 
 	static class ViewHolder {
 		TextView name;
-		TextView time;
+		TextView info;
 	}
 }
