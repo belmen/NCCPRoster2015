@@ -142,4 +142,7 @@
 	<string name="course_duration_section">DURATION</string>
 	<string name="duration_minutes">minutes</string>
 	<string name="title_course_remove_mode">Remove courses</string>
+	
+	<!-- Course -->
+	<string name="title_student_list">Student list</string>
 </resources>

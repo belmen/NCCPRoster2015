@@ -672,8 +672,15 @@ public class ProgramFragment extends Fragment {
 	}
 	
 	private void handleEditStudents() {
-		// TODO Auto-generated method stub
-		
+		Intent intent = new Intent(getActivity(), CourseStudentListActivity.class);
+		int programIndex = -1;
+		if(mCallback != null) {
+			programIndex = mCallback.getCurrentProgramIndex();
+		}
+		int classIndex = mSpClass.getSelectedItemPosition();
+		intent.putExtra(Const.EXTRA_PROGRAM_INDEX, programIndex);
+		intent.putExtra(Const.EXTRA_CLASS_INDEX, classIndex);
+		startActivityForResult(intent, REQUEST_EDIT_STUDENT);
 	}
 
 	private OnClickListener onButtonsClickListener = new OnClickListener() {

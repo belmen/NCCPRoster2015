@@ -1,7 +1,9 @@
 package nccp.app.ui;
 
-import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import nccp.app.R;
 import nccp.app.adapter.CourseAdapter;
@@ -156,7 +158,7 @@ public class CourseListActivity extends ToolbarActivity {
 		super.onActivityResult(requestCode, resultCode, data);
 		if(requestCode == REQUEST_EDIT_COURSE) {
 			if(resultCode == RESULT_OK) {
-				mChanged = true;
+				mChanged = true; // Mark as changed
 				mCourses = getCourses();
 				showCourses(mCourses);
 			}
@@ -176,12 +178,12 @@ public class CourseListActivity extends ToolbarActivity {
 	}
 	
 
-	private void handleRemoveCourses(List<Integer> indices) {
+	private void handleRemoveCourses(Set<Integer> indices) {
 		new RemoveCoursesTask(getProgramClass(), indices).execute();
 	}
-	
 
 	private void handleRemoveSuccess() {
+		mChanged = true; // Mark as changed
 		mAdapter.notifyDataSetChanged();
 	}
 	
@@ -221,14 +223,18 @@ public class CourseListActivity extends ToolbarActivity {
 					Toast.makeText(CourseListActivity.this,
 							R.string.msg_no_course_selected, Toast.LENGTH_SHORT).show();
 				} else {
-					final List<Integer> indices = new ArrayList<Integer>();
+					final Set<Integer> indices = new HashSet<Integer>();
 					for(int i = 0; i < mAdapter.getCount(); ++i) {
 						if(mLvCourse.isItemChecked(i)) {
 							indices.add(i);
 						}
 					}
 					// Show dialog
-					Course first = (Course) mAdapter.getItem(indices.get(0));
+					Course first = null;
+					for(Integer index : indices) {
+						first = (Course) mAdapter.getItem(index);
+						break;
+					}
 					String msg = count > 1 ? getString(R.string.dialog_msg_remove_course, count)
 							: getString(R.string.dialog_msg_remove_course_1, first.getCourseName());
 					new AlertDialog.Builder(CourseListActivity.this)
@@ -265,10 +271,10 @@ public class CourseListActivity extends ToolbarActivity {
 	private class RemoveCoursesTask extends AsyncTask<Void, Void, Void> {
 
 		private ProgramClass programClass;
-		private List<Integer> indices;
+		private Set<Integer> indices;
 		private ParseException e;
 		
-		public RemoveCoursesTask(ProgramClass programClass, List<Integer> indices) {
+		public RemoveCoursesTask(ProgramClass programClass, Set<Integer> indices) {
 			this.programClass = programClass;
 			this.indices = indices;
 		}
@@ -282,9 +288,15 @@ public class CourseListActivity extends ToolbarActivity {
 		protected Void doInBackground(Void... params) {
 			List<Course> courses = programClass.getCourses();
 			try {
-				for(int index : indices) {
-					Course course = courses.remove(index);
-					course.delete();
+				Iterator<Course> iter = courses.iterator();
+				int i = 0;
+				while(iter.hasNext()) {
+					Course course = iter.next();
+					if(indices.contains(i)) {
+						course.delete(); // Remove course from remote DB
+						iter.remove(); // Remove from list
+					}
+					++i;
 				}
 				programClass.save();
 			} catch (ParseException e) {
