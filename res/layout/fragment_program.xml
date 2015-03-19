@@ -83,7 +83,7 @@
                     android:textStyle="bold" />
             </LinearLayout>
 
-            <include layout="@layout/view_course_schedule" />
+            <include layout="@layout/view_course_grid"/>
             
             <LinearLayout
                 android:layout_width="match_parent"

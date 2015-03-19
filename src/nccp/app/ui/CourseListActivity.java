@@ -45,6 +45,7 @@ public class CourseListActivity extends ToolbarActivity {
 	private int mClassIndex = -1;
 	private List<Course> mCourses = null;
 	private CourseAdapter mAdapter = null;
+	private boolean mChanged = false;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -135,6 +136,14 @@ public class CourseListActivity extends ToolbarActivity {
 		return super.onOptionsItemSelected(item);
 	}
 
+	@Override
+	public void onBackPressed() {
+		if(mChanged) {
+			setResult(RESULT_OK);
+		}
+		super.onBackPressed();
+	}
+
 	private void startRemoveMode() {
 		if(mAdapter.getCount() > 0) { // Has items
 			mLvCourse.setItemChecked(0, true); // Check one to automatically enter action mode
@@ -147,6 +156,7 @@ public class CourseListActivity extends ToolbarActivity {
 		super.onActivityResult(requestCode, resultCode, data);
 		if(requestCode == REQUEST_EDIT_COURSE) {
 			if(resultCode == RESULT_OK) {
+				mChanged = true;
 				mCourses = getCourses();
 				showCourses(mCourses);
 			}

@@ -21,7 +21,12 @@ public class ProgramClass extends BaseParseObject {
 	}
 
 	public List<Course> getCourses() {
-		return getList(TAG_COURSE_LIST);
+		List<Course> courses = getList(TAG_COURSE_LIST);
+		if(courses == null) {
+			courses = new ArrayList<Course>();
+			setCourses(courses);
+		}
+		return courses;
 	}
 
 	public void setCourses(List<Course> courses) {
@@ -30,15 +35,16 @@ public class ProgramClass extends BaseParseObject {
 	
 	public void addCourse(Course course) {
 		List<Course> courses = getCourses();
-		if(courses == null) {
-			courses = new ArrayList<Course>();
-			setCourses(courses);
-		}
 		courses.add(course);
 	}
 
 	public List<Student> getStudents() {
-		return getList(TAG_STUDENT_LIST);
+		List<Student> students = getList(TAG_STUDENT_LIST);
+		if(students == null) {
+			students = new ArrayList<Student>();
+			setStudents(students);
+		}
+		return students;
 	}
 
 	public void setStudents(List<Student> students) {
@@ -47,10 +53,6 @@ public class ProgramClass extends BaseParseObject {
 	
 	public void addStudent(Student student) {
 		List<Student> students = getStudents();
-		if(students == null) {
-			students = new ArrayList<Student>();
-			setStudents(students);
-		}
 		students.add(student);
 	}
 }

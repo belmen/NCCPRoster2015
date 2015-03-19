@@ -1,5 +1,6 @@
 package nccp.app.ui;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -19,6 +20,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -33,6 +35,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.LinearLayout.LayoutParams;
 import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -63,6 +66,7 @@ public class ProgramFragment extends Fragment {
 	private FragmentCallback mCallback = null;
 	private Program mCurrentProgram = null;
 	private ArrayAdapter<String> mClassAdapter = null;
+	private List<LinearLayout> mCourseGridColumns = new ArrayList<LinearLayout>();
 	
 	@Override
 	public void onAttach(Activity activity) {
@@ -102,6 +106,16 @@ public class ProgramFragment extends Fragment {
 		ibEditCourse.setOnClickListener(onButtonsClickListener);
 		Button ibEditStudents = (Button) v.findViewById(R.id.program_students_edit_btn);
 		ibEditStudents.setOnClickListener(onButtonsClickListener);
+		
+		// Init course grid
+		mCourseGridColumns.clear();
+		mCourseGridColumns.add((LinearLayout) v.findViewById(R.id.course_schedule_sunday_layout));
+		mCourseGridColumns.add((LinearLayout) v.findViewById(R.id.course_schedule_monday_layout));
+		mCourseGridColumns.add((LinearLayout) v.findViewById(R.id.course_schedule_tuesday_layout));
+		mCourseGridColumns.add((LinearLayout) v.findViewById(R.id.course_schedule_wednesday_layout));
+		mCourseGridColumns.add((LinearLayout) v.findViewById(R.id.course_schedule_thursday_layout));
+		mCourseGridColumns.add((LinearLayout) v.findViewById(R.id.course_schedule_friday_layout));
+		mCourseGridColumns.add((LinearLayout) v.findViewById(R.id.course_schedule_saturday_layout));
 		return v;
 	}
 
@@ -148,6 +162,25 @@ public class ProgramFragment extends Fragment {
 		return super.onOptionsItemSelected(item);
 	}
 	
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		if(requestCode == REQUEST_EDIT_COURSE) { // Course edited
+			if(resultCode == Activity.RESULT_OK) {
+				// Update current course grid
+				if(mCurrentProgram == null) {
+					return;
+				}
+				List<ProgramClass> classes = mCurrentProgram.getClasses();
+				int classIndex = mSpClass.getSelectedItemPosition();
+				if(classIndex >= 0 && classIndex < classes.size()) {
+					ProgramClass currentClass = classes.get(classIndex);
+					showCourses(currentClass.getCourses());
+				}
+			}
+		}
+	}
+
 	public void setProgram(Program program) {
 		if((mCurrentProgram == null && program == null)
 		|| (mCurrentProgram != null && program != null && mCurrentProgram.equals(program))) {
@@ -294,8 +327,28 @@ public class ProgramFragment extends Fragment {
 		}
 	}
 	
-	private void updateCourseView(List<Course> course) {
+	private void updateCourseView(List<Course> courses) {
+		if(courses == null) {
+			return;
+		}
+		// Clear all columns
+		for(LinearLayout ll : mCourseGridColumns) {
+			ll.removeAllViews();
+		}
 		
+		// Margin: 2dp
+		int margin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2,
+				getResources().getDisplayMetrics());
+		// Add items
+		for(Course course : courses) {
+			TextView tvCourse = (TextView) View.inflate(getActivity(), R.layout.view_course_item, null);
+			tvCourse.setText(course.getCourseName());
+			LinearLayout ll = mCourseGridColumns.get(course.getDayOfWeek() - 1);
+			LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT,
+					LayoutParams.WRAP_CONTENT);
+			lp.setMargins(margin, margin, margin, margin);
+			ll.addView(tvCourse, lp);
+		}
 	}
 
 	private void handleAddProgram() {

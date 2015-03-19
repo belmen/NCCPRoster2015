@@ -34,7 +34,12 @@ public class Program extends BaseParseObject {
 	}
 	
 	public List<ProgramClass> getClasses() {
-		return getList(TAG_CLASS_LIST);
+		List<ProgramClass> classes = getList(TAG_CLASS_LIST);
+		if(classes == null) {
+			classes = new ArrayList<ProgramClass>();
+			setClasses(classes);
+		}
+		return classes;
 	}
 	
 	public void setClasses(List<ProgramClass> classes) {
@@ -43,10 +48,6 @@ public class Program extends BaseParseObject {
 	
 	public void addClass(ProgramClass c) {
 		List<ProgramClass> classes = getClasses();
-		if(classes == null) {
-			classes = new ArrayList<ProgramClass>();
-			setClasses(classes);
-		}
 		classes.add(c);
 	}
 }
