@@ -312,7 +312,10 @@ public class StudentsFragment extends Fragment implements OnQueryTextListener {
 		// Clear the cache of its enroll program class
 		ProgramClass programClass = student.getEnrolledIn();
 		if(programClass != null) {
-			programClass.setCachedStudents(null);
+			List<Student> students = DataCenter.getCachedStudents(programClass);
+			if(students != null) {
+				students.remove(student);
+			}
 		}
 		
 		new RemoveStudentTask(student).execute();

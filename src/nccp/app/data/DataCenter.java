@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import nccp.app.parse.object.Program;
+import nccp.app.parse.object.ProgramClass;
 import nccp.app.parse.object.Student;
 import nccp.app.utils.Logger;
 import android.os.AsyncTask;
@@ -31,6 +32,7 @@ public class DataCenter {
 	private static List<Program> mPrograms = DEFAULT_PROGRAM_LIST;
 	private static List<Student> mStudents = DEFAULT_STUDENT_LIST;
 	private static Map<String, Student> mStudentIdMap = new HashMap<String, Student>();
+	private static Map<String, List<Student>> mCachedStudents = new HashMap<String, List<Student>>();
 
 	/**
 	 * Get fetched programs
@@ -69,6 +71,27 @@ public class DataCenter {
 	 */
 	public static Student getStudentByObjectId(String objectId) {
 		return mStudentIdMap.get(objectId);
+	}
+	
+	public static List<Student> getCachedStudents(ProgramClass programClass) {
+		if(programClass == null) {
+			return null;
+		}
+		return mCachedStudents.get(programClass.getObjectId());
+	}
+	
+	public static void setCachedStudents(ProgramClass programClass, List<Student> students) {
+		if(programClass == null) {
+			return;
+		}
+		mCachedStudents.put(programClass.getObjectId(), students);
+	}
+	
+	public static void removeCachedStudents(ProgramClass programClass) {
+		if(programClass == null) {
+			return;
+		}
+		mCachedStudents.remove(programClass.getObjectId());
 	}
 	
 	public static void clearData() {

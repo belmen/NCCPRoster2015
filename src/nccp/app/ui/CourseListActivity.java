@@ -48,6 +48,7 @@ public class CourseListActivity extends ToolbarActivity {
 	private List<Course> mCourses = null;
 	private CourseAdapter mAdapter = null;
 	private boolean mChanged = false;
+	private boolean mForceEnterRemoveMode = false;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -148,6 +149,7 @@ public class CourseListActivity extends ToolbarActivity {
 
 	private void startRemoveMode() {
 		if(mAdapter.getCount() > 0) { // Has items
+			mForceEnterRemoveMode = true;
 			mLvCourse.setItemChecked(0, true); // Check one to automatically enter action mode
 			mLvCourse.clearChoices(); // Clear that choice
 		}
@@ -199,7 +201,6 @@ public class CourseListActivity extends ToolbarActivity {
 
 		@Override
 		public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-			mode.setTitle(R.string.title_course_remove_mode);
 			getMenuInflater().inflate(R.menu.remove_course, menu);
 			return true;
 		}
@@ -226,6 +227,20 @@ public class CourseListActivity extends ToolbarActivity {
 		@Override
 		public void onItemCheckedStateChanged(ActionMode mode, int position,
 				long id, boolean checked) {
+			updateTitle(mode);
+		}
+		
+		private void updateTitle(ActionMode mode) {
+			int count;
+			if(mForceEnterRemoveMode) {
+				mForceEnterRemoveMode = false;
+				count = 0;
+			} else {
+				count = mLvCourse.getCheckedItemCount();
+			}
+			String title = count == 1 ? getString(R.string.title_1_course_selected)
+					: getString(R.string.title_n_course_selected, count);
+			mode.setTitle(title);
 		}
 		
 		private void handleCommitRemove(final ActionMode mode) {

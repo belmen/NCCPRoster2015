@@ -104,6 +104,12 @@
 	<string name="thursday_short">Thu</string>
 	<string name="friday_short">Fri</string>
 	<string name="saturday_short">Sat</string>
+	<string name="program_class_course_count_0">No course</string>
+	<string name="program_class_course_count_1">1 course</string>
+	<string name="program_class_course_count">%d courses</string>
+	<string name="program_class_student_count_0">No student</string>
+	<string name="program_class_student_count_1">1 student</string>
+	<string name="program_class_student_count">%d students</string>
 	
 	<!-- Students -->
 	<string name="title_students">Students</string>
@@ -153,11 +159,13 @@
 	<string name="course_time_section">COURSE TIME</string>
 	<string name="course_duration_section">DURATION</string>
 	<string name="duration_minutes">minutes</string>
-	<string name="title_course_remove_mode">Remove courses</string>
+	<string name="title_1_course_selected">1 course selected</string>
+	<string name="title_n_course_selected">%d courses selected</string>
 	
-	<!-- Course -->
+	<!-- Roster -->
 	<string name="title_student_list">Student list</string>
 	<string name="course_student_empty">No students in this course\nTouch + to add students</string>
 	<string name="course_student_selector_empty">No student exists in database</string>
-	<string name="title_students_selector">%d students selected</string>
+	<string name="title_1_student_selected">1 student selected</string>
+	<string name="title_n_students_selected">%d students selected</string>
 </resources>

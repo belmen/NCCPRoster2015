@@ -62,6 +62,9 @@ public class ProgramFragment extends Fragment {
 	private Spinner mSpClass;
 	private LinearLayout mClassBannerView;
 	private ScrollView mClassScrollView;
+	private TextView mTvCourseCount;
+	private TextView mTvStudentCount;
+	private TextView[] mTvStudents = new TextView[2];
 	// Data
 	private boolean mFirst = true; 
 	private FragmentCallback mCallback = null;
@@ -107,6 +110,10 @@ public class ProgramFragment extends Fragment {
 		ibEditCourse.setOnClickListener(onButtonsClickListener);
 		Button ibEditStudents = (Button) v.findViewById(R.id.program_students_edit_btn);
 		ibEditStudents.setOnClickListener(onButtonsClickListener);
+		mTvStudents[0] = (TextView) v.findViewById(R.id.program_students_text1);
+		mTvStudents[1] = (TextView) v.findViewById(R.id.program_students_text2);
+		mTvCourseCount = (TextView) v.findViewById(R.id.program_class_course_count_text);
+		mTvStudentCount = (TextView) v.findViewById(R.id.program_class_student_count_text);
 		
 		// Init course grid
 		mCourseGridColumns.clear();
@@ -169,19 +176,18 @@ public class ProgramFragment extends Fragment {
 		if(requestCode == REQUEST_EDIT_COURSE) { // Course edited
 			if(resultCode == Activity.RESULT_OK) {
 				// Update current course grid
-				if(mCurrentProgram == null) {
-					return;
-				}
-				List<ProgramClass> classes = mCurrentProgram.getClasses();
-				int classIndex = mSpClass.getSelectedItemPosition();
-				if(classIndex >= 0 && classIndex < classes.size()) {
-					ProgramClass currentClass = classes.get(classIndex);
+				ProgramClass currentClass = getCurrentProgramClass();
+				if(currentClass != null) {
 					showCourses(currentClass.getCourses());
 				}
 			}
 		} else if(requestCode == REQUEST_EDIT_STUDENT) { // Student edited
 			if(resultCode == Activity.RESULT_OK) {
-				
+				// Update students grid
+				ProgramClass currentClass = getCurrentProgramClass();
+				if(currentClass != null) {
+					showStudents(currentClass);
+				}
 			}
 		}
 	}
@@ -195,6 +201,19 @@ public class ProgramFragment extends Fragment {
 		if(getView() != null) {
 			updateViews();
 		}
+	}
+	
+	private ProgramClass getCurrentProgramClass() {
+		ProgramClass currentClass = null;
+		if(mCurrentProgram != null) {
+			List<ProgramClass> classes = mCurrentProgram.getClasses();
+			int classIndex = mSpClass.getSelectedItemPosition();
+			if(classIndex >= 0 && classIndex < classes.size()) {
+				currentClass = classes.get(classIndex);
+				showCourses(currentClass.getCourses());
+			}
+		}
+		return currentClass;
 	}
 	
 	private void updateViews() {
@@ -337,14 +356,22 @@ public class ProgramFragment extends Fragment {
 		if(courses == null) {
 			return;
 		}
+		// Update count
+		int count = courses.size();
+		if(count == 0) {
+			mTvCourseCount.setText(R.string.program_class_course_count_0);
+		} else if(count == 1) {
+			mTvCourseCount.setText(R.string.program_class_course_count_1);
+		} else {
+			mTvCourseCount.setText(getString(R.string.program_class_course_count, count));
+		}
+		
 		// Clear all columns
 		for(LinearLayout ll : mCourseGridColumns) {
 			ll.removeAllViews();
 		}
 		
 		// Margin: 2dp
-//		int margin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2,
-//				getResources().getDisplayMetrics());
 		int margin = (int) getResources().getDimension(R.dimen.dp_2);
 		// Add items
 		for(Course course : courses) {
@@ -362,7 +389,7 @@ public class ProgramFragment extends Fragment {
 		if(programClass == null) {
 			return;
 		}
-		List<Student> students = programClass.getCachedStudents();
+		List<Student> students = DataCenter.getCachedStudents(programClass);
 		if(students != null) { // Show cached students
 			updateStudentsView(students);
 		} else { // Fetch from remove
@@ -372,8 +399,8 @@ public class ProgramFragment extends Fragment {
 				@Override
 				public void done(List<Student> data, ParseException e) {
 					if(e == null) { // Success
-						programClass.setCachedStudents(data);
-						updateStudentsView(programClass.getCachedStudents());
+						DataCenter.setCachedStudents(programClass, data);
+						updateStudentsView(data);
 					} else { // Fail
 						Logger.e(TAG, e.getMessage(), e);
 						Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
@@ -384,7 +411,29 @@ public class ProgramFragment extends Fragment {
 	}
 	
 	private void updateStudentsView(List<Student> students) {
+		if(students == null) {
+			return;
+		}
+		// Update count
+		int count = students.size();
+		if(count == 0) {
+			mTvStudentCount.setText(R.string.program_class_student_count_0);
+		} else if(count == 1) {
+			mTvStudentCount.setText(R.string.program_class_student_count_1);
+		} else {
+			mTvStudentCount.setText(getString(R.string.program_class_student_count, count));
+		}
 		
+		StringBuilder[] builders = new StringBuilder[2];
+		builders[0] = new StringBuilder();
+		builders[1] = new StringBuilder();
+		for(int i = 0; i < students.size(); ++i) {
+			Student student = students.get(i);
+			StringBuilder sb = builders[i % 2];
+			sb.append(student.getFullName()).append('\n');
+		}
+		mTvStudents[0].setText(builders[0].toString());
+		mTvStudents[1].setText(builders[1].toString());
 	}
 
 	private void handleAddProgram() {

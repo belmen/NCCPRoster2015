@@ -78,10 +78,10 @@ public class MainActivity extends BaseActivity implements FragmentCallback {
 		mTabHost.setup(this, getSupportFragmentManager(), android.R.id.tabcontent);
 		mTabHost.addTab(mTabHost.newTabSpec(TAB_PROGRAM).setIndicator(getString(R.string.tab_title_program)),
 				ProgramFragment.class, null);
-		mTabHost.addTab(mTabHost.newTabSpec(TAB_STUDENT).setIndicator(getString(R.string.tab_title_students)),
-				StudentsFragment.class, null);
 		mTabHost.addTab(mTabHost.newTabSpec(TAB_ATTENDANCE).setIndicator(getString(R.string.tab_title_attendence)),
 				DummyTabFragment.class, null);
+		mTabHost.addTab(mTabHost.newTabSpec(TAB_STUDENT).setIndicator(getString(R.string.tab_title_students)),
+				StudentsFragment.class, null);
 		mTabHost.setOnTabChangedListener(mTabChangeListener);
 		mCurrentTab = mTabHost.getCurrentTabTag();
 	}

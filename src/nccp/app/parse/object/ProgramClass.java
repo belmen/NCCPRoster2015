@@ -12,7 +12,7 @@ public class ProgramClass extends BaseParseObject {
 	public static final String TAG_COURSE_LIST = "courseList";
 //	public static final String TAG_STUDENT_LIST = "studentList";
 	
-	private List<Student> cachedStudents = null;
+//	private List<Student> cachedStudents = null;
 	
 	public String getTitle() {
 		return getString(TAG_CLASS_TITLE);
@@ -40,13 +40,13 @@ public class ProgramClass extends BaseParseObject {
 		courses.add(course);
 	}
 
-	public List<Student> getCachedStudents() {
-		return cachedStudents;
-	}
-
-	public void setCachedStudents(List<Student> cachedStudents) {
-		this.cachedStudents = cachedStudents;
-	}
+//	public List<Student> getCachedStudents() {
+//		return cachedStudents;
+//	}
+//
+//	public void setCachedStudents(List<Student> cachedStudents) {
+//		this.cachedStudents = cachedStudents;
+//	}
 
 //	public List<Student> getStudents() {
 //		List<Student> students = getList(TAG_STUDENT_LIST);

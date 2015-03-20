@@ -68,7 +68,9 @@ public class StudentsSelectorActivity extends ToolbarActivity {
 
 	private void updateTitle() {
 		int count = mLvStudents.getCheckedItemCount();
-		getSupportActionBar().setTitle(getString(R.string.title_students_selector, count));
+		String title = count == 1 ? getString(R.string.title_1_student_selected)
+				: getString(R.string.title_n_students_selected, count);
+		getSupportActionBar().setTitle(title);
 	}
 	
 	@Override

@@ -47,6 +47,7 @@ public class CourseStudentListActivity extends ToolbarActivity {
 	private StudentInfoAdapter mAdapter = null;
 	private boolean mInProgress = false;
 	private boolean mChanged = false;
+	private boolean mForceEnterRemoveMode = false;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -130,7 +131,7 @@ public class CourseStudentListActivity extends ToolbarActivity {
 		if(programClass == null) {
 			return;
 		}
-		List<Student> students = programClass.getCachedStudents();
+		List<Student> students = DataCenter.getCachedStudents(programClass);
 		if(students != null) { // Show cached data
 			mStudents = students;
 			mAdapter.setData(mStudents);
@@ -144,7 +145,8 @@ public class CourseStudentListActivity extends ToolbarActivity {
 				public void done(List<Student> data, ParseException e) {
 					showProgressBar(false);
 					if(e == null) { // Success
-						programClass.setCachedStudents(data);
+//						programClass.setCachedStudents(data);
+						DataCenter.setCachedStudents(programClass, data);
 						mStudents = data;
 						mAdapter.setData(mStudents);
 						mAdapter.notifyDataSetChanged();
@@ -176,10 +178,9 @@ public class CourseStudentListActivity extends ToolbarActivity {
 
 	private void handleRemoveStudents() {
 		if(mAdapter.getCount() > 0) { // Has items
+			mForceEnterRemoveMode = true;
 			mLvStudents.setItemChecked(0, true); // Check one to automatically enter action mode
 			mLvStudents.clearChoices(); // Clear that choice
-			// Update title
-			getSupportActionBar().setTitle(getString(R.string.title_students_selector, 0));
 		}
 	}
 	
@@ -201,17 +202,26 @@ public class CourseStudentListActivity extends ToolbarActivity {
 			} else {
 				Student student = DataCenter.getStudentByObjectId(id);
 				if(student != null) {
+					// Remove from old program class cache
+					ProgramClass oldClass = student.getEnrolledIn();
+					if(oldClass != null) {
+						List<Student> cachedStudents = DataCenter.getCachedStudents(oldClass);
+						if(cachedStudents != null) {
+							cachedStudents.remove(student);
+						}
+					}
+					
 					student.setEnrolledIn(programClass);
 					addedStudents.add(student);
 				}
 			}
 		}
 		// Add student to cache
-		List<Student> cachedStudents = programClass.getCachedStudents();
+		List<Student> cachedStudents = DataCenter.getCachedStudents(programClass);
 		if(cachedStudents != null) {
 			cachedStudents.addAll(addedStudents);
 		} else {
-			programClass.setCachedStudents(cachedStudents);
+			DataCenter.setCachedStudents(programClass, addedStudents);
 		}
 		
 		// Save to remote
@@ -264,7 +274,7 @@ public class CourseStudentListActivity extends ToolbarActivity {
 	private void handleStudentRemoved(List<Student> removedStudents) {
 		mChanged = true;
 		ProgramClass programClass = getProgramClass();
-		List<Student> cachedStudents = programClass.getCachedStudents();
+		List<Student> cachedStudents = DataCenter.getCachedStudents(programClass);
 		if(cachedStudents != null) {
 			cachedStudents.removeAll(removedStudents);
 		}
@@ -306,7 +316,20 @@ public class CourseStudentListActivity extends ToolbarActivity {
 		@Override
 		public void onItemCheckedStateChanged(ActionMode mode, int position,
 				long id, boolean checked) {
-			
+			updateTitle(mode);
+		}
+		
+		private void updateTitle(ActionMode mode) {
+			int count;
+			if(mForceEnterRemoveMode) {
+				mForceEnterRemoveMode = false;
+				count = 0;
+			} else {
+				count = mLvStudents.getCheckedItemCount();
+			}
+			String title = count == 1 ? getString(R.string.title_1_student_selected)
+					: getString(R.string.title_n_students_selected, count);
+			mode.setTitle(title);
 		}
 
 		private void handleSelectAll() {
