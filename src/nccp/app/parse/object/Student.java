@@ -11,6 +11,7 @@ public class Student extends BaseParseObject {
 	public static final String TAG_FIRST_NAME = "firstName";
 	public static final String TAG_LAST_NAME = "lastName";
 	public static final String TAG_GRADE_LEVEL = "gradeLevel";
+	public static final String TAG_ENROLLED_IN = "enrolledIn";
 	
 	public String getFirstName() {
 		String firstName = getString(TAG_FIRST_NAME);
@@ -31,20 +32,37 @@ public class Student extends BaseParseObject {
 		}
 		return lastName;
 	}
+	
 	public void setLastName(String lastName) {
 		put(TAG_LAST_NAME, lastName);
 	}
+	
 	public String getStudentId() {
 		return getString(TAG_STUDENT_ID);
 	}
+	
 	public void setStudentId(String studentId) {
 		put(TAG_STUDENT_ID, studentId);
 	}
+	
 	public int getGradeLevel() {
 		return getInt(TAG_GRADE_LEVEL);
 	}
+	
 	public void setGradeLevel(int gradeLevel) {
 		put(TAG_GRADE_LEVEL, gradeLevel);
+	}
+	
+	public ProgramClass getEnrolledIn() {
+		return (ProgramClass) getParseObject(TAG_ENROLLED_IN);
+	}
+	
+	public void setEnrolledIn(ProgramClass programClass) {
+		put(TAG_ENROLLED_IN, programClass);
+	}
+	
+	public void removeEnrolledIn() {
+		remove(TAG_ENROLLED_IN);
 	}
 	
 	public String getFullName() {

@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:nccp="http://schemas.android.com/apk/res-auto" >
     <item android:id="@+id/action_add_program"
-        android:title="@string/action_add_program"
+        android:title="@string/action_new_program"
         android:icon="@drawable/ic_menu_add"
         nccp:showAsAction="ifRoom|collapseActionView"/>
     <item android:id="@+id/action_rename_program"

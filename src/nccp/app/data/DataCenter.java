@@ -1,7 +1,9 @@
 package nccp.app.data;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import nccp.app.parse.object.Program;
 import nccp.app.parse.object.Student;
@@ -28,6 +30,7 @@ public class DataCenter {
 	// Data
 	private static List<Program> mPrograms = DEFAULT_PROGRAM_LIST;
 	private static List<Student> mStudents = DEFAULT_STUDENT_LIST;
+	private static Map<String, Student> mStudentIdMap = new HashMap<String, Student>();
 
 	/**
 	 * Get fetched programs
@@ -43,6 +46,29 @@ public class DataCenter {
 	 */
 	public static List<Student> getStudents() {
 		return mStudents;
+	}
+	
+	public static void addStudent(Student student) {
+		if(!mStudentIdMap.containsKey(student.getObjectId())) {
+			mStudents.add(student);
+			mStudentIdMap.put(student.getObjectId(), student);
+		}
+	}
+	
+	public static void removeStudent(Student student) {
+		if(mStudentIdMap.containsKey(student.getObjectId())) {
+			mStudents.remove(student);
+			mStudentIdMap.remove(student.getObjectId());
+		}
+	}
+	
+	/**
+	 * Get student by its parse object ID
+	 * @param objectId
+	 * @return
+	 */
+	public static Student getStudentByObjectId(String objectId) {
+		return mStudentIdMap.get(objectId);
 	}
 	
 	public static void clearData() {
@@ -90,6 +116,12 @@ public class DataCenter {
 				ParseQuery<Student> studentQuery = ParseQuery.getQuery(Student.class);
 				try {
 					mStudents = studentQuery.find();
+					mStudentIdMap.clear();
+					if(mStudents != null) { // Add them into map
+						for(Student student : mStudents) {
+							mStudentIdMap.put(student.getObjectId(), student);
+						}
+					}
 				} catch (ParseException e) {
 					return e;
 				}

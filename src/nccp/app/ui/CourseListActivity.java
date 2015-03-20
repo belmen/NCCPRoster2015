@@ -62,7 +62,7 @@ public class CourseListActivity extends ToolbarActivity {
 	}
 	
 	private void initViews() {
-		mLvCourse = (ListView) findViewById(R.id.course_editor_listview);
+		mLvCourse = (ListView) findViewById(R.id.course_list_listview);
 		mLvCourse.setOnItemClickListener(mOnCourseClickListener);
 		mLvCourse.setMultiChoiceModeListener(mRemoveModeListener);
 		TextView tvEmpty = (TextView) findViewById(R.id.course_empty_text);
@@ -165,11 +165,6 @@ public class CourseListActivity extends ToolbarActivity {
 		}
 	}
 
-//	private void handleEditDone() {
-//		setResult(RESULT_OK);
-//		finish();
-//	}
-
 	private void handleAddCourse() {
 		Intent intent = new Intent(CourseListActivity.this, CourseEditorActivity.class);
 		intent.putExtra(Const.EXTRA_PROGRAM_INDEX, mProgramIndex);
@@ -215,44 +210,10 @@ public class CourseListActivity extends ToolbarActivity {
 		}
 
 		@Override
-		public boolean onActionItemClicked(final ActionMode mode, MenuItem item) {
+		public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
 			int id = item.getItemId();
 			if(id == R.id.action_remove_commit) {
-				int count = mLvCourse.getCheckedItemCount();
-				if(count == 0) {
-					Toast.makeText(CourseListActivity.this,
-							R.string.msg_no_course_selected, Toast.LENGTH_SHORT).show();
-				} else {
-					final Set<Integer> indices = new HashSet<Integer>();
-					for(int i = 0; i < mAdapter.getCount(); ++i) {
-						if(mLvCourse.isItemChecked(i)) {
-							indices.add(i);
-						}
-					}
-					// Show dialog
-					Course first = null;
-					for(Integer index : indices) {
-						first = (Course) mAdapter.getItem(index);
-						break;
-					}
-					String msg = count > 1 ? getString(R.string.dialog_msg_remove_course, count)
-							: getString(R.string.dialog_msg_remove_course_1, first.getCourseName());
-					new AlertDialog.Builder(CourseListActivity.this)
-					.setTitle(R.string.dialog_title_remove_course)
-					.setMessage(msg)
-					.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							handleRemoveCourses(indices);
-							mode.finish();
-						}
-					}).setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							return;
-						}
-					}).show();
-				}
+				handleCommitRemove(mode);
 				return true;
 			}
 			return false;
@@ -265,6 +226,44 @@ public class CourseListActivity extends ToolbarActivity {
 		@Override
 		public void onItemCheckedStateChanged(ActionMode mode, int position,
 				long id, boolean checked) {
+		}
+		
+		private void handleCommitRemove(final ActionMode mode) {
+			int count = mLvCourse.getCheckedItemCount();
+			if(count == 0) {
+				Toast.makeText(CourseListActivity.this,
+						R.string.msg_no_course_selected, Toast.LENGTH_SHORT).show();
+			} else {
+				final Set<Integer> indices = new HashSet<Integer>();
+				for(int i = 0; i < mAdapter.getCount(); ++i) {
+					if(mLvCourse.isItemChecked(i)) {
+						indices.add(i);
+					}
+				}
+				// Show dialog
+				Course first = null;
+				for(Integer index : indices) {
+					first = (Course) mAdapter.getItem(index);
+					break;
+				}
+				String msg = count > 1 ? getString(R.string.dialog_msg_remove_course, count)
+						: getString(R.string.dialog_msg_remove_course_1, first.getCourseName());
+				new AlertDialog.Builder(CourseListActivity.this)
+				.setTitle(R.string.dialog_title_remove_course)
+				.setMessage(msg)
+				.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						handleRemoveCourses(indices);
+						mode.finish();
+					}
+				}).setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						return;
+					}
+				}).show();
+			}
 		}
 	};
 	
@@ -312,7 +311,7 @@ public class CourseListActivity extends ToolbarActivity {
 				handleRemoveSuccess();
 			} else {
 				Logger.e(TAG, e.getMessage(), e);
-				Toast.makeText(CourseListActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+				Toast.makeText(CourseListActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
 			}
 		}
 	}

@@ -9,8 +9,9 @@ import java.util.Locale;
 import java.util.Map;
 
 import nccp.app.R;
-import nccp.app.adapter.StudentAdapter;
+import nccp.app.adapter.StudentNameAdapter;
 import nccp.app.data.DataCenter;
+import nccp.app.parse.object.ProgramClass;
 import nccp.app.parse.object.Student;
 import nccp.app.parse.proxy.StudentProxy;
 import nccp.app.utils.Const;
@@ -59,7 +60,7 @@ public class StudentsFragment extends Fragment implements OnQueryTextListener {
 	private ExpandableListView mLvStudents;
 	private StudentDetailFragment mStudentDetailFragment;
 	// Adapter
-	private StudentAdapter mAdapter = null;
+	private StudentNameAdapter mAdapter = null;
 	// Data
 	private boolean mFirst = true;
 	private Student mSelectedStudent = null;
@@ -79,7 +80,7 @@ public class StudentsFragment extends Fragment implements OnQueryTextListener {
 	public void onCreate(Bundle savedInstanceState) {
 		Logger.i(TAG, TAG + " onCreate");
 		super.onCreate(savedInstanceState);
-		mAdapter = new StudentAdapter(getActivity());
+		mAdapter = new StudentNameAdapter(getActivity());
 		
 		mStudentDetailFragment = new StudentDetailFragment();
 		mStudentDetailFragment.setOnButtonClickListener(onDetailFragButtonClick);
@@ -165,7 +166,7 @@ public class StudentsFragment extends Fragment implements OnQueryTextListener {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		int id = item.getItemId();
-		if(id == R.id.action_add_student) {
+		if(id == R.id.action_new_student) {
 			handleAddStudent();
 		}
 //		else if(id == R.id.action_edit_student) {
@@ -173,10 +174,10 @@ public class StudentsFragment extends Fragment implements OnQueryTextListener {
 //		} else if(id == R.id.action_remove_student) {
 //			handleRemoveStudent();
 //		}
-		else if(id == R.id.action_convert) {
+//		else if(id == R.id.action_convert) {
 //			convertStudents();
-			return true;
-		}
+//			return true;
+//		}
 		return super.onOptionsItemSelected(item);
 	}
 	
@@ -308,6 +309,12 @@ public class StudentsFragment extends Fragment implements OnQueryTextListener {
 	}
 
 	private void doRemoveStudent(Student student) {
+		// Clear the cache of its enroll program class
+		ProgramClass programClass = student.getEnrolledIn();
+		if(programClass != null) {
+			programClass.setCachedStudents(null);
+		}
+		
 		new RemoveStudentTask(student).execute();
 	}
 	
@@ -326,8 +333,9 @@ public class StudentsFragment extends Fragment implements OnQueryTextListener {
 	}
 	
 	private void handleStudentAdded(Student newStudent) {
+		DataCenter.addStudent(newStudent); // Add into local data center
 		List<Student> students = DataCenter.getStudents();
-		students.add(newStudent);
+//		students.add(newStudent);
 		// Update student list
 		showList(students);
 		// Close detail and cancel highlight
@@ -370,6 +378,7 @@ public class StudentsFragment extends Fragment implements OnQueryTextListener {
 	}
 	
 	private void handleStudentRemoved(Student removedStudent) {
+		DataCenter.removeStudent(removedStudent); // Remove from local data center
 		List<Student> students = DataCenter.getStudents();
 		if(mHighlightPosition != -1) { // Cancel highlight
 			mLvStudents.setItemChecked(mHighlightPosition, false);
@@ -377,7 +386,7 @@ public class StudentsFragment extends Fragment implements OnQueryTextListener {
 		}
 		closeDetail();
 		// Refresh student list
-		students.remove(removedStudent);
+//		students.remove(removedStudent);
 		showList(students);
 	}
 	

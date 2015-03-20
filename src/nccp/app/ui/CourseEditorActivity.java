@@ -51,6 +51,7 @@ public class CourseEditorActivity extends ToolbarActivity {
 	private NumberPicker mNpDuration;
 	private CourseTimePickerFragment mTimePicker;
 	// Data
+	private boolean mInProgress = false;
 	private ProgramClass mProgramClass;
 	private Course mCourse = null;
 	private Calendar mTime = Calendar.getInstance(Locale.US);
@@ -169,6 +170,9 @@ public class CourseEditorActivity extends ToolbarActivity {
 	}
 
 	private void handleDoneClicked() {
+		if(mInProgress) {
+			return;
+		}
 		// Check name
 		String courseName = mEtCourseName.getText().toString();
 		if(courseName.length() == 0) {
@@ -278,6 +282,7 @@ public class CourseEditorActivity extends ToolbarActivity {
 
 		@Override
 		protected void onPreExecute() {
+			mInProgress = true;
 			showProgressBar(true);
 		}
 
@@ -294,6 +299,7 @@ public class CourseEditorActivity extends ToolbarActivity {
 
 		@Override
 		protected void onPostExecute(Void result) {
+			mInProgress = false;
 			showProgressBar(false);
 			if(e == null) { // Success
 				handleSaveSuccess();

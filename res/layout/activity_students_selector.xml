@@ -4,18 +4,18 @@
     android:layout_height="match_parent" >
 
     <ListView
-        android:id="@+id/course_list_listview"
+        android:id="@+id/course_students_selector_listview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:choiceMode="multipleChoiceModal" />
+        android:choiceMode="multipleChoice" />
 
     <TextView
-        android:id="@+id/course_empty_text"
+        android:id="@+id/course_students_selector_empty_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:gravity="center_horizontal"
-        android:text="@string/course_empty"
+        android:text="@string/course_student_selector_empty"
         android:textColor="@android:color/darker_gray"
         android:textSize="30sp" />
 

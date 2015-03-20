@@ -10,6 +10,7 @@ import nccp.app.data.DataCenter;
 import nccp.app.parse.object.Course;
 import nccp.app.parse.object.Program;
 import nccp.app.parse.object.ProgramClass;
+import nccp.app.parse.object.Student;
 import nccp.app.utils.Const;
 import nccp.app.utils.Logger;
 import android.app.Activity;
@@ -20,7 +21,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -44,6 +44,7 @@ import android.widget.Toast;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
+import com.parse.ParseQuery;
 import com.parse.SaveCallback;
 
 public class ProgramFragment extends Fragment {
@@ -178,6 +179,10 @@ public class ProgramFragment extends Fragment {
 					showCourses(currentClass.getCourses());
 				}
 			}
+		} else if(requestCode == REQUEST_EDIT_STUDENT) { // Student edited
+			if(resultCode == Activity.RESULT_OK) {
+				
+			}
 		}
 	}
 
@@ -298,6 +303,7 @@ public class ProgramFragment extends Fragment {
 	
 	private void showClassInfo(ProgramClass programClass) {
 		showCourses(programClass.getCourses());
+		showStudents(programClass);
 	}
 	
 	private void showCourses(List<Course> courses) {
@@ -337,8 +343,9 @@ public class ProgramFragment extends Fragment {
 		}
 		
 		// Margin: 2dp
-		int margin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2,
-				getResources().getDisplayMetrics());
+//		int margin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2,
+//				getResources().getDisplayMetrics());
+		int margin = (int) getResources().getDimension(R.dimen.dp_2);
 		// Add items
 		for(Course course : courses) {
 			TextView tvCourse = (TextView) View.inflate(getActivity(), R.layout.view_course_item, null);
@@ -349,6 +356,35 @@ public class ProgramFragment extends Fragment {
 			lp.setMargins(margin, margin, margin, margin);
 			ll.addView(tvCourse, lp);
 		}
+	}
+
+	private void showStudents(final ProgramClass programClass) {
+		if(programClass == null) {
+			return;
+		}
+		List<Student> students = programClass.getCachedStudents();
+		if(students != null) { // Show cached students
+			updateStudentsView(students);
+		} else { // Fetch from remove
+			ParseQuery<Student> q = ParseQuery.getQuery(Student.class);
+			q.whereEqualTo(Student.TAG_ENROLLED_IN, programClass);
+			q.findInBackground(new FindCallback<Student>() {
+				@Override
+				public void done(List<Student> data, ParseException e) {
+					if(e == null) { // Success
+						programClass.setCachedStudents(data);
+						updateStudentsView(programClass.getCachedStudents());
+					} else { // Fail
+						Logger.e(TAG, e.getMessage(), e);
+						Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+					}
+				}
+			});
+		}
+	}
+	
+	private void updateStudentsView(List<Student> students) {
+		
 	}
 
 	private void handleAddProgram() {

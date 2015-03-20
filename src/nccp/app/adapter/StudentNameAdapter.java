@@ -14,9 +14,9 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
 
-public class StudentAdapter extends BaseExpandableListAdapter {
+public class StudentNameAdapter extends BaseExpandableListAdapter {
 	
-	public static final String TAG = StudentAdapter.class.getSimpleName();
+	public static final String TAG = StudentNameAdapter.class.getSimpleName();
 	
 	private static final String HIGHLIGHT_COLOR = "#00aeed";
 
@@ -25,7 +25,7 @@ public class StudentAdapter extends BaseExpandableListAdapter {
 	private Map<String, List<Student>> mData = null;
 	private String mHighlight = "";
 	
-	public StudentAdapter(Context context) {
+	public StudentNameAdapter(Context context) {
 		this.mContext = context;
 	}
 

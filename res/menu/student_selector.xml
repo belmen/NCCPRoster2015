@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:nccp="http://schemas.android.com/apk/res-auto" >
+    <item
+        android:id="@+id/action_select_all"
+        android:title="@string/menu_select_all"
+        nccp:showAsAction="ifRoom|collapseActionView"/>
+    <item
+        android:id="@+id/action_reverse"
+        android:title="@string/menu_reverse"
+        nccp:showAsAction="ifRoom|collapseActionView"/>
+    <item
+        android:id="@+id/action_clear"
+        android:title="@string/menu_clear_selection"
+        nccp:showAsAction="ifRoom|collapseActionView"/>
+</menu>

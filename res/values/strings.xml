@@ -11,7 +11,7 @@
 	
 	<!-- Actions -->
 	<string name="action_logout">Logout</string>
-	<string name="action_add_program">Add program</string>
+	<string name="action_new_program">New program</string>
 	<string name="action_delete_program">Delete</string>
 	<string name="action_rename_program">Rename</string>
 	<string name="action_remove">Remove</string>
@@ -36,10 +36,19 @@
 	<string name="dialog_title_remove_course">Remove courses</string>
 	<string name="dialog_msg_remove_course_1">Remove %s?</string>
 	<string name="dialog_msg_remove_course">Remove these %d courses?</string>
+	<string name="dialog_msg_remove_student_from_class_1">Remove %1$s from %2$s?</string>
+	<string name="dialog_msg_remove_student_from_class">Remove these %1$d students from %2$s?</string>
 	
 	<!-- Menu -->
 	<string name="menu_new_course">New course</string>
 	<string name="menu_remove_course">Remove course</string>
+	<string name="menu_add_studens">Add students</string>
+	<string name="menu_remove_students">Remove students</string>
+	<string name="menu_new_student">New Student</string>
+	<string name="menu_search_students">Search students</string>
+	<string name="menu_clear_selection">Clear</string>
+	<string name="menu_select_all">Select all</string>
+	<string name="menu_reverse">Reverse</string>
 	
 	<!-- Button -->
 	<string name="button_edit">EDIT</string>
@@ -47,7 +56,12 @@
 	<!-- Message -->
 	<string name="msg_student_info_saved">Student information saved</string>
 	<string name="msg_course_saved">Course saved</string>
-	<string name="msg_no_course_selected">No courses are selected</string>
+	<string name="msg_no_course_selected">No course selected</string>
+	<string name="msg_students_added_1">1 student added</string>
+	<string name="msg_students_added_1_exists">1 student added (%1$d existed)</string>
+	<string name="msg_students_added">%1$d student added</string>
+	<string name="msg_students_added_existed">%1$d student added (%2$d existed)</string>
+	<string name="msg_no_student_selected">No student selected</string>
 	
 	<!-- Error message -->
 	<string name="error_program_class_name_empty">Class name is empty</string>
@@ -93,10 +107,8 @@
 	
 	<!-- Students -->
 	<string name="title_students">Students</string>
-	<string name="action_search_students">Search students</string>
-	<string name="action_add_student">Add Student</string>
-	<string name="action_edit_student">Edit</string>
-	<string name="action_remove_student">Remove student</string>
+	<string name="btn_edit_student">Edit</string>
+	<string name="btn_remove_student">Remove student</string>
 	<string name="students_search_hint">Search first name or last name</string>
 	<string name="students_empty_text">No students</string>
 	
@@ -145,4 +157,7 @@
 	
 	<!-- Course -->
 	<string name="title_student_list">Student list</string>
+	<string name="course_student_empty">No students in this course\nTouch + to add students</string>
+	<string name="course_student_selector_empty">No student exists in database</string>
+	<string name="title_students_selector">%d students selected</string>
 </resources>
