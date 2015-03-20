@@ -6,6 +6,7 @@ import nccp.app.R;
 import nccp.app.data.DataCenter;
 import nccp.app.parse.ParseManager;
 import nccp.app.parse.object.Program;
+import nccp.app.ui.BaseFragment.FragmentCallback;
 import nccp.app.ui.MyToolbar.OnActionCollapsedListener;
 import nccp.app.utils.Const;
 import android.app.AlertDialog;

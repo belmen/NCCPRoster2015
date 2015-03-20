@@ -12,7 +12,6 @@ import nccp.app.parse.object.Program;
 import nccp.app.parse.object.ProgramClass;
 import nccp.app.parse.object.Student;
 import nccp.app.utils.Const;
-import nccp.app.utils.Logger;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -20,7 +19,6 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -47,7 +45,7 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.SaveCallback;
 
-public class ProgramFragment extends Fragment {
+public class ProgramFragment extends BaseFragment {
 
 	public static final String TAG = ProgramFragment.class.getSimpleName();
 
@@ -67,7 +65,6 @@ public class ProgramFragment extends Fragment {
 	private TextView[] mTvStudents = new TextView[2];
 	// Data
 	private boolean mFirst = true; 
-	private FragmentCallback mCallback = null;
 	private Program mCurrentProgram = null;
 	private ArrayAdapter<String> mClassAdapter = null;
 	private List<LinearLayout> mCourseGridColumns = new ArrayList<LinearLayout>();
@@ -235,21 +232,16 @@ public class ProgramFragment extends Fragment {
 		}
 		List<ProgramClass> classes = mCurrentProgram.getClasses();
 		if(classes.size() > 0 && !classes.get(0).isDataAvailable()) { // Need to fetch
-			if(mCallback != null) {
-				mCallback.showProgress(true);
-			}
+			mCallback.showProgress(true);
 			ParseObject.fetchAllIfNeededInBackground(mCurrentProgram.getClasses(),
 					new FindCallback<ProgramClass>() {
 				@Override
 				public void done(List<ProgramClass> data, ParseException e) {
-					if(mCallback != null) {
-						mCallback.showProgress(false);
-					}
+					mCallback.showProgress(false);
 					if(e == null) {
 						updateClassSpinner(selectedClassName);
 					} else {
-						Logger.e(TAG, e.getMessage(), e);
-						Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
+						logAndToastException(TAG, e);
 					}
 				}
 			});
@@ -330,20 +322,15 @@ public class ProgramFragment extends Fragment {
 			return;
 		}
 		if(courses.size() > 0 && !courses.get(0).isDataAvailable()) { // Need to fetch
-			if(mCallback != null) {
-				mCallback.showProgress(true);
-			}
+			mCallback.showProgress(true);
 			ParseObject.fetchAllIfNeededInBackground(courses, new FindCallback<Course>() {
 				@Override
 				public void done(List<Course> data, ParseException e) {
-					if(mCallback != null) {
-						mCallback.showProgress(false);
-					}
+					mCallback.showProgress(false);
 					if(e == null) { // Success
 						updateCourseView(data);
 					} else { // Fail
-						Logger.e(TAG, e.getMessage(), e);
-						Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+						logAndToastException(TAG, e);
 					}
 				}
 			});
@@ -402,8 +389,7 @@ public class ProgramFragment extends Fragment {
 						DataCenter.setCachedStudents(programClass, data);
 						updateStudentsView(data);
 					} else { // Fail
-						Logger.e(TAG, e.getMessage(), e);
-						Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+						logAndToastException(TAG, e);
 					}
 				}
 			});
@@ -547,20 +533,16 @@ public class ProgramFragment extends Fragment {
 	private void handleProgramChanged(final Program changedProgram) {
 		if(mCurrentProgram != null && changedProgram != null
 		&& changedProgram.equals(mCurrentProgram)) { // Rename program
-			if(mCallback != null) {
-				mCallback.updateProgramSpinner(mCurrentProgram.getProgramName());
-			}
+			mCallback.updateProgramSpinner(mCurrentProgram.getProgramName());
 		} else { // Add or delete program
 			// Update menu
 			ActivityCompat.invalidateOptionsMenu(getActivity());
 			// Update tab and spinner
-			if(mCallback != null) {
-				String pname = null;
-				if(changedProgram != null) {
-					pname = changedProgram.getProgramName();
-				}
-				mCallback.updateProgramSpinner(pname);
+			String pname = null;
+			if(changedProgram != null) {
+				pname = changedProgram.getProgramName();
 			}
+			mCallback.updateProgramSpinner(pname);
 		}
 	}
 	
@@ -621,20 +603,15 @@ public class ProgramFragment extends Fragment {
 		mCurrentProgram.addClass(newClass);
 		Collections.sort(mCurrentProgram.getClasses(), classComparator);
 		
-		if(mCallback != null) {
-			mCallback.showProgress(true);
-		}
+		mCallback.showProgress(true);
 		mCurrentProgram.saveInBackground(new SaveCallback() {
 			@Override
 			public void done(ParseException e) {
-				if(mCallback != null) {
-					mCallback.showProgress(false);
-				}
+				mCallback.showProgress(false);
 				if(e == null) { // Success
 					updateClassBanner(newClassName);
 				} else { // Fail
-					Logger.e(TAG, e.getMessage(), e);
-					Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+					logAndToastException(TAG, e);
 				}
 			}
 		});
@@ -692,20 +669,15 @@ public class ProgramFragment extends Fragment {
 		List<ProgramClass> classes = mCurrentProgram.getClasses();
 		Collections.sort(classes, classComparator); // Sort classes
 		
-		if(mCallback != null) {
-			mCallback.showProgress(true);
-		}
+		mCallback.showProgress(true);
 		mCurrentProgram.saveInBackground(new SaveCallback() {
 			@Override
 			public void done(ParseException e) {
-				if(mCallback != null) {
-					mCallback.showProgress(false);
-				}
+				mCallback.showProgress(false);
 				if(e == null) { // Success
 					updateClassSpinner(newName);
 				} else {
-					Logger.e(TAG, e.getMessage(), e);
-					Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+					logAndToastException(TAG, e);
 				}
 			}
 		});
@@ -747,9 +719,7 @@ public class ProgramFragment extends Fragment {
 	private void handleEditCourses() {
 		Intent intent = new Intent(getActivity(), CourseListActivity.class);
 		int programIndex = -1;
-		if(mCallback != null) {
-			programIndex = mCallback.getCurrentProgramIndex();
-		}
+		programIndex = mCallback.getCurrentProgramIndex();
 		int classIndex = mSpClass.getSelectedItemPosition();
 		intent.putExtra(Const.EXTRA_PROGRAM_INDEX, programIndex);
 		intent.putExtra(Const.EXTRA_CLASS_INDEX, classIndex);
@@ -759,9 +729,7 @@ public class ProgramFragment extends Fragment {
 	private void handleEditStudents() {
 		Intent intent = new Intent(getActivity(), CourseStudentListActivity.class);
 		int programIndex = -1;
-		if(mCallback != null) {
-			programIndex = mCallback.getCurrentProgramIndex();
-		}
+		programIndex = mCallback.getCurrentProgramIndex();
 		int classIndex = mSpClass.getSelectedItemPosition();
 		intent.putExtra(Const.EXTRA_PROGRAM_INDEX, programIndex);
 		intent.putExtra(Const.EXTRA_CLASS_INDEX, classIndex);
@@ -822,9 +790,7 @@ public class ProgramFragment extends Fragment {
 
 		@Override
 		protected void onPreExecute() {
-			if(mCallback != null) {
-				mCallback.showProgress(true);
-			}
+			mCallback.showProgress(true);
 		}
 
 		@Override
@@ -839,14 +805,11 @@ public class ProgramFragment extends Fragment {
 
 		@Override
 		protected void onPostExecute(Void result) {
-			if(mCallback != null) {
-				mCallback.showProgress(false);
-			}
+			mCallback.showProgress(false);
 			if(e == null) { // Success
 				handleProgramChanged(program);
 			} else {
-				Logger.e(TAG, e.getMessage(), e);
-				Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+				logAndToastException(TAG, e);
 			}
 		}
 		
@@ -863,9 +826,7 @@ public class ProgramFragment extends Fragment {
 
 		@Override
 		protected void onPreExecute() {
-			if(mCallback != null) {
-				mCallback.showProgress(true);
-			}
+			mCallback.showProgress(true);
 		}
 
 		@Override
@@ -885,14 +846,11 @@ public class ProgramFragment extends Fragment {
 
 		@Override
 		protected void onPostExecute(Void result) {
-			if(mCallback != null) {
-				mCallback.showProgress(false);
-			}
+			mCallback.showProgress(false);
 			if(e == null) { // Success
 				handleProgramChanged(null);
 			} else {
-				Logger.e(TAG, e.getMessage(), e);
-				Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+				logAndToastException(TAG, e);
 			}
 		}
 	}
@@ -910,9 +868,7 @@ public class ProgramFragment extends Fragment {
 
 		@Override
 		protected void onPreExecute() {
-			if(mCallback != null) {
-				mCallback.showProgress(true);
-			}
+			mCallback.showProgress(true);
 		}
 
 		@Override
@@ -930,14 +886,11 @@ public class ProgramFragment extends Fragment {
 
 		@Override
 		protected void onPostExecute(Void result) {
-			if(mCallback != null) {
-				mCallback.showProgress(false);
-			}
+			mCallback.showProgress(false);
 			if(e == null) { // Success
 				updateClassBanner(null);
 			} else {
-				Logger.e(TAG, e.getMessage(), e);
-				Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+				logAndToastException(TAG, e);
 			}
 		}
 	}

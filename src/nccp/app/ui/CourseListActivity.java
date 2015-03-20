@@ -12,7 +12,6 @@ import nccp.app.parse.object.Course;
 import nccp.app.parse.object.Program;
 import nccp.app.parse.object.ProgramClass;
 import nccp.app.utils.Const;
-import nccp.app.utils.Logger;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -325,8 +324,7 @@ public class CourseListActivity extends ToolbarActivity {
 			if(e == null) {
 				handleRemoveSuccess();
 			} else {
-				Logger.e(TAG, e.getMessage(), e);
-				Toast.makeText(CourseListActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+				logAndToastException(TAG, e);
 			}
 		}
 	}

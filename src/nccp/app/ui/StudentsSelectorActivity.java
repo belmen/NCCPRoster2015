@@ -1,6 +1,8 @@
 package nccp.app.ui;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import nccp.app.R;
@@ -63,6 +65,7 @@ public class StudentsSelectorActivity extends ToolbarActivity {
 		mStudents = new ArrayList<Student>();
 		if(mAllStudents != null) {
 			mStudents.addAll(mAllStudents);
+			Collections.sort(mStudents, mSortByStudentId);
 		}
 	}
 
@@ -140,6 +143,13 @@ public class StudentsSelectorActivity extends ToolbarActivity {
 		public void onItemClick(AdapterView<?> parent, View view, int position,
 				long id) {
 			updateTitle();
+		}
+	};
+	
+	private Comparator<Student> mSortByStudentId = new Comparator<Student>() {
+		@Override
+		public int compare(Student lhs, Student rhs) {
+			return lhs.getStudentId().compareTo(rhs.getStudentId());
 		}
 	};
 }

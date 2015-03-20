@@ -36,8 +36,8 @@ public class BaseActivity extends ActionBarActivity {
 		this.mCheckLogin = checkLogin;
 	}
 	
-	public void logAndToastException(Exception e) {
-		Logger.e(TAG, e.getMessage(), e);
+	public void logAndToastException(String tag, Exception e) {
+		Logger.e(tag, e.getMessage(), e);
 		Toast.makeText(BaseActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
 	}
 }

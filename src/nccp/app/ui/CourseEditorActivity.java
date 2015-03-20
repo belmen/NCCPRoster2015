@@ -13,7 +13,6 @@ import nccp.app.parse.object.Course;
 import nccp.app.parse.object.Program;
 import nccp.app.parse.object.ProgramClass;
 import nccp.app.utils.Const;
-import nccp.app.utils.Logger;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
@@ -304,8 +303,7 @@ public class CourseEditorActivity extends ToolbarActivity {
 			if(e == null) { // Success
 				handleSaveSuccess();
 			} else { // Fail
-				Logger.e(TAG, e.getMessage(), e);
-				Toast.makeText(CourseEditorActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+				logAndToastException(TAG, e);
 			}
 		}
 	}

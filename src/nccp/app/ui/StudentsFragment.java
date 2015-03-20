@@ -22,7 +22,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.MenuItemCompat.OnActionExpandListener;
@@ -38,11 +37,10 @@ import android.view.ViewGroup;
 import android.widget.ExpandableListView;
 import android.widget.ExpandableListView.OnChildClickListener;
 import android.widget.ExpandableListView.OnGroupClickListener;
-import android.widget.Toast;
 
 import com.parse.ParseException;
 
-public class StudentsFragment extends Fragment implements OnQueryTextListener {
+public class StudentsFragment extends BaseFragment implements OnQueryTextListener {
 	
 	public static final String TAG = StudentsFragment.class.getSimpleName();
 	
@@ -78,7 +76,6 @@ public class StudentsFragment extends Fragment implements OnQueryTextListener {
 	@SuppressWarnings("unchecked")
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		Logger.i(TAG, TAG + " onCreate");
 		super.onCreate(savedInstanceState);
 		mAdapter = new StudentNameAdapter(getActivity());
 		
@@ -529,8 +526,7 @@ public class StudentsFragment extends Fragment implements OnQueryTextListener {
 			if(e == null) {
 				handleStudentRemoved(student);
 			} else {
-				Logger.e(TAG, e.getMessage(), e);
-				Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+				logAndToastException(TAG, e);
 			}
 		}
 	}

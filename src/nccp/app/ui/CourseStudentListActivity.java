@@ -151,7 +151,7 @@ public class CourseStudentListActivity extends ToolbarActivity {
 						mAdapter.setData(mStudents);
 						mAdapter.notifyDataSetChanged();
 					} else { // Fail
-						logAndToastException(e);
+						logAndToastException(TAG, e);
 					}
 				}
 			});
@@ -233,7 +233,7 @@ public class CourseStudentListActivity extends ToolbarActivity {
 					if(e == null) { // Success
 						handleStudentAdded(addedStudents, existed);
 					} else {
-						logAndToastException(e);
+						logAndToastException(TAG, e);
 					}
 				}
 			});
@@ -412,7 +412,7 @@ public class CourseStudentListActivity extends ToolbarActivity {
 			if(e == null) { // Success
 				handleStudentRemoved(students);
 			} else { // Fail
-				logAndToastException(e);
+				logAndToastException(TAG, e);
 			}
 		}
 	}
