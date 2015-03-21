@@ -64,20 +64,10 @@ public class ProgramFragment extends BaseFragment {
 	private TextView mTvStudentCount;
 	private TextView[] mTvStudents = new TextView[2];
 	// Data
-	private boolean mFirst = true; 
 	private Program mCurrentProgram = null;
 	private ArrayAdapter<String> mClassAdapter = null;
 	private List<LinearLayout> mCourseGridColumns = new ArrayList<LinearLayout>();
 	
-	@Override
-	public void onAttach(Activity activity) {
-		super.onAttach(activity);
-		try {
-			mCallback = (FragmentCallback) activity;
-		} catch (ClassCastException e) {
-		}
-	}
-
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -718,8 +708,7 @@ public class ProgramFragment extends BaseFragment {
 	
 	private void handleEditCourses() {
 		Intent intent = new Intent(getActivity(), CourseListActivity.class);
-		int programIndex = -1;
-		programIndex = mCallback.getCurrentProgramIndex();
+		int programIndex = mCallback.getCurrentProgramIndex();
 		int classIndex = mSpClass.getSelectedItemPosition();
 		intent.putExtra(Const.EXTRA_PROGRAM_INDEX, programIndex);
 		intent.putExtra(Const.EXTRA_CLASS_INDEX, classIndex);
@@ -728,8 +717,7 @@ public class ProgramFragment extends BaseFragment {
 	
 	private void handleEditStudents() {
 		Intent intent = new Intent(getActivity(), CourseStudentListActivity.class);
-		int programIndex = -1;
-		programIndex = mCallback.getCurrentProgramIndex();
+		int programIndex = mCallback.getCurrentProgramIndex();
 		int classIndex = mSpClass.getSelectedItemPosition();
 		intent.putExtra(Const.EXTRA_PROGRAM_INDEX, programIndex);
 		intent.putExtra(Const.EXTRA_CLASS_INDEX, classIndex);

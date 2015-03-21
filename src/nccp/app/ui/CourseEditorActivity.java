@@ -13,21 +13,16 @@ import nccp.app.parse.object.Course;
 import nccp.app.parse.object.Program;
 import nccp.app.parse.object.ProgramClass;
 import nccp.app.utils.Const;
-import android.app.Dialog;
-import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
 import android.support.v7.app.ActionBar;
-import android.text.format.DateFormat;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.Spinner;
-import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.parse.ParseException;
@@ -48,7 +43,7 @@ public class CourseEditorActivity extends ToolbarActivity {
 	private Button mBtnTime;
 //	private EditText mEtDuration;
 	private NumberPicker mNpDuration;
-	private CourseTimePickerFragment mTimePicker;
+	private TimePickerFragment mTimePicker;
 	// Data
 	private boolean mInProgress = false;
 	private ProgramClass mProgramClass;
@@ -77,7 +72,7 @@ public class CourseEditorActivity extends ToolbarActivity {
 		mNpDuration.setMinValue(0);
 		mNpDuration.setMaxValue(mDurationValues.length - 1);
 		mNpDuration.setWrapSelectorWheel(false);
-		mTimePicker = new CourseTimePickerFragment();
+		mTimePicker = new TimePickerFragment();
 		mTimePicker.setCallback(mTimePickerCallback);
 	}
 	
@@ -218,7 +213,7 @@ public class CourseEditorActivity extends ToolbarActivity {
 		finish();
 	}
 
-	private CourseTimePickerFragment.Callback mTimePickerCallback = new CourseTimePickerFragment.Callback() {
+	private TimePickerFragment.Callback mTimePickerCallback = new TimePickerFragment.Callback() {
 		@Override
 		public void onTimeSet(int hourOfDay, int minute) {
 			mTime.set(Calendar.HOUR_OF_DAY, hourOfDay);
@@ -227,47 +222,6 @@ public class CourseEditorActivity extends ToolbarActivity {
 		}
 	};
 
-	public static class CourseTimePickerFragment extends DialogFragment
-		implements TimePickerDialog.OnTimeSetListener {
-
-		private int hourOfDay;
-		private int minute;
-		
-		public interface Callback {
-			void onTimeSet(int hourOfDay, int minute);
-		}
-		private Callback callback;
-		
-		public void setCallback(Callback callback) {
-			this.callback = callback;
-		}
-
-		public void updateTime(int hourOfDay, int minute) {
-			this.hourOfDay = hourOfDay;
-			this.minute = minute;
-		}
-		
-		@Override
-		public Dialog onCreateDialog(Bundle savedInstanceState) {
-			return new TimePickerDialog(getActivity(), this, hourOfDay, minute,
-					DateFormat.is24HourFormat(getActivity()));
-		}
-
-		@Override
-		public void onActivityCreated(Bundle arg0) {
-			super.onActivityCreated(arg0);
-			TimePickerDialog dialog = (TimePickerDialog) getDialog();
-			dialog.updateTime(hourOfDay, minute);
-		}
-
-		@Override
-		public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-			if(callback != null) {
-				callback.onTimeSet(hourOfDay, minute);
-			}
-		}
-	}
-	
 	private class SaveCourseTask extends AsyncTask<Void, Void, Void> {
 
 		private ProgramClass programClass;

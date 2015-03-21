@@ -63,15 +63,6 @@ public class StudentsFragment extends BaseFragment implements OnQueryTextListene
 	private boolean mFirst = true;
 	private Student mSelectedStudent = null;
 	private int mHighlightPosition = -1;
-	
-	@Override
-	public void onAttach(Activity activity) {
-		super.onAttach(activity);
-		try {
-			mCallback = (FragmentCallback) activity;
-		} catch(ClassCastException e) {
-		}
-	}
 
 	@SuppressWarnings("unchecked")
 	@Override

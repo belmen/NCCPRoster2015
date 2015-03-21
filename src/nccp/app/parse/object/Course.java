@@ -75,6 +75,11 @@ public class Course extends BaseParseObject implements Comparable<Course> {
 	}
 
 	@Override
+	public String toString() {
+		return getCourseName();
+	}
+
+	@Override
 	public int compareTo(Course another) {
 		int dowDiff = getDayOfWeek() - another.getDayOfWeek();
 		if(dowDiff != 0) {

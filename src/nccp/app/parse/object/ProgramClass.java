@@ -40,6 +40,11 @@ public class ProgramClass extends BaseParseObject {
 		courses.add(course);
 	}
 
+	@Override
+	public String toString() {
+		return getTitle();
+	}
+
 //	public List<Student> getCachedStudents() {
 //		return cachedStudents;
 //	}

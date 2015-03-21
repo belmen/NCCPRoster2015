@@ -15,6 +15,7 @@
 	<string name="action_delete_program">Delete</string>
 	<string name="action_rename_program">Rename</string>
 	<string name="action_remove">Remove</string>
+	<string name="action_save">Save</string>
 	
 	<!-- Dialog -->
 	<string name="dialog_title_logout">Logout</string>
@@ -168,4 +169,9 @@
 	<string name="course_student_selector_empty">No student exists in database</string>
 	<string name="title_1_student_selected">1 student selected</string>
 	<string name="title_n_students_selected">%d students selected</string>
+	
+	<!-- Attendance -->
+	<string name="class_empty">No class in this program</string>
+	<string name="no_course_this_class">No course in the %s</string>
+	<string name="no_course_on_this_day">No course on this day</string>
 </resources>

@@ -80,7 +80,7 @@ public class MainActivity extends BaseActivity implements FragmentCallback {
 		mTabHost.addTab(mTabHost.newTabSpec(TAB_PROGRAM).setIndicator(getString(R.string.tab_title_program)),
 				ProgramFragment.class, null);
 		mTabHost.addTab(mTabHost.newTabSpec(TAB_ATTENDANCE).setIndicator(getString(R.string.tab_title_attendence)),
-				DummyTabFragment.class, null);
+				AttendanceFragment.class, null);
 		mTabHost.addTab(mTabHost.newTabSpec(TAB_STUDENT).setIndicator(getString(R.string.tab_title_students)),
 				StudentsFragment.class, null);
 		mTabHost.setOnTabChangedListener(mTabChangeListener);
@@ -175,6 +175,17 @@ public class MainActivity extends BaseActivity implements FragmentCallback {
 	public int getCurrentProgramIndex() {
 		return mSpProgram.getSelectedItemPosition();
 	}
+
+	@Override
+	public Program getCurrentProgram() {
+		Program currentProgram = null;
+		int index = getCurrentProgramIndex();
+		List<Program> programs = DataCenter.getPrograms();
+		if(programs != null && index >= 0 && index < programs.size()) {
+			currentProgram = programs.get(index);
+		}
+		return currentProgram;
+	}
 	
 	private void handleLogout() {
 		new AlertDialog.Builder(MainActivity.this)
@@ -228,12 +239,16 @@ public class MainActivity extends BaseActivity implements FragmentCallback {
 	}
 	
 	private void onProgramChanged(Program program) {
-		if(TAB_PROGRAM.equals(mCurrentTab)) {
-			ProgramFragment f = (ProgramFragment) getSupportFragmentManager()
-					.findFragmentByTag(TAB_PROGRAM);
-			if(f != null) {
-				f.setProgram(program);
-			}
+		// Notify two fragments
+		ProgramFragment programFragment = (ProgramFragment) getSupportFragmentManager()
+				.findFragmentByTag(TAB_PROGRAM);
+		if(programFragment != null) {
+			programFragment.setProgram(program);
+		}
+		AttendanceFragment attendanceFragment = (AttendanceFragment) getSupportFragmentManager()
+				.findFragmentByTag(TAB_ATTENDANCE);
+		if(attendanceFragment != null) {
+			attendanceFragment.setProgram(program);
 		}
 	}
 	

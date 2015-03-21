@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <RelativeLayout
+        android:id="@+id/attendance_banner"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="@color/blue_grey_200"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp" >
+
+        <Spinner
+            android:id="@+id/attendance_class_spinner"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="10dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true" />
+
+        <Button
+            android:id="@+id/attendance_date_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:textStyle="bold"
+            android:text="3/20/2015 Friday" />
+        
+        <Spinner
+            android:id="@+id/attendance_course_spinner"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="10dp" />
+    </RelativeLayout>
+
+    <ScrollView
+        android:id="@+id/attendance_scroller"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/attendance_banner" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="40dp" >
+        </LinearLayout>
+    </ScrollView>
+
+    <TextView
+        android:id="@+id/attendance_empty_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:gravity="center_horizontal"
+        android:textColor="@android:color/darker_gray"
+        android:textSize="30sp"
+        android:visibility="invisible" />
+
+</RelativeLayout>
