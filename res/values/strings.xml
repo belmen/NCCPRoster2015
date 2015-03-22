@@ -52,7 +52,13 @@
 	<string name="menu_reverse">Reverse</string>
 	
 	<!-- Button -->
-	<string name="button_edit">EDIT</string>
+	<string name="button_edit">Edit</string>
+	
+	<!-- Hint -->
+	<string name="hint_student_id">Student ID</string>
+	<string name="hint_first_name">First name</string>
+	<string name="hint_last_name">Last name</string>
+	<string name="hint_gradelevel">Grade level</string>
 	
 	<!-- Message -->
 	<string name="msg_student_info_saved">Student information saved</string>
@@ -150,6 +156,16 @@
 	<string name="program_class_section_courses">COURSES</string>
 	<string name="program_class_section_students">STUDENTS</string>
 	
+	<!-- Student selector -->
+	<string name="selector_filter_student_id">Student ID</string>
+	<string name="selector_filter_first_name">First name</string>
+	<string name="selector_filter_last_name">Last name</string>
+	<string name="selector_filter_grade_level">Grade level</string>
+	<string name="dialog_title_student_id_filter">Filter student ID</string>
+	<string name="dialog_title_first_name_filter">Filter first name</string>
+	<string name="dialog_title_last_name_filter">Filter last name</string>
+	<string name="dialog_title_grade_level_filter">Filter grade level</string>
+	
 	<!-- Edit course -->
 	<string name="title_course_list">Course list</string>
 	<string name="title_edit_course">Edit course</string>
@@ -166,12 +182,15 @@
 	<!-- Roster -->
 	<string name="title_student_list">Student list</string>
 	<string name="course_student_empty">No students in this course\nTouch + to add students</string>
-	<string name="course_student_selector_empty">No student exists in database</string>
+	<string name="course_student_selector_empty">No student</string>
 	<string name="title_1_student_selected">1 student selected</string>
 	<string name="title_n_students_selected">%d students selected</string>
 	
 	<!-- Attendance -->
-	<string name="class_empty">No class in this program</string>
+	<string name="title_attendance">Attendance</string>
+	<string name="no_class">No class in this program</string>
 	<string name="no_course_this_class">No course in the %s</string>
 	<string name="no_course_on_this_day">No course on this day</string>
+	<string name="no_programs">No program</string>
+	
 </resources>

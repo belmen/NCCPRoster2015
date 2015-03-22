@@ -117,9 +117,13 @@ public class AttendanceFragment extends BaseFragment {
 	private void updateViews(Program program) {
 		if(program == null) { // No program
 			mTvEmpty.setVisibility(View.VISIBLE);
-			mTvEmpty.setText(R.string.programs_empty_text);
+			mTvEmpty.setText(R.string.no_programs);
 			mAttendanceBannerView.setVisibility(View.INVISIBLE);
 			mAttendanceScrollView.setVisibility(View.INVISIBLE);
+			mClassAdapter.clear();
+			mClassAdapter.notifyDataSetChanged();
+			mCourseAdapter.clear();
+			mCourseAdapter.notifyDataSetChanged();
 		} else {
 			mAttendanceBannerView.setVisibility(View.VISIBLE);
 			
@@ -132,11 +136,13 @@ public class AttendanceFragment extends BaseFragment {
 			return;
 		}
 		final List<ProgramClass> programClasses = program.getClasses();
-		if(programClasses == null || programClasses.size() == 0) {
+		if(programClasses == null || programClasses.size() == 0) { // No class
 			mAttendanceBannerView.setVisibility(View.INVISIBLE);
 			mAttendanceScrollView.setVisibility(View.INVISIBLE);
 			mTvEmpty.setVisibility(View.VISIBLE);
-			mTvEmpty.setText(R.string.course_empty);
+			mTvEmpty.setText(R.string.no_class);
+			mClassAdapter.clear();
+			mClassAdapter.notifyDataSetChanged();
 		} else {
 			mAttendanceBannerView.setVisibility(View.VISIBLE);
 			// Fetch if needed
@@ -194,6 +200,8 @@ public class AttendanceFragment extends BaseFragment {
 			mSpCourse.setVisibility(View.INVISIBLE);
 			mTvEmpty.setVisibility(View.VISIBLE);
 			mTvEmpty.setText(getString(R.string.no_course_this_class, mCurrentClass.getTitle()));
+			mCourseAdapter.clear();
+			mCourseAdapter.notifyDataSetChanged();
 		} else {
 			if(!courses.get(0).isDataAvailable()) { // Need to fetch from remove
 				mCallback.showProgress(true);

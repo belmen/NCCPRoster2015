@@ -1,6 +1,9 @@
 package nccp.app.ui;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -134,6 +137,7 @@ public class CourseStudentListActivity extends ToolbarActivity {
 		List<Student> students = DataCenter.getCachedStudents(programClass);
 		if(students != null) { // Show cached data
 			mStudents = students;
+			Collections.sort(mStudents, mSortByStudentId);
 			mAdapter.setData(mStudents);
 			mAdapter.notifyDataSetChanged();
 		} else { // Fetch from remote
@@ -148,6 +152,7 @@ public class CourseStudentListActivity extends ToolbarActivity {
 //						programClass.setCachedStudents(data);
 						DataCenter.setCachedStudents(programClass, data);
 						mStudents = data;
+						Collections.sort(mStudents, mSortByStudentId);
 						mAdapter.setData(mStudents);
 						mAdapter.notifyDataSetChanged();
 					} else { // Fail
@@ -246,6 +251,7 @@ public class CourseStudentListActivity extends ToolbarActivity {
 		int added = addedStudents.size();
 		if(added > 0) {
 			mChanged = true;
+			Collections.sort(mStudents, mSortByStudentId);
 			mAdapter.notifyDataSetChanged();
 		}
 		
@@ -416,4 +422,11 @@ public class CourseStudentListActivity extends ToolbarActivity {
 			}
 		}
 	}
+	
+	private Comparator<Student> mSortByStudentId = new Comparator<Student>() {
+		@Override
+		public int compare(Student lhs, Student rhs) {
+			return lhs.getStudentId().compareTo(rhs.getStudentId());
+		}
+	};
 }

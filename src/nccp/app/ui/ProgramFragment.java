@@ -413,8 +413,8 @@ public class ProgramFragment extends BaseFragment {
 	}
 
 	private void handleAddProgram() {
-		View view = View.inflate(getActivity(), R.layout.dialog_add_program, null);
-		final EditText etProgramName = (EditText) view.findViewById(R.id.dialog_add_program_et);
+		View view = View.inflate(getActivity(), R.layout.dialog_one_input, null);
+		final EditText etProgramName = (EditText) view.findViewById(R.id.dialog_one_input_et);
 		new AlertDialog.Builder(getActivity())
 		.setTitle(R.string.dialog_title_add_program)
 		.setView(view)
@@ -436,8 +436,8 @@ public class ProgramFragment extends BaseFragment {
 		if(mCurrentProgram == null) {
 			return;
 		}
-		View view = View.inflate(getActivity(), R.layout.dialog_add_program, null);
-		final EditText etProgramName = (EditText) view.findViewById(R.id.dialog_add_program_et);
+		View view = View.inflate(getActivity(), R.layout.dialog_one_input, null);
+		final EditText etProgramName = (EditText) view.findViewById(R.id.dialog_one_input_et);
 		String oldName = mCurrentProgram.getProgramName();
 		etProgramName.setText(oldName);
 		etProgramName.setSelection(0, oldName.length());
@@ -544,8 +544,8 @@ public class ProgramFragment extends BaseFragment {
 	}
 	
 	private void handleAddClass() {
-		View v = View.inflate(getActivity(), R.layout.dialog_add_program, null);
-		final EditText et = (EditText) v.findViewById(R.id.dialog_add_program_et);
+		View v = View.inflate(getActivity(), R.layout.dialog_one_input, null);
+		final EditText et = (EditText) v.findViewById(R.id.dialog_one_input_et);
 		et.setHint(R.string.dialog_hint_class_name);
 		new AlertDialog.Builder(getActivity())
 		.setTitle(R.string.dialog_title_add_class)
@@ -617,8 +617,8 @@ public class ProgramFragment extends BaseFragment {
 		}
 		final ProgramClass currentClass = classes.get(mSpClass.getSelectedItemPosition());
 		
-		View v = View.inflate(getActivity(), R.layout.dialog_add_program, null);
-		final EditText et = (EditText) v.findViewById(R.id.dialog_add_program_et);
+		View v = View.inflate(getActivity(), R.layout.dialog_one_input, null);
+		final EditText et = (EditText) v.findViewById(R.id.dialog_one_input_et);
 		et.setHint(R.string.dialog_hint_class_name);
 		String oldName = currentClass.getTitle();
 		et.setText(oldName);
@@ -822,8 +822,26 @@ public class ProgramFragment extends BaseFragment {
 			try {
 				// Delete all classes
 				List<ProgramClass> classes = program.getClasses();
-				for(ProgramClass c : classes) {
-					c.delete();
+				for(ProgramClass programClass : classes) {
+					// Delete all courses
+					List<Course> courses = programClass.getCourses();
+					for(Course course : courses) {
+						course.delete();
+					}
+					
+					// Delete students links to this class
+					ParseQuery<Student> q = ParseQuery.getQuery(Student.class);
+					q.whereEqualTo(Student.TAG_ENROLLED_IN, programClass);
+					List<Student> students = q.find();
+					if(students != null) {
+						for(Student s : students) {
+							s.removeEnrolledIn();
+							s.save();
+						}
+					}
+					
+					// Delete class
+					programClass.delete();
 				}
 				program.delete();
 			} catch (ParseException e) {

@@ -227,8 +227,14 @@ public class MainActivity extends BaseActivity implements FragmentCallback {
 				ab.setDisplayShowTitleEnabled(false);
 				mSpProgram.setVisibility(View.VISIBLE);
 			} else { // No programs
-				ab.setTitle(getString(R.string.title_programs));
 				ab.setDisplayShowTitleEnabled(true);
+				String title;
+				if(TAB_PROGRAM.equals(tabId)) {
+					title = getString(R.string.title_programs);
+				} else {
+					title = getString(R.string.title_attendance);
+				}
+				ab.setTitle(title);
 				mSpProgram.setVisibility(View.GONE);
 			}
 		} else if(TAB_STUDENT.equals(tabId)) { // Students tab

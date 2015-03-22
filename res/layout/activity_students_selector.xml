@@ -3,10 +3,47 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
+    <LinearLayout
+        android:id="@+id/students_selector_banner"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:background="@color/blue_grey_200"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp" >
+        
+        <CheckBox
+            android:id="@+id/students_selector_id_cb"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/selector_filter_student_id" />
+        <CheckBox
+            android:id="@+id/students_selector_firstname_cb"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/selector_filter_first_name" />
+        <CheckBox
+            android:id="@+id/students_selector_lastname_cb"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/selector_filter_last_name" />
+        <CheckBox
+            android:id="@+id/students_selector_gradelevel_cb"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/selector_filter_grade_level" />
+    </LinearLayout>
+
     <ListView
         android:id="@+id/course_students_selector_listview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@id/students_selector_banner"
         android:choiceMode="multipleChoice" />
 
     <TextView
