@@ -6,6 +6,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import nccp.app.R;
+import nccp.app.data.DataCache;
 import nccp.app.data.DataCenter;
 import nccp.app.parse.object.Course;
 import nccp.app.parse.object.Program;
@@ -366,7 +367,7 @@ public class ProgramFragment extends BaseFragment {
 		if(programClass == null) {
 			return;
 		}
-		List<Student> students = DataCenter.getCachedStudents(programClass);
+		List<Student> students = DataCache.getStudents(programClass);
 		if(students != null) { // Show cached students
 			updateStudentsView(students);
 		} else { // Fetch from remove
@@ -376,7 +377,8 @@ public class ProgramFragment extends BaseFragment {
 				@Override
 				public void done(List<Student> data, ParseException e) {
 					if(e == null) { // Success
-						DataCenter.setCachedStudents(programClass, data);
+						Collections.sort(data, sortByStudentId);
+						DataCache.setStudents(programClass, data);
 						updateStudentsView(data);
 					} else { // Fail
 						logAndToastException(TAG, e);
@@ -746,6 +748,14 @@ public class ProgramFragment extends BaseFragment {
 		@Override
 		public int compare(ProgramClass lhs, ProgramClass rhs) {
 			return lhs.getTitle().compareTo(rhs.getTitle());
+		}
+	};
+	
+	private Comparator<Student> sortByStudentId = new Comparator<Student>() {
+
+		@Override
+		public int compare(Student lhs, Student rhs) {
+			return lhs.getStudentId().compareTo(rhs.getStudentId());
 		}
 	};
 	

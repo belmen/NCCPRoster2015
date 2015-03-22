@@ -13,11 +13,17 @@ public class Attendance extends BaseParseObject {
 	public static final String TAG_STUDENT = "student";
 	public static final String TAG_COURSE = "course";
 	public static final String TAG_DATE = "date";
-	public static final String TAG_ATTENDED = "attended";
+//	public static final String TAG_ATTENDED = "attended";
+	public static final String TAG_TIME_IN = "timeIn";
+	public static final String TAG_TIME_OUT = "timeOut";
 	
 	private static final SimpleDateFormat dateFormat =
 			new SimpleDateFormat("M/d/yyyy", Locale.US);
 	
+	public static String formatDate(Date date) {
+		return dateFormat.format(date);
+	}
+
 	public Student getStudent() {
 		return (Student) get(TAG_STUDENT);
 	}
@@ -45,16 +51,20 @@ public class Attendance extends BaseParseObject {
 		calendar.set(Calendar.DAY_OF_MONTH, day);
 		setDate(calendar.getTime());
 	}
-	
-	public boolean isAttended() {
-		return getBoolean(TAG_ATTENDED);
+
+	public Date getTimeIn() {
+		return getDate(TAG_TIME_IN);
 	}
 
-	public void setAttended(boolean attended) {
-		put(TAG_ATTENDED, attended);
+	public void setTimeIn(Date timeIn) {
+		put(TAG_TIME_IN, timeIn);
 	}
 
-	public static String formatDate(Date date) {
-		return dateFormat.format(date);
+	public Date getTimeOut() {
+		return getDate(TAG_TIME_OUT);
+	}
+
+	public void setTimeOut(Date timeOut) {
+		put(TAG_TIME_OUT, timeOut);
 	}
 }

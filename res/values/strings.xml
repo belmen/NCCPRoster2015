@@ -188,9 +188,11 @@
 	
 	<!-- Attendance -->
 	<string name="title_attendance">Attendance</string>
-	<string name="no_class">No class in this program</string>
-	<string name="no_course_this_class">No course in the %s</string>
-	<string name="no_course_on_this_day">No course on this day</string>
-	<string name="no_programs">No program</string>
-	
+	<string name="no_class">No classes in this program</string>
+	<string name="no_course_this_class">No courses in %s</string>
+	<string name="no_course_on_this_day">No courses on this day</string>
+	<string name="no_programs">No programs</string>
+	<string name="no_students_class">No students in %s</string>
+	<string name="attendance_time_in">Time in: %s</string>
+	<string name="attendance_time_out">Time out: %s</string>
 </resources>

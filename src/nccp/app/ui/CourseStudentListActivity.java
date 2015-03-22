@@ -10,6 +10,7 @@ import java.util.Set;
 
 import nccp.app.R;
 import nccp.app.adapter.StudentInfoAdapter;
+import nccp.app.data.DataCache;
 import nccp.app.data.DataCenter;
 import nccp.app.parse.object.Program;
 import nccp.app.parse.object.ProgramClass;
@@ -134,7 +135,7 @@ public class CourseStudentListActivity extends ToolbarActivity {
 		if(programClass == null) {
 			return;
 		}
-		List<Student> students = DataCenter.getCachedStudents(programClass);
+		List<Student> students = DataCache.getStudents(programClass);
 		if(students != null) { // Show cached data
 			mStudents = students;
 			Collections.sort(mStudents, mSortByStudentId);
@@ -150,7 +151,7 @@ public class CourseStudentListActivity extends ToolbarActivity {
 					showProgressBar(false);
 					if(e == null) { // Success
 //						programClass.setCachedStudents(data);
-						DataCenter.setCachedStudents(programClass, data);
+						DataCache.setStudents(programClass, data);
 						mStudents = data;
 						Collections.sort(mStudents, mSortByStudentId);
 						mAdapter.setData(mStudents);
@@ -210,7 +211,7 @@ public class CourseStudentListActivity extends ToolbarActivity {
 					// Remove from old program class cache
 					ProgramClass oldClass = student.getEnrolledIn();
 					if(oldClass != null) {
-						List<Student> cachedStudents = DataCenter.getCachedStudents(oldClass);
+						List<Student> cachedStudents = DataCache.getStudents(oldClass);
 						if(cachedStudents != null) {
 							cachedStudents.remove(student);
 						}
@@ -222,11 +223,11 @@ public class CourseStudentListActivity extends ToolbarActivity {
 			}
 		}
 		// Add student to cache
-		List<Student> cachedStudents = DataCenter.getCachedStudents(programClass);
+		List<Student> cachedStudents = DataCache.getStudents(programClass);
 		if(cachedStudents != null) {
 			cachedStudents.addAll(addedStudents);
 		} else {
-			DataCenter.setCachedStudents(programClass, addedStudents);
+			DataCache.setStudents(programClass, addedStudents);
 		}
 		
 		// Save to remote
@@ -280,7 +281,7 @@ public class CourseStudentListActivity extends ToolbarActivity {
 	private void handleStudentRemoved(List<Student> removedStudents) {
 		mChanged = true;
 		ProgramClass programClass = getProgramClass();
-		List<Student> cachedStudents = DataCenter.getCachedStudents(programClass);
+		List<Student> cachedStudents = DataCache.getStudents(programClass);
 		if(cachedStudents != null) {
 			cachedStudents.removeAll(removedStudents);
 		}

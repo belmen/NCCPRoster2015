@@ -10,6 +10,7 @@ import java.util.Map;
 
 import nccp.app.R;
 import nccp.app.adapter.StudentNameAdapter;
+import nccp.app.data.DataCache;
 import nccp.app.data.DataCenter;
 import nccp.app.parse.object.ProgramClass;
 import nccp.app.parse.object.Student;
@@ -300,7 +301,7 @@ public class StudentsFragment extends BaseFragment implements OnQueryTextListene
 		// Clear the cache of its enroll program class
 		ProgramClass programClass = student.getEnrolledIn();
 		if(programClass != null) {
-			List<Student> students = DataCenter.getCachedStudents(programClass);
+			List<Student> students = DataCache.getStudents(programClass);
 			if(students != null) {
 				students.remove(student);
 			}
