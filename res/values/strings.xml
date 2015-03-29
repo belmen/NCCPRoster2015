@@ -27,7 +27,7 @@
 	<string name="dialog_msg_add_program">Enter new program\'s name</string>
 	<string name="dialog_error_program_name_empty">Program name is empty</string>
 	<string name="dialog_title_delete_program">Delete program</string>
-	<string name="dialog_msg_delete_program">Delete program %s?</string>
+	<string name="dialog_msg_delete_program">Are you sure to remove program %s?\nYou will lose all class and course information in this program!</string>
 	<string name="dialog_error_program_name_same">Program name does not change</string>
 	<string name="dialog_title_add_class">New class</string>
 	<string name="dialog_title_rename_class">Rename class</string>
@@ -70,6 +70,7 @@
 	<string name="msg_students_added_existed">%1$d student added (%2$d existed)</string>
 	<string name="msg_no_student_selected">No student selected</string>
 	<string name="msg_attendance_not_checked">Please check an option</string>
+	<string name="msg_has_been_removed">%s has been removed</string>
 	
 	<!-- Error message -->
 	<string name="error_program_class_name_empty">Class name is empty</string>
@@ -98,9 +99,9 @@
 	<string name="register_incorrect_creation_code">Incorrect creation code</string>
 	
 	<!-- Main -->
-	<string name="tab_title_program">Program</string>
-	<string name="tab_title_students">Students</string>
-	<string name="tab_title_attendence">Attendance</string>
+	<string name="tab_title_program">PROGRAM</string>
+	<string name="tab_title_attendence">ATTENDANCE</string>
+	<string name="tab_title_students">STUDENTS</string>
 	
 	<!-- Programs -->
 	<string name="title_programs">Programs</string>

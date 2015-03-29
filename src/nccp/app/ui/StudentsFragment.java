@@ -123,6 +123,8 @@ public class StudentsFragment extends BaseFragment implements OnQueryTextListene
 
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		Logger.i(TAG, "onCreateOptionsMenu");
+		super.onCreateOptionsMenu(menu, inflater);
 		inflater.inflate(R.menu.student_fragment_menu, menu);
 //		if(isDetailOpen()) {
 //			inflater.inflate(R.menu.student_fragment_menu_edit, menu);

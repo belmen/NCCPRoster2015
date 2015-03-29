@@ -6,4 +6,7 @@
     <dimen name="student_editor_left_text_width">100dp</dimen>
     <dimen name="student_editor_left_text_width_wide">160dp</dimen>
     <dimen name="dp_2">2dp</dimen>
+    
+    <!-- Height of the selection indicator of a tab. -->
+    <dimen name="tab_selected_underline_height">2dp</dimen>
 </resources>

@@ -124,6 +124,7 @@ public class ProgramFragment extends BaseFragment {
 
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		super.onCreateOptionsMenu(menu, inflater);
 		inflater.inflate(R.menu.program_fragment_menu, menu);
 	}
 
@@ -864,6 +865,8 @@ public class ProgramFragment extends BaseFragment {
 		protected void onPostExecute(Void result) {
 			mCallback.showProgress(false);
 			if(e == null) { // Success
+				Toast.makeText(getActivity(), getString(R.string.msg_has_been_removed, program.getProgramName()),
+						Toast.LENGTH_SHORT).show();
 				handleProgramChanged(null);
 			} else {
 				logAndToastException(TAG, e);
@@ -904,6 +907,8 @@ public class ProgramFragment extends BaseFragment {
 		protected void onPostExecute(Void result) {
 			mCallback.showProgress(false);
 			if(e == null) { // Success
+				Toast.makeText(getActivity(), getString(R.string.msg_has_been_removed, programClass.getTitle()),
+						Toast.LENGTH_SHORT).show();
 				updateClassBanner(null);
 			} else {
 				logAndToastException(TAG, e);

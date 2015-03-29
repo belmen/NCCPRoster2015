@@ -20,11 +20,14 @@ import nccp.app.parse.proxy.AttendanceProxy;
 import nccp.app.parse.proxy.CourseProxy;
 import nccp.app.parse.proxy.StudentProxy;
 import nccp.app.utils.Const;
+import nccp.app.utils.Logger;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -136,35 +139,12 @@ public class AttendanceFragment extends BaseFragment {
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		setHasOptionsMenu(true);
+//		setHasOptionsMenu(true);
 		
 		updateDateButton();
 		updateViews(mCallback.getCurrentProgram());
 	}
 
-//	@Override
-//	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-//		inflater.inflate(R.menu.attendance_program, menu);
-//		super.onCreateOptionsMenu(menu, inflater);
-//	}
-//
-//	@Override
-//	public void onPrepareOptionsMenu(Menu menu) {
-//		super.onPrepareOptionsMenu(menu);
-//		MenuItem saveItem = menu.getItem(1);
-//		saveItem.setEnabled(mChanged);
-//	}
-//
-//	@Override
-//	public boolean onOptionsItemSelected(MenuItem item) {
-//		int id = item.getItemId();
-//		if(id == R.id.action_save_attendance) {
-//			handleSaveAttendance();
-//			return true;
-//		}
-//		return super.onOptionsItemSelected(item);
-//	}
-	
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
@@ -175,6 +155,12 @@ public class AttendanceFragment extends BaseFragment {
 		}
 	}
 
+	public void refresh() {
+		if(getView() != null) {
+			updateViews(mCallback.getCurrentProgram());
+		}
+	}
+	
 	public void setProgram(Program program) {
 		if(getView() != null) {
 			updateViews(program);

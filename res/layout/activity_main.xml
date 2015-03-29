@@ -1,21 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.app.FragmentTabHost xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:nccp="http://schemas.android.com/apk/res-auto"
-    android:id="@android:id/tabhost"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
     <LinearLayout
+        android:id="@+id/main_header"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical" >
-
-        <nccp.app.ui.MyToolbar
+        <nccp.app.ui.MyToolbar
+            xmlns:nccp="http://schemas.android.com/apk/res-auto"
             android:id="@+id/main_toolbar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="?attr/actionBarSize"
+            android:layout_alignParentTop="true"
             android:background="@color/orange_bg"
-            android:minHeight="?attr/actionBarSize"
             nccp:theme="@style/ThemeOverlay.AppCompat.ActionBar"
             nccp:title="@string/app_name" >
 
@@ -27,34 +26,58 @@
                 android:visibility="gone" />
         </nccp.app.ui.MyToolbar>
 
-        <RelativeLayout
+        <nccp.app.ui.ViewPagerTabs
+            android:id="@+id/main_pager_tabs"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1" >
-
-            <ProgressBar
-                android:id="@+id/main_progress"
-                style="?android:attr/progressBarStyleHorizontal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_marginTop="-7dp"
-                android:indeterminate="true"
-                android:visibility="invisible" />
-
-            <TabWidget
-                android:id="@android:id/tabs"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:orientation="horizontal" />
-
-            <FrameLayout
-                android:id="@android:id/tabcontent"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_below="@android:id/tabs" />
-        </RelativeLayout>
+            android:layout_height="?attr/actionBarSize"
+            android:textColor="@android:color/black"
+            android:textSize="14sp"
+            android:textStyle="bold" />
     </LinearLayout>
 
-</android.support.v4.app.FragmentTabHost>
+    <android.support.v4.view.ViewPager
+        android:id="@+id/main_tab_pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/main_header" />
+
+    <ProgressBar
+        android:id="@+id/main_progress"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="-7dp"
+        android:layout_below="@id/main_header"
+        android:indeterminate="true"
+        android:visibility="invisible" />
+
+    <!-- <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" >
+
+        <ProgressBar
+            android:id="@+id/main_progress"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="-7dp"
+            android:indeterminate="true"
+            android:visibility="invisible" />
+
+        <TabWidget
+            android:id="@android:id/tabs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:orientation="horizontal" />
+
+        <FrameLayout
+            android:id="@android:id/tabcontent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@android:id/tabs" />
+    </RelativeLayout> -->
+
+</RelativeLayout>
