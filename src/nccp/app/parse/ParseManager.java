@@ -1,6 +1,7 @@
 package nccp.app.parse;
 
 import nccp.app.parse.ParseAppManager.AppKey;
+import nccp.app.parse.object.Attendance;
 import nccp.app.parse.object.Course;
 import nccp.app.parse.object.Program;
 import nccp.app.parse.object.ProgramClass;
@@ -28,6 +29,7 @@ public class ParseManager {
 		ParseObject.registerSubclass(Course.class);
 		ParseObject.registerSubclass(ProgramClass.class);
 		ParseObject.registerSubclass(Program.class);
+		ParseObject.registerSubclass(Attendance.class);
 	}
 	
 	public static boolean isInitialized() {

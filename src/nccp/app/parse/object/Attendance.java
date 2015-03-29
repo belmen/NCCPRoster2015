@@ -13,9 +13,10 @@ public class Attendance extends BaseParseObject {
 	public static final String TAG_STUDENT = "student";
 	public static final String TAG_COURSE = "course";
 	public static final String TAG_DATE = "date";
-//	public static final String TAG_ATTENDED = "attended";
+	public static final String TAG_ATTENDED = "attended";
 	public static final String TAG_TIME_IN = "timeIn";
 	public static final String TAG_TIME_OUT = "timeOut";
+	public static final String TAG_COMMENT = "comment";
 	
 	private static final SimpleDateFormat dateFormat =
 			new SimpleDateFormat("M/d/yyyy", Locale.US);
@@ -29,7 +30,9 @@ public class Attendance extends BaseParseObject {
 	}
 	
 	public void setStudent(Student student) {
-		put(TAG_STUDENT, student);
+		if(student != null) {
+			put(TAG_STUDENT, student);
+		}
 	}
 	
 	public Course getCourse() {
@@ -37,11 +40,21 @@ public class Attendance extends BaseParseObject {
 	}
 	
 	public void setCourse(Course course) {
-		put(TAG_COURSE, course);
+		if(course != null) {
+			put(TAG_COURSE, course);
+		}
 	}
 	
 	public void setDate(Date date) {
-		put(TAG_DATE, formatDate(date));
+		if(date != null) {
+			put(TAG_DATE, formatDate(date));
+		}
+	}
+	
+	public void setDate(String dateStr) {
+		if(dateStr != null) {
+			put(TAG_DATE, dateStr);
+		}
 	}
 	
 	public void setDate(int year, int month, int day) {
@@ -51,13 +64,23 @@ public class Attendance extends BaseParseObject {
 		calendar.set(Calendar.DAY_OF_MONTH, day);
 		setDate(calendar.getTime());
 	}
+	
+	public String getDate() {
+		return getString(TAG_DATE);
+	}
 
 	public Date getTimeIn() {
 		return getDate(TAG_TIME_IN);
 	}
 
 	public void setTimeIn(Date timeIn) {
-		put(TAG_TIME_IN, timeIn);
+		if(timeIn != null) {
+			put(TAG_TIME_IN, timeIn);
+		}
+	}
+	
+	public void removeTimeIn() {
+		remove(TAG_TIME_IN);
 	}
 
 	public Date getTimeOut() {
@@ -65,6 +88,28 @@ public class Attendance extends BaseParseObject {
 	}
 
 	public void setTimeOut(Date timeOut) {
-		put(TAG_TIME_OUT, timeOut);
+		if(timeOut != null) {
+			put(TAG_TIME_OUT, timeOut);
+		}
+	}
+	
+	public void removeTimeOut() {
+		remove(TAG_TIME_OUT);
+	}
+
+	public boolean isAttended() {
+		return getBoolean(TAG_ATTENDED);
+	}
+
+	public void setAttended(boolean attended) {
+		put(TAG_ATTENDED, attended);
+	}
+
+	public String getComment() {
+		return getString(TAG_COMMENT);
+	}
+
+	public void setComment(String comment) {
+		put(TAG_COMMENT, comment);
 	}
 }

@@ -7,6 +7,8 @@ import nccp.app.parse.object.Course;
 
 public class CourseProxy implements Serializable {
 
+	private static final long serialVersionUID = 1L;
+
 	public static final String TAG = CourseProxy.class.getSimpleName();
 	
 	public String objectId;

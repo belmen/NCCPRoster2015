@@ -15,24 +15,43 @@
             android:id="@+id/attendance_class_spinner"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_marginLeft="10dp"
+            android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:layout_alignParentLeft="true" />
+            android:layout_marginLeft="10dp" />
 
-        <Button
-            android:id="@+id/attendance_date_btn"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:textStyle="bold"
-            android:text="3/20/2015 Friday" />
-        
+            android:gravity="center_vertical"
+            android:orientation="horizontal" >
+
+            <ImageButton
+                android:id="@+id/attendance_date_left_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_chevron_left_black_24dp" />
+            
+            <Button
+                android:id="@+id/attendance_date_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="3/20/2015 Friday"
+                android:textStyle="bold" />
+            
+            <ImageButton
+                android:id="@+id/attendance_date_right_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_chevron_right_black_24dp" />
+        </LinearLayout>
+
         <Spinner
             android:id="@+id/attendance_course_spinner"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
             android:layout_marginRight="10dp" />
     </RelativeLayout>
 
@@ -41,7 +60,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/attendance_banner" />
-    
+
     <TextView
         android:id="@+id/attendance_empty_text"
         android:layout_width="wrap_content"

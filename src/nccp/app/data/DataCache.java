@@ -2,8 +2,6 @@ package nccp.app.data;
 
 import java.util.List;
 
-import nccp.app.parse.object.Attendance;
-import nccp.app.parse.object.Course;
 import nccp.app.parse.object.ProgramClass;
 import nccp.app.parse.object.Student;
 import android.support.v4.util.LruCache;
@@ -11,14 +9,14 @@ import android.support.v4.util.LruCache;
 public class DataCache {
 
 	private static final int DEFAULT_STUDENTS_CACHE = 20;
-	private static final int DEFAULT_ATTENDANCE_CACHE = 20;
+//	private static final int DEFAULT_ATTENDANCE_CACHE = 20;
 	
 	private static LruCache<String, List<Student>> mStudentsCache;
-	private static LruCache<String, List<Attendance>> mAttendanceCache;
+//	private static LruCache<String, List<Attendance>> mAttendanceCache;
 	
 	static {
 		mStudentsCache = new LruCache<String, List<Student>>(DEFAULT_STUDENTS_CACHE);
-		mAttendanceCache = new LruCache<String, List<Attendance>>(DEFAULT_ATTENDANCE_CACHE);
+//		mAttendanceCache = new LruCache<String, List<Attendance>>(DEFAULT_ATTENDANCE_CACHE);
 	}
 	
 	public static List<Student> getStudents(ProgramClass programClass) {
@@ -42,24 +40,24 @@ public class DataCache {
 		mStudentsCache.remove(programClass.getObjectId());
 	}
 	
-	public static List<Attendance> getAttendance(Course course) {
-		if(course == null) {
-			return null;
-		}
-		return mAttendanceCache.get(course.getObjectId());
-	}
-	
-	public static void setAttendance(Course course, List<Attendance> attendances) {
-		if(course == null) {
-			return;
-		}
-		mAttendanceCache.put(course.getObjectId(), attendances);
-	}
-	
-	public static void removeAttendance(Course course) {
-		if(course == null) {
-			return;
-		}
-		mAttendanceCache.remove(course.getObjectId());
-	}
+//	public static List<Attendance> getAttendance(Course course) {
+//		if(course == null) {
+//			return null;
+//		}
+//		return mAttendanceCache.get(course.getObjectId());
+//	}
+//	
+//	public static void setAttendance(Course course, List<Attendance> attendances) {
+//		if(course == null) {
+//			return;
+//		}
+//		mAttendanceCache.put(course.getObjectId(), attendances);
+//	}
+//	
+//	public static void removeAttendance(Course course) {
+//		if(course == null) {
+//			return;
+//		}
+//		mAttendanceCache.remove(course.getObjectId());
+//	}
 }

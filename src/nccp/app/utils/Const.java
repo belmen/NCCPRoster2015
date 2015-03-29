@@ -11,6 +11,9 @@ public class Const {
 	public static final String EXTRA_CLASS_INDEX = PREF_EXTRA + ".class_index";
 	public static final String EXTRA_COURSE_INDEX = PREF_EXTRA + ".course_index";
 	public static final String EXTRA_OBJECT_ID_LIST = PREF_EXTRA + ".object_id_list";
+	public static final String EXTRA_COURSE = PREF_EXTRA + ".course";
+	public static final String EXTRA_ATTENDANCE = PREF_EXTRA + ".attendance";
+	public static final String EXTRA_DATE = PREF_EXTRA + ".date";
 	
 	public static final String PREF_PREFIX = PACKAGE_NAME + ".pref";
 	public static final String PREF_LAST_DATABASE = PREF_PREFIX + ".last_database";

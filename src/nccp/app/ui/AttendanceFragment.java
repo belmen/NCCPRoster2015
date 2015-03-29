@@ -1,6 +1,7 @@
 package nccp.app.ui;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
@@ -8,12 +9,19 @@ import java.util.List;
 import java.util.Locale;
 
 import nccp.app.R;
+import nccp.app.adapter.AttendanceAdapter;
 import nccp.app.data.DataCache;
 import nccp.app.parse.object.Attendance;
 import nccp.app.parse.object.Course;
 import nccp.app.parse.object.Program;
 import nccp.app.parse.object.ProgramClass;
 import nccp.app.parse.object.Student;
+import nccp.app.parse.proxy.AttendanceProxy;
+import nccp.app.parse.proxy.CourseProxy;
+import nccp.app.parse.proxy.StudentProxy;
+import nccp.app.utils.Const;
+import android.app.Activity;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -21,9 +29,11 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
@@ -39,21 +49,25 @@ public class AttendanceFragment extends BaseFragment {
 
 	public static final String TAG = AttendanceFragment.class.getSimpleName();
 	
-	private static final SimpleDateFormat dateFormat = new SimpleDateFormat("M/d/yyyy EEEE", Locale.US);
+	private static final int REQUEST_EDIT_ATTENDANCE = 0;
+	private static final SimpleDateFormat dateFormat = new SimpleDateFormat("M/d/yyyy EEE", Locale.US);
 	
 	// Views
 	private RelativeLayout mAttendanceBannerView;
 	private ListView mLvAttendance;
 	private TextView mTvEmpty;
 	private Button mBtnDate;
+	private ImageButton mIbDateLeft;
+	private ImageButton mIbDateRight;
 	private Spinner mSpClass;
 	private Spinner mSpCourse;
 	private DatePickerFragment mDatePickerFragment;
 	// Data
-	private boolean mChanged = false;
+//	private boolean mChanged = false;
 	private ProgramClass mCurrentClass = null;
 	private List<Student> mCurrentStudents = null;
 	private Course mCurrentCourse = null;
+	private CourseProxy mCurrentCourseProxy = null;
 	private ArrayAdapter<String> mClassAdapter;
 	private ArrayAdapter<String> mCourseAdapter;
 	private AttendanceAdapter mAttendanceAdapter;
@@ -76,16 +90,20 @@ public class AttendanceFragment extends BaseFragment {
 		View v = inflater.inflate(R.layout.fragment_attendance, container, false);
 		mAttendanceBannerView = (RelativeLayout) v.findViewById(R.id.attendance_banner);
 		mLvAttendance = (ListView) v.findViewById(R.id.attendance_listview);
+		mLvAttendance.setOnItemClickListener(onAttendanceClick);
 		mAttendanceAdapter = new AttendanceAdapter(getActivity());
 		mLvAttendance.setAdapter(mAttendanceAdapter);
 		mTvEmpty = (TextView) v.findViewById(R.id.attendance_empty_text);
 		mBtnDate = (Button) v.findViewById(R.id.attendance_date_btn);
+		mIbDateLeft = (ImageButton) v.findViewById(R.id.attendance_date_left_btn);
+		mIbDateRight = (ImageButton) v.findViewById(R.id.attendance_date_right_btn);
 		mSpClass = (Spinner) v.findViewById(R.id.attendance_class_spinner);
 		mSpClass.setOnItemSelectedListener(onClassSelectedListener);
 		mSpClass.setAdapter(mClassAdapter);
 		mSpCourse = (Spinner) v.findViewById(R.id.attendance_course_spinner);
 		mSpCourse.setOnItemSelectedListener(onCourseSelectedListener);
 		mSpCourse.setAdapter(mCourseAdapter);
+		
 		mBtnDate.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -95,6 +113,23 @@ public class AttendanceFragment extends BaseFragment {
 				mDatePickerFragment.show(getChildFragmentManager(), "datePicker");
 			}
 		});
+		
+		OnClickListener onDateLeftRightClick = new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				int id = v.getId();
+				if(id == R.id.attendance_date_left_btn) {
+					mDate.add(Calendar.DATE, -1);
+				} else if(id == R.id.attendance_date_right_btn) {
+					mDate.add(Calendar.DATE, 1);
+				}
+				updateDateButton();
+				updateCourseSpinner();
+			}
+		};
+		mIbDateLeft.setOnClickListener(onDateLeftRightClick);
+		mIbDateRight.setOnClickListener(onDateLeftRightClick);
+		
 		return v;
 	}
 
@@ -130,6 +165,16 @@ public class AttendanceFragment extends BaseFragment {
 //		return super.onOptionsItemSelected(item);
 //	}
 	
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		if(requestCode == REQUEST_EDIT_ATTENDANCE) { // Attendance edited
+			if(resultCode == Activity.RESULT_OK) {
+				updateAttendanceSheet();
+			}
+		}
+	}
+
 	public void setProgram(Program program) {
 		if(getView() != null) {
 			updateViews(program);
@@ -215,6 +260,7 @@ public class AttendanceFragment extends BaseFragment {
 		if(mCurrentClass == null) {
 			mCurrentStudents = null;
 			mCurrentCourse = null;
+			mCurrentCourseProxy = null;
 			return;
 		}
 		List<Course> courses = mCurrentClass.getCourses();
@@ -254,12 +300,14 @@ public class AttendanceFragment extends BaseFragment {
 			return;
 		}
 		List<Course> courses = mCurrentClass.getCourses();
+		List<Course> addedCourses = new ArrayList<Course>();
 		// Update spinner
 		int dayOfWeek = mDate.get(Calendar.DAY_OF_WEEK);
 		mCourseAdapter.clear();
 		if(courses != null) {
 			for(Course course : courses) {
 				if(course.getDayOfWeek() == dayOfWeek) {
+					addedCourses.add(course);
 					mCourseAdapter.add(course.getCourseName());
 				}
 			}
@@ -280,13 +328,16 @@ public class AttendanceFragment extends BaseFragment {
 			boolean forceUpdate = mSpCourse.getSelectedItemPosition() == 0;
 			mSpCourse.setSelection(0);
 			if(forceUpdate) {
-				setCurrentCourse(courses.get(0));
+				setCurrentCourse(addedCourses.get(0));
 			}
 		}
 	}
 	
 	private void setCurrentCourse(Course course) {
 		mCurrentCourse = course;
+		if(mCurrentCourse != null) {
+			mCurrentCourseProxy = CourseProxy.fromParseObject(mCurrentCourse);
+		}
 		updateAttendanceSheet();
 	}
 	
@@ -302,25 +353,29 @@ public class AttendanceFragment extends BaseFragment {
 			mTvEmpty.setVisibility(View.INVISIBLE);
 			mLvAttendance.setVisibility(View.VISIBLE);
 			
-			List<Attendance> attendances = DataCache.getAttendance(mCurrentCourse);
-			if(attendances == null) { // Get attendance records from remote
-				ParseQuery<Attendance> q = ParseQuery.getQuery(Attendance.class);
-				q.whereEqualTo(Attendance.TAG_COURSE, mCurrentCourse);
-				q.findInBackground(new FindCallback<Attendance>() {
-					@Override
-					public void done(List<Attendance> data, ParseException e) {
-						if(e == null) {
-							mAttendanceAdapter.addAllAttendance(data);
-							mAttendanceAdapter.notifyDataSetChanged();
-						} else {
-							logAndToastException(TAG, e);
-						}
+//			List<Attendance> attendances = DataCache.getAttendance(mCurrentCourse);
+//			if(attendances == null) {
+			// Get attendance records from remote
+			ParseQuery<Attendance> q = ParseQuery.getQuery(Attendance.class);
+			q.whereEqualTo(Attendance.TAG_COURSE, mCurrentCourse);
+			q.whereEqualTo(Attendance.TAG_DATE, Attendance.formatDate(mDate.getTime()));
+			q.findInBackground(new FindCallback<Attendance>() {
+				@Override
+				public void done(List<Attendance> data, ParseException e) {
+					if(e == null) {
+						mAttendanceAdapter.clearAttendance();
+						mAttendanceAdapter.addAllAttendance(data);
+						mAttendanceAdapter.notifyDataSetChanged();
+					} else {
+						logAndToastException(TAG, e);
 					}
-				});
-			} else {
-				mAttendanceAdapter.addAllAttendance(attendances);
-				mAttendanceAdapter.notifyDataSetChanged();
-			}
+				}
+			});
+//			} else {
+//				mAttendanceAdapter.clearAttendance();
+//				mAttendanceAdapter.addAllAttendance(attendances);
+//				mAttendanceAdapter.notifyDataSetChanged();
+//			}
 		}
 	}
 
@@ -328,11 +383,6 @@ public class AttendanceFragment extends BaseFragment {
 		String str = dateFormat.format(mDate.getTime());
 		mBtnDate.setText(str);
 	}
-
-//	private void handleSaveAttendance() {
-//		// TODO Auto-generated method stub
-//		
-//	}
 
 	private OnItemSelectedListener onClassSelectedListener = new OnItemSelectedListener() {
 
@@ -388,6 +438,31 @@ public class AttendanceFragment extends BaseFragment {
 		@Override
 		public int compare(Student lhs, Student rhs) {
 			return lhs.getStudentId().compareTo(rhs.getStudentId());
+		}
+	};
+	
+	private OnItemClickListener onAttendanceClick = new OnItemClickListener() {
+		@Override
+		public void onItemClick(AdapterView<?> parent, View view, int position,
+				long id) {
+			Intent intent = new Intent(getActivity(), AttendanceEditorActivity.class);
+			if(mDate != null) {
+				intent.putExtra(Const.EXTRA_DATE, mDate.getTime().getTime());
+			}
+			if(mCurrentCourseProxy != null) {
+				intent.putExtra(Const.EXTRA_COURSE, mCurrentCourseProxy);
+			}
+			Student student = (Student) parent.getItemAtPosition(position);
+			if(student != null) {
+				StudentProxy studentProxy = StudentProxy.fromParseObject(student);
+				intent.putExtra(Const.EXTRA_STUDENT, studentProxy);
+			}
+			Attendance attendance = mAttendanceAdapter.getAttendance(student);
+			if(attendance != null) {
+				AttendanceProxy attendanceProxy = AttendanceProxy.fromParseObject(attendance);
+				intent.putExtra(Const.EXTRA_ATTENDANCE, attendanceProxy);
+			}
+			startActivityForResult(intent, REQUEST_EDIT_ATTENDANCE);
 		}
 	};
 	

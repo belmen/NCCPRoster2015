@@ -37,6 +37,7 @@
         <activity android:name="nccp.app.ui.CourseEditorActivity"/>
         <activity android:name="nccp.app.ui.CourseStudentListActivity"/>
         <activity android:name="nccp.app.ui.StudentsSelectorActivity"/>
+        <activity android:name="nccp.app.ui.AttendanceEditorActivity"/>
     </application>
 
 </manifest>

@@ -69,6 +69,7 @@
 	<string name="msg_students_added">%1$d student added</string>
 	<string name="msg_students_added_existed">%1$d student added (%2$d existed)</string>
 	<string name="msg_no_student_selected">No student selected</string>
+	<string name="msg_attendance_not_checked">Please check an option</string>
 	
 	<!-- Error message -->
 	<string name="error_program_class_name_empty">Class name is empty</string>
@@ -195,4 +196,17 @@
 	<string name="no_students_class">No students in %s</string>
 	<string name="attendance_time_in">Time in: %s</string>
 	<string name="attendance_time_out">Time out: %s</string>
+	
+	<!-- Attendance editor -->
+	<string name="title_attendance_editor">Take attendance</string>
+	<string name="attendance_editor_section_student">STUDENT</string>
+	<string name="attendance_editor_section_course">COURSE</string>
+	<string name="attendance_editor_section_date">DATE</string>
+	<string name="attendance_editor_section_attendance">ATTENDANCE</string>
+	<string name="attended">Attended</string>
+	<string name="not_attended">Not attended</string>
+	<string name="attendance_editor_time_in">Time in</string>
+	<string name="attendance_editor_time_out">Time out</string>
+	<string name="attendance_editor_comment">Comment</string>
+	<string name="attendance_enter_time">Enter time</string>
 </resources>

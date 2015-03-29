@@ -1,4 +1,4 @@
-package nccp.app.ui;
+package nccp.app.adapter;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -76,31 +76,51 @@ public class AttendanceAdapter extends BaseAdapter {
 			vh.id = (TextView) convertView.findViewById(R.id.item_attendance_id_text);
 			vh.name = (TextView) convertView.findViewById(R.id.item_attendance_name_text);
 			vh.time = (TextView) convertView.findViewById(R.id.item_attendance_time_text);
+			vh.comment = (TextView) convertView.findViewById(R.id.item_attendance_comment_text);
 			convertView.setTag(vh);
 		} else {
 			vh = (ViewHolder) convertView.getTag();
 		}
 		Student student = (Student) getItem(position);
 		if(student != null) {
+			vh.time.setVisibility(View.VISIBLE);
 			vh.id.setText(student.getStudentId());
 			vh.name.setText(student.getFullName());
 			
 			Attendance attendance = getAttendance(student);
 			if(attendance != null) {
 				StringBuilder sb = new StringBuilder();
-				Date timeIn = attendance.getTimeIn();
-				if(timeIn != null) {
-					sb.append(mContext.getString(R.string.attendance_time_in, timeFormat.format(timeIn)));
+				if(attendance.isAttended()) { // Attended
+					sb.append(mContext.getString(R.string.attended));
 					
-					Date timeOut = attendance.getTimeOut();
-					if(timeOut != null) {
-						sb.append('\n')
-						.append(mContext.getString(R.string.attendance_time_out, timeFormat.format(timeOut)));
+					Date timeIn = attendance.getTimeIn();
+					if(timeIn != null) {
+						sb.append('\n');
+						sb.append(mContext.getString(R.string.attendance_time_in, timeFormat.format(timeIn)));
+						
+						Date timeOut = attendance.getTimeOut();
+						if(timeOut != null) {
+							sb.append("  ")
+							.append(mContext.getString(R.string.attendance_time_out, timeFormat.format(timeOut)));
+						}
 					}
+					vh.time.setText(sb.toString());
+					vh.time.setTextColor(mContext.getResources().getColor(R.color.green_800));
+				} else { // Not attended
+					vh.time.setText(mContext.getString(R.string.not_attended));
+					vh.time.setTextColor(mContext.getResources().getColor(R.color.red_900));
 				}
-				vh.time.setText(sb.toString());
+				
+				String comment = attendance.getComment();
+				if(comment != null && comment.length() > 0) {
+					vh.comment.setVisibility(View.VISIBLE);
+					vh.comment.setText(comment);
+				} else {
+					vh.comment.setVisibility(View.GONE);
+				}
 			} else {
-				vh.time.setText("");
+				vh.time.setVisibility(View.GONE);
+				vh.comment.setVisibility(View.GONE);
 			}
 		}
 		return convertView;
@@ -110,5 +130,6 @@ public class AttendanceAdapter extends BaseAdapter {
 		TextView id;
 		TextView name;
 		TextView time;
+		TextView comment;
 	}
 }

@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="40dp" >
+
+        <TextView
+            style="@style/SectionHeaderTextStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/attendance_editor_section_student" />
+
+        <TextView
+            android:id="@+id/attendance_editor_student_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:text="John Smith"
+            android:textSize="18sp" />
+
+        <TextView
+            style="@style/SectionHeaderTextStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="@string/attendance_editor_section_course" />
+
+        <TextView
+            android:id="@+id/attendance_editor_course_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:text="Activity"
+            android:textSize="18sp" />
+
+        <TextView
+            style="@style/SectionHeaderTextStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="@string/attendance_editor_section_date" />
+
+        <TextView
+            android:id="@+id/attendance_editor_date_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:text="3/23/2015"
+            android:textSize="18sp" />
+
+        <TextView
+            style="@style/SectionHeaderTextStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="@string/attendance_editor_section_attendance" />
+
+        <RadioGroup
+            android:id="@+id/attendance_editor_attended_rg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:orientation="horizontal" >
+
+            <RadioButton
+                android:id="@+id/attendance_editor_rb_attended"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:text="@string/attended" />
+
+            <RadioButton
+                android:id="@+id/attendance_editor_rb_notattended"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:text="@string/not_attended" />
+        </RadioGroup>
+
+        <LinearLayout
+            android:id="@+id/attendance_time_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:visibility="gone" >
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:orientation="horizontal" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/attendance_editor_time_in"
+                    android:textSize="18sp" />
+
+                <Button
+                    android:id="@+id/attendance_time_in_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:onClick="onTimeInBtnClick"
+                    android:text="@string/attendance_enter_time" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:orientation="horizontal" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/attendance_editor_time_out"
+                    android:textSize="18sp" />
+
+                <Button
+                    android:id="@+id/attendance_time_out_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:onClick="onTimeOutBtnClick"
+                    android:text="@string/attendance_enter_time" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <EditText
+            android:id="@+id/attendance_editor_comment_edittext"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:hint="@string/attendance_editor_comment"
+            android:inputType="textCapSentences"
+            android:visibility="gone" />
+    </LinearLayout>
+
+</ScrollView>
