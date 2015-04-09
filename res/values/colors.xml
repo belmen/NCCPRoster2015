@@ -19,9 +19,15 @@
     <color name="orange_100">#FFE0B2</color>
     <color name="red_900">#B71C1C</color>
     <color name="green_800">#2E7D32</color>
+    <color name="light_blue_a200">#40C4FF</color>
+    <color name="blue_a100">#82B1FF</color>
     
-    <color name="tab_accent_color">@color/dark_brown</color>
+    <color name="primary">@color/orange_bg</color>
+    <color name="primary_dark">@color/dark_brown</color>
+    <color name="accent">@color/blue_grey_200</color>
+    
+    <color name="tab_accent_color">@color/primary_dark</color>
     <color name="tab_ripple_color">@color/tab_accent_color</color>
     <color name="tab_selected_underline_color">@color/tab_accent_color</color>
-    <color name="actionbar_background_color">#fab360</color>
+    <color name="actionbar_background_color">@color/primary</color>
 </resources>

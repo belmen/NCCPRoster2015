@@ -7,7 +7,7 @@
         android:id="@+id/program_class_banner"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:background="@color/blue_grey_200"
+        android:background="@color/accent"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:paddingLeft="20dp"

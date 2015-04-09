@@ -5,7 +5,7 @@
 
     <uses-sdk
         android:minSdkVersion="11"
-        android:targetSdkVersion="21" />
+        android:targetSdkVersion="22" />
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 
@@ -16,7 +16,10 @@
         android:theme="@style/AppTheme" android:name="MyApplication">
         <activity android:name="nccp.app.ui.LoginActivity" android:windowSoftInputMode="stateHidden"
             android:screenOrientation="portrait">
-            
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
         </activity>
         <activity android:name="nccp.app.ui.ChooseDBActivity" android:screenOrientation="portrait" />
         <activity android:name="nccp.app.ui.RegisterActivity" android:screenOrientation="portrait"
@@ -26,12 +29,7 @@
 	            android:value="nccp.app.ui.LoginActivity" />
         </activity>
         <activity android:name="nccp.app.ui.MainActivity"/>
-        <activity android:name="nccp.app.ui.SkipLoginActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
-        </activity>
+        <activity android:name="nccp.app.ui.SkipLoginActivity"/>
         <activity android:name="nccp.app.ui.StudentEditorActivity"/>
         <activity android:name="nccp.app.ui.CourseListActivity" />
         <activity android:name="nccp.app.ui.CourseEditorActivity"/>

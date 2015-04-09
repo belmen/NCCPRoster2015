@@ -18,7 +18,7 @@ import android.widget.TextView;
 
 public class AttendanceAdapter extends BaseAdapter {
 
-	private static final SimpleDateFormat timeFormat = new SimpleDateFormat("h:m a", Locale.US);
+	private static final SimpleDateFormat timeFormat = new SimpleDateFormat("h:mm a", Locale.US);
 	
 	private Context mContext;
 	private List<Student> mStudents = null;
@@ -100,7 +100,7 @@ public class AttendanceAdapter extends BaseAdapter {
 						
 						Date timeOut = attendance.getTimeOut();
 						if(timeOut != null) {
-							sb.append("  ")
+							sb.append("\n")
 							.append(mContext.getString(R.string.attendance_time_out, timeFormat.format(timeOut)));
 						}
 					}

@@ -4,7 +4,7 @@ import java.util.Locale;
 
 import com.parse.ParseClassName;
 
-@ParseClassName("student")
+@ParseClassName("Student")
 public class Student extends BaseParseObject {
 
 	public static final String TAG_STUDENT_ID = "studentId";
@@ -22,7 +22,9 @@ public class Student extends BaseParseObject {
 	}
 	
 	public void setFirstName(String firstName) {
-		put(TAG_FIRST_NAME, firstName);
+		if(firstName != null) {
+			put(TAG_FIRST_NAME, firstName);
+		}
 	}
 	
 	public String getLastName() {
@@ -34,7 +36,9 @@ public class Student extends BaseParseObject {
 	}
 	
 	public void setLastName(String lastName) {
-		put(TAG_LAST_NAME, lastName);
+		if(lastName != null) {
+			put(TAG_LAST_NAME, lastName);
+		}
 	}
 	
 	public String getStudentId() {
@@ -42,7 +46,9 @@ public class Student extends BaseParseObject {
 	}
 	
 	public void setStudentId(String studentId) {
-		put(TAG_STUDENT_ID, studentId);
+		if(studentId != null) {
+			put(TAG_STUDENT_ID, studentId);
+		}
 	}
 	
 	public int getGradeLevel() {
@@ -58,7 +64,9 @@ public class Student extends BaseParseObject {
 	}
 	
 	public void setEnrolledIn(ProgramClass programClass) {
-		put(TAG_ENROLLED_IN, programClass);
+		if(programClass != null) {
+			put(TAG_ENROLLED_IN, programClass);
+		}
 	}
 	
 	public void removeEnrolledIn() {

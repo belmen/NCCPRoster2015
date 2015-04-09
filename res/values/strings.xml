@@ -71,6 +71,7 @@
 	<string name="msg_no_student_selected">No student selected</string>
 	<string name="msg_attendance_not_checked">Please check an option</string>
 	<string name="msg_has_been_removed">%s has been removed</string>
+	<string name="msg_time_in_after_time_out">Time in must be before time out</string>
 	
 	<!-- Error message -->
 	<string name="error_program_class_name_empty">Class name is empty</string>

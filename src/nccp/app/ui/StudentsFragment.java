@@ -53,8 +53,6 @@ public class StudentsFragment extends BaseFragment implements OnQueryTextListene
 	private static final int REQUEST_ADD_STUDENT = 0;
 	private static final int REQUEST_EDIT_STUDENT = 1;
 
-	private FragmentCallback mCallback = null;
-	
 	// Views
 	private ExpandableListView mLvStudents;
 	private StudentDetailFragment mStudentDetailFragment;
@@ -165,7 +163,7 @@ public class StudentsFragment extends BaseFragment implements OnQueryTextListene
 //		} else if(id == R.id.action_remove_student) {
 //			handleRemoveStudent();
 //		}
-//		else if(id == R.id.action_convert) {
+//		else if(id == R.id.action_convert_student) {
 //			convertStudents();
 //			return true;
 //		}
@@ -285,19 +283,13 @@ public class StudentsFragment extends BaseFragment implements OnQueryTextListene
 	}
 
 	// Convert student 
-	private void convertStudents() {
-//		if(DataCenter.getStudents() == null) {
+//	private void convertStudents() {
+//		List<Student> students = DataCenter.getStudents();
+//		if(students == null) {
 //			return;
 //		}
-//		ParseObject.saveAllInBackground(DataCenter.getStudents(), new SaveCallback() {
-//			@Override
-//			public void done(ParseException e) {
-//				if(e == null) {
-//					Toast.makeText(getActivity(), "Convert complete", Toast.LENGTH_SHORT).show();
-//				}
-//			}
-//		});
-	}
+//		new ConvertStudentTask(students).execute();
+//	}
 
 	private void doRemoveStudent(Student student) {
 		// Clear the cache of its enroll program class

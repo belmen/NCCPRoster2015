@@ -7,7 +7,7 @@
         android:id="@+id/attendance_banner"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:background="@color/blue_grey_200"
+        android:background="@color/accent"
         android:paddingLeft="20dp"
         android:paddingRight="20dp" >
 
@@ -26,24 +26,24 @@
             android:gravity="center_vertical"
             android:orientation="horizontal" >
 
-            <ImageButton
+            <Button
                 android:id="@+id/attendance_date_left_btn"
-                android:layout_width="wrap_content"
+                android:layout_width="40dp"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_chevron_left_black_24dp" />
+                android:text="&lt;" />
             
             <Button
                 android:id="@+id/attendance_date_btn"
-                android:layout_width="wrap_content"
+                android:layout_width="160dp"
                 android:layout_height="wrap_content"
                 android:text="3/20/2015 Friday"
                 android:textStyle="bold" />
             
-            <ImageButton
+            <Button
                 android:id="@+id/attendance_date_right_btn"
-                android:layout_width="wrap_content"
+                android:layout_width="40dp"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_chevron_right_black_24dp" />
+                android:text=">" />
         </LinearLayout>
 
         <Spinner

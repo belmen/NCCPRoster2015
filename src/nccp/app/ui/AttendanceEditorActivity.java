@@ -37,7 +37,7 @@ public class AttendanceEditorActivity extends ToolbarActivity {
 	private static final SimpleDateFormat dateFormat =
 			new SimpleDateFormat("M/d/yyyy EEEE", Locale.US);
 	private static final SimpleDateFormat timeFormat =
-			new SimpleDateFormat("h:m a", Locale.US);
+			new SimpleDateFormat("h:mm a", Locale.US);
 	
 	// Views
 	private TextView mTvStudentName;
@@ -204,8 +204,17 @@ public class AttendanceEditorActivity extends ToolbarActivity {
 			mAttendance.setDate(mDate);
 		}
 		
+		// Set attended
 		mAttendance.setAttended(attended);
 		if(attended) { // Set time in and time out
+			if(mTimeInSet && mTimeOutSet) {
+				if(mTimeIn.after(mTimeOut)) { // Check if time in > time out
+					Toast.makeText(AttendanceEditorActivity.this,
+							getString(R.string.msg_time_in_after_time_out), Toast.LENGTH_SHORT).show();
+					return;
+				}
+			}
+			
 			if(mTimeInSet) {
 				mAttendance.setTimeIn(mTimeIn.getTime());
 			}
